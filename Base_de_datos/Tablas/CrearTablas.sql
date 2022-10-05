@@ -6,7 +6,7 @@
 CREATE TABLE dbo.TipoDocumentoId
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 
     -- Columnas
     nombre varchar(32) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE dbo.Persona
 CREATE TABLE dbo.TipoUsuario
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 
     -- Otras columnas
     nombre varchar(32) NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE dbo.Usuario
 CREATE TABLE dbo.TipoUsoPropiedad
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 
     -- Otras columnas
     nombre varchar(32) NOT NULL
@@ -87,7 +87,7 @@ CREATE TABLE dbo.TipoUsoPropiedad
 CREATE TABLE dbo.TipoZona
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 
     -- Otras columnas
     nombre varchar(32) NOT NULL
@@ -124,7 +124,7 @@ CREATE TABLE dbo.Propiedad
 CREATE TABLE dbo.TipoAsociacion
 (
 	-- Llaves
-	id int NOT NULL IDENTITY(1,1),
+	id int NOT NULL,
 
 	-- Otras columnas
 	descripcion varchar(32),
@@ -217,7 +217,7 @@ CREATE TABLE dbo.Factura
 CREATE TABLE dbo.TipoMedioPago
 (
 	-- Llaves
-	id int NOT NULL IDENTITY(1,1),
+	id int NOT NULL,
 
 	-- Otras columnas
 	descripcion varchar(64) NOT NULL,
@@ -250,7 +250,7 @@ CREATE TABLE dbo.Pago
 CREATE TABLE dbo.TipoPeriodoConceptoCobro
 (
 	-- Llaves
-	id int NOT NULL IDENTITY(1,1),
+	id int NOT NULL,
 
 	-- Otras columnas
 	descripcion varchar(32) NOT NULL,
@@ -263,7 +263,7 @@ CREATE TABLE dbo.TipoPeriodoConceptoCobro
 CREATE TABLE dbo.TipoMontoConceptoCobro
 (
 	-- Llaves
-	id int NOT NULL IDENTITY(1,1),
+	id int NOT NULL,
 
 	-- Otras columnas
 	descripcion varchar(32) NOT NULL,
@@ -275,7 +275,7 @@ CREATE TABLE dbo.TipoMontoConceptoCobro
 CREATE TABLE dbo.ConceptoCobro
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 	idTipoPeriodoConceptoCobro int NOT NULL,
 	idTipoMontoConceptoCobro int NOT NULL,
 
@@ -295,7 +295,7 @@ CREATE TABLE dbo.ConceptoCobro
 CREATE TABLE dbo.ConceptoCobroDePropiedad
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
     idPropiedad int NOT NULL,
     idConceptoCobro int NOT NULL,
 
@@ -477,7 +477,7 @@ CREATE TABLE dbo.AguaDePropiedad
 CREATE TABLE dbo.TipoMovimientoConsumo
 (
     -- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 
     -- Otras columnas
     nombre varchar(32) NOT NULL,
@@ -577,7 +577,7 @@ CREATE TABLE dbo.OrdenReconexion
 CREATE TABLE dbo.TipoParametroSistema
 (
 	-- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
     
     -- Otras columnas
     descripcion varchar(16),
@@ -589,7 +589,7 @@ CREATE TABLE dbo.TipoParametroSistema
 CREATE TABLE dbo.ParametroSistema
 (
 	-- Llaves
-    id int NOT NULL IDENTITY(1,1),
+    id int NOT NULL,
 	idTipoParametroSistema int NOT NULL,
     
     -- Otras columnas
