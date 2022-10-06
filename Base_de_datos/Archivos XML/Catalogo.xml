@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Catalogo>
+  <TipodeMovimientoLecturadeMedidores>
+    <TipodeMovimientoLecturadeMedidor id = "1" Nombre = "Lectura" />
+    <TipodeMovimientoLecturadeMedidor id = "2" Nombre = "Ajuste Credito" />
+    <TipodeMovimientoLecturadeMedidor id = "3" Nombre = "Ajuste Debito" />
+  </TipodeMovimientoLecturadeMedidores>
+  <TipoUsoPropiedades>
+    <TipoUsoPropiedad id = "1" Nombre = "Habitacion" />
+    <TipoUsoPropiedad id = "2" Nombre = "Comercial" />
+    <TipoUsoPropiedad id = "3" Nombre = "Industrial" />
+    <TipoUsoPropiedad id = "4" Nombre = "Lote baldio" />
+    <TipoUsoPropiedad id = "5" Nombre = "Agricola" />
+  </TipoUsoPropiedades>
+  <TipoZonaPropiedades>
+    <TipoZonaPropiedad id = "1" Nombre = "Residencial" />
+    <TipoZonaPropiedad id = "2" Nombre = "Agricola" />
+    <TipoZonaPropiedad id = "3" Nombre = "Bosque" />
+    <TipoZonaPropiedad id = "4" Nombre = "Zona industrial" />
+    <TipoZonaPropiedad id = "5" Nombre = "Zona comercial" />
+  </TipoZonaPropiedades>
+  <TipoDocumentoIdentidades>
+    <TipoDocumentoIdentidad id = "1" Nombre = "Cedula CR" Mascara = "X-XXXX-XXXX" />
+    <TipoDocumentoIdentidad id = "2" Nombre = "Persona Jurídica CR" Mascara = "X-XXX-XXXXXX" />
+    <TipoDocumentoIdentidad id = "3" Nombre = " Pasaporte CR" Mascara = "X-XXXX-XXXX" />
+  </TipoDocumentoIdentidades>
+  <TipoAsociaciones>
+    <TipoAsociacion id = "1" Nombre = "Eliminar" />
+    <TipoAsociacion id = "2" Nombre = "Agregar" />
+  </TipoAsociaciones>
+  <TipoMedioPagos>
+    <TipoMedioPago id = "1" Nombre = "Efectivo" />
+    <TipoMedioPago id = "2" Nombre = "Transferencia bancaria" />
+    <TipoMedioPago id = "3" Nombre = "Tarjeta bancaria" />
+  </TipoMedioPagos>
+  <PeriodoMontoCCs>
+    <PeriodoMontoCC id = "1" Nombre = "Mensual" QMeses = "1" />
+    <PeriodoMontoCC id = "2" Nombre = "Trimestral" QMeses = "3" />
+    <PeriodoMontoCC id = "3" Nombre = "Semestral" QMeses = "6" />
+    <PeriodoMontoCC id = "4" Nombre = "Anual" QMeses = "12" />
+    <PeriodoMontoCC id = "5" Nombre = "Cobro unico no recurrente" QMeses = "1" />
+  </PeriodoMontoCCs>
+  <TipoMontoCCs>
+    <TipoMontoCC id = "1" Nombre = "Monto Fijo" />
+    <TipoMontoCC id = "2" Nombre = "Monto Variable" />
+    <TipoMontoCC id = "3" Nombre = "MontoXPorcentaje" />
+  </TipoMontoCCs>
+  <TipoParametroSistema>
+    <TipoParametro id = "1" Nombre = "bigint" />
+    <TipoParametro id = "2" Nombre = "bit" />
+    <TipoParametro id = "3" Nombre = "decimal" />
+    <TipoParametro id = "4" Nombre = "int" />
+    <TipoParametro id = "5" Nombre = "money" />
+    <TipoParametro id = "6" Nombre = "numeric" />
+    <TipoParametro id = "7" Nombre = "smallint" />
+    <TipoParametro id = "8" Nombre = "smallmoney" />
+    <TipoParametro id = "9" Nombre = "tinyint" />
+    <TipoParametro id = "10" Nombre = "float" />
+    <TipoParametro id = "11" Nombre = "real" />
+    <TipoParametro id = "12" Nombre = "date" />
+    <TipoParametro id = "13" Nombre = "datetime" />
+    <TipoParametro id = "14" Nombre = "time" />
+    <TipoParametro id = "15" Nombre = "char" />
+    <TipoParametro id = "16" Nombre = "text" />
+    <TipoParametro id = "17" Nombre = "varchar" />
+    <TipoParametro id = "18" Nombre = "nchar" />
+    <TipoParametro id = "19" Nombre = "ntext" />
+    <TipoParametro id = "20" Nombre = "nvarchar" />
+    <TipoParametro id = "21" Nombre = "binary" />
+    <TipoParametro id = "22" Nombre = "varbinary" />
+  </TipoParametroSistema>
+  <ParametrosSistema>
+    <ParametroSistema id="1" Nombre = "Cantidad de dias de gracia para corte de agua" NombreTipoPar="int" Valor = "10"/>
+    <ParametroSistema id="2" Nombre = "Cantidad de dias para calculo de fecha de vencimiento" NombreTipoPar="int" Valor = "8"/>
+  </ParametrosSistema>
+  <CCs>
+    <CC id="1" Nombre="ConsumoAgua" TipoMontoCC ="2" PeriodoMontoCC ="1" ValorMinimo="300" ValorMinimoM3="30" Valorm3="" ValorPorcentual ="" ValorFijo="" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional="100"/>
+    <CC id="2" Nombre="Impuesto a propiedad" TipoMontoCC ="3" PeriodoMontoCC ="4" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.01" ValorFijo="" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+    <CC id="3" Nombre="Recoleccion Basura" TipoMontoCC ="2" PeriodoMontoCC ="1" ValorMinimo="150" ValorMinimoM3="" Valorm3="" ValorPorcentual="" ValorFijo="300" ValorM2Minimo="400" ValorTractosM2="200" ValorFijoM3Adicional=""/>
+    <CC id="4" Nombre="Patente Comercial" TipoMontoCC ="1" PeriodoMontoCC ="3" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="" ValorFijo="150000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+    <CC id="5" Nombre="Reconexion" TipoMontoCC ="1" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="" ValorFijo="30000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+    <CC id="6" Nombre="Intereses Moratorios" TipoMontoCC ="3" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="30000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+    <CC id="7" Nombre="MantenimientoParques" TipoMontoCC ="1" PeriodoMontoCC ="4" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="2000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+  </CCs>
+</Catalogo>
