@@ -1,6 +1,7 @@
+DROP TABLE dbo.Errors;
+DROP TABLE dbo.EventLog;
 DROP TABLE dbo.ParametroSistema;
 DROP TABLE dbo.TipoParametroSistema;
-DROP TABLE dbo.TipoAsociacion;
 DROP TABLE dbo.ConceptoCobroReconexionAgua;
 DROP TABLE dbo.ConceptoCobroInteresesMoratorios;
 DROP TABLE dbo.ConceptoCobroParques;

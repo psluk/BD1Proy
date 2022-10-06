@@ -1,118 +1,109 @@
--- Script que se encarga de cargar los datos de los cat·logos
+-- Script que se encarga de cargar los datos de los cat√°logos
 
-DECLARE @inputData xml; -- Donde se cargar· el XML
+DECLARE @inputData xml; -- Donde se cargar√° el XML
 
 SELECT @inputData = D
 FROM OPENROWSET (
 	BULK
-	'C:\Users\p7285\Desktop\Proyecto - Bases de Datos\Catalogo.xml',
+	'C:\Users\p7285\GitHub\BD1Proy\Base_de_datos\Archivos XML\Catalogo.xml',
 	SINGLE_BLOB)
 AS inputData(D);
 
-DECLARE @hdoc int; -- Identificador (handle)
+DECLARE @hdoc INT; -- Identificador (handle)
 
 -- Arma la estructura del XML en memoria y retorna el handle
 EXEC sp_xml_preparedocument @hdoc OUTPUT, @inputData;
 
--- CATEGORÕA: Personas y usuarios
+-- CATEGOR√çA: Personas y usuarios
 
--- AQUÕ SE CARGA: Tipos de documento de identidad
+-- AQU√ç SE CARGA: Tipos de documento de identidad
 
-INSERT INTO [dbo].[TipoDocumentoId] (id, nombre)
-SELECT id, Nombre
+INSERT INTO [dbo].[TipoDocumentoId] (id, nombre, mascara)
+SELECT id, Nombre, Mascara
 FROM OPENXML(@hdoc, '/Catalogo/TipoDocumentoIdentidades/TipoDocumentoIdentidad', 1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32),
+	Mascara VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de usuarios
-
-INSERT INTO [dbo].[TipoUsuario] (id, nombre)
-SELECT id, Nombre
-FROM OPENXML(@hdoc, '/Catalogo/TipoUsuarios/TipoUsuario', 1)
-WITH (
-	id int,
-	Nombre varchar(32)
-	);
-
--- AQUÕ SE CARGA: Tipos de asociaciones
+-- AQU√ç SE CARGA: Tipos de asociaciones
 
 INSERT INTO [dbo].[TipoAsociacion] (id, descripcion)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoAsociaciones/TipoAsociacion', 1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32)
 	);
 
--- CATEGORÕA: Propiedades
+-- CATEGOR√çA: Propiedades
 
--- AQUÕ SE CARGA: Tipos de uso de propiedad
+-- AQU√ç SE CARGA: Tipos de uso de propiedad
 
 INSERT INTO [dbo].[TipoUsoPropiedad] (id, nombre)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoUsoPropiedades/TipoUsoPropiedad', 1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de zona
+-- AQU√ç SE CARGA: Tipos de zona
 
 INSERT INTO [dbo].[TipoZona] (id, nombre)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoZonaPropiedades/TipoZonaPropiedad', 1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32)
 	);
 
--- CATEGORÕA: Conceptos de cobro
+-- CATEGOR√çA: Conceptos de cobro
 
--- AQUÕ SE CARGA: Tipos de monto de concepto de cobro
+-- AQU√ç SE CARGA: Tipos de monto de concepto de cobro
 
 INSERT INTO [dbo].[TipoMontoConceptoCobro] (id, descripcion)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoMontoCCs/TipoMontoCC', 1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de periodos de concepto de cobro
+-- AQU√ç SE CARGA: Tipos de periodos de concepto de cobro
 
 INSERT INTO [dbo].[TipoPeriodoConceptoCobro] (id, descripcion, cantidadMeses)
 SELECT id, Nombre, QMeses
 FROM OPENXML(@hdoc, '/Catalogo/PeriodoMontoCCs/PeriodoMontoCC', 1)
 WITH (
-	id int,
-	Nombre varchar(32),
-	QMeses int
+	id INT,
+	Nombre VARCHAR(32),
+	QMeses INT
 	);
 
--- AQUÕ SE CARGA: Conceptos de cobro (CC)
+-- AQU√ç SE CARGA: Conceptos de cobro (CC)
 
--- Se hace una tabla temporal para m·s facilidad
+-- Se hace una tabla temporal para m√°s facilidad
 DECLARE @ConceptoCobroTemp TABLE (
-	id int,
-	nombre varchar(32),
-	idTipoMonto int,
-	idPeriodoMonto int,
+	id INT,
+	nombre VARCHAR(32),
+	idTipoMonto INT,
+	idPeriodoMonto INT,
 	
-	montoMinimo money,
-	volumenMinimo int,
-	volumenTracto int,
-	montoTracto money,
+	montoMinimo MONEY,
+	volumenMinimo INT,
+	volumenTracto INT,
+	montoTracto MONEY,
 	
-	valorPorcentual money, -- money da precisiÛn de decimal de base 10
-	valorFijo money,
+	valorPorcentual MONEY, -- MONEY da precisi√≥n de decimal de base 10
+	valorFijo MONEY,
 	
-	areaMinima int,
-	areaTracto int
+	areaMinima INT,
+	areaTracto INT
 );
 
--- Carga la informaciÛn de los nodos XML en la tabla temporal
+-- Carga la informaci√≥n de los nodos XML en la tabla temporal
 INSERT INTO @ConceptoCobroTemp (
 	id,
 	nombre,
@@ -134,21 +125,21 @@ FROM OPENXML(
 	'/Catalogo/CCs/CC',
 	1)
 WITH (
-	id int,
-	Nombre varchar(32),
-	TipoMontoCC int,
-	PeriodoMontoCC int,
-	ValorMinimo money,
-	ValorMinimoM3 int,
-	Valorm3 int,
-	ValorPorcentual money,
-	ValorFijo money,
-	ValorM2Minimo int,
-	ValorTractosM2 int,
-	ValorFijoM3Adicional money
+	id INT,
+	Nombre VARCHAR(32),
+	TipoMontoCC INT,
+	PeriodoMontoCC INT,
+	ValorMinimo MONEY,
+	ValorMinimoM3 INT,
+	Valorm3 INT,
+	ValorPorcentual MONEY,
+	ValorFijo MONEY,
+	ValorM2Minimo INT,
+	ValorTractosM2 INT,
+	ValorFijoM3Adicional MONEY
 	);
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobro]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobro]
 
 INSERT INTO [dbo].[ConceptoCobro] (
 	id,
@@ -163,56 +154,56 @@ UPDATE @ConceptoCobroTemp
 	SET volumenTracto = 1
 	WHERE nombre = 'ConsumoAgua' AND volumenTracto = 0;
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroAgua]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroAgua]
 INSERT INTO [dbo].[ConceptoCobroAgua] (
 	id, montoMinimo, consumoMinimo, volumenTracto, montoTracto)
 SELECT CCT.id, CCT.montoMinimo, CCT.volumenMinimo, CCT.volumenTracto, CCT.montoTracto
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'ConsumoAgua';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroPatente]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroPatente]
 INSERT INTO [dbo].[ConceptoCobroPatente] (id, valorPatente)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Patente Comercial';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroImpuestoPropiedad]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroImpuestoPropiedad]
 INSERT INTO [dbo].[ConceptoCobroImpuestoPropiedad] (id, valorPorcentual)
 SELECT CCT.id, CCT.valorPorcentual
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Impuesto a propiedad';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroBasura]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroBasura]
 INSERT INTO [dbo].[ConceptoCobroBasura] (
 	id, montoMinimo, areaMinima, areaTracto, montoTracto)
 SELECT CCT.id, CCT.montoMinimo, CCT.areaMinima, CCT.areaTracto, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Recoleccion Basura';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroParques]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroParques]
 INSERT INTO [dbo].[ConceptoCobroParques] (
 	id, valorFijo)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'MantenimientoParques';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroInteresesMoratorios]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroInteresesMoratorios]
 INSERT INTO [dbo].[ConceptoCobroInteresesMoratorios] (
 	id, valorPorcentual)
 SELECT CCT.id, CCT.valorPorcentual
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Intereses Moratorios';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroReconexionAgua]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroReconexionAgua]
 INSERT INTO [dbo].[ConceptoCobroReconexionAgua] (
 	id, monto)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Reconexion';
 
--- CATEGORÕA: Lecturas de medidor
+-- CATEGOR√çA: Lecturas de medidor
 
--- AQUÕ SE CARGA: Tipos de movimientos de lectura de medidor
+-- AQU√ç SE CARGA: Tipos de movimientos de lectura de medidor
 
 INSERT INTO [dbo].[TipoMovimientoConsumo] (id, nombre)
 SELECT id, Nombre
@@ -221,45 +212,45 @@ FROM OPENXML(
 	'/Catalogo/TipodeMovimientoLecturadeMedidores/TipodeMovimientoLecturadeMedidor',
 	1)
 WITH (
-	id int,
-	Nombre varchar(32)
+	id INT,
+	Nombre VARCHAR(32)
 	);
 
--- CATEGORÕA: Pagos
+-- CATEGOR√çA: Pagos
 
--- AQUÕ SE CARGA: Tipos de medio de pago
+-- AQU√ç SE CARGA: Tipos de medio de pago
 
 INSERT INTO [dbo].[TipoMedioPago] (id, descripcion)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoMedioPagos/TipoMedioPago', 1)
 WITH (
-	id int,
-	Nombre varchar(64)
+	id INT,
+	Nombre VARCHAR(64)
 	);
 
--- CATEGORÕA: Par·metros del sistema
+-- CATEGOR√çA: Par√°metros del sistema
 
--- AQUÕ SE CARGA: Tipos de par·metros del sistema
+-- AQU√ç SE CARGA: Tipos de par√°metros del sistema
 
 INSERT INTO [dbo].[TipoParametroSistema] (id, descripcion)
 SELECT id, Nombre
 FROM OPENXML(@hdoc, '/Catalogo/TipoParametroSistema/TipoParametro', 1)
 WITH (
-	id int,
-	Nombre varchar(16)
+	id INT,
+	Nombre VARCHAR(16)
 	);
 
--- AQUÕ SE CARGA: Par·metros del sistema
+-- AQU√ç SE CARGA: Par√°metros del sistema
 
--- Se hace una tabla temporal para relacionar los par·metros con su tipo
+-- Se hace una tabla temporal para relacionar los par√°metros con su tipo
 DECLARE @ParametrosSistemaTemp TABLE (
-	id int,
-	descripcion varchar(128),
-	valor int,
-	nombreTipo varchar(16)
+	id INT,
+	descripcion VARCHAR(128),
+	valor INT,
+	nombreTipo VARCHAR(16)
 );
 
--- Carga la informaciÛn de los nodos XML en la tabla temporal
+-- Carga la informaci√≥n de los nodos XML en la tabla temporal
 INSERT INTO @ParametrosSistemaTemp (
 	id,
 	descripcion,
@@ -268,13 +259,13 @@ INSERT INTO @ParametrosSistemaTemp (
 SELECT id, Nombre, Valor, NombreTipoPar
 FROM OPENXML(@hdoc, '/Catalogo/ParametrosSistema/ParametroSistema', 1)
 WITH (
-	id int,
-	Nombre varchar(128),
-	NombreTipoPar varchar(16),
-	Valor int
+	id INT,
+	Nombre VARCHAR(128),
+	NombreTipoPar VARCHAR(16),
+	Valor INT
 	);
 
--- Se carga la informaciÛn en la tabla [dbo].[ParametroSistema]
+-- Se carga la informaci√≥n en la tabla [dbo].[ParametroSistema]
 INSERT INTO [dbo].[ParametroSistema] (
 	id,
 	idTipoParametroSistema,
