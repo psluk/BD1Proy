@@ -454,7 +454,7 @@ CREATE TABLE dbo.AguaDePropiedad
 
     -- Otras columnas
     numeroMedidor INT NOT NULL,
-    consumoAcumulado float NOT NULL,
+    consumoAcumulado MONEY NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_AguaDePropiedad PRIMARY KEY CLUSTERED (id),
