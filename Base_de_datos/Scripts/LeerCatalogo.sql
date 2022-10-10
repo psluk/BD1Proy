@@ -1,11 +1,14 @@
 -- Script que se encarga de cargar los datos de los catálogos
 
+USE [proyecto]
+
 DECLARE @inputData xml; -- Donde se cargará el XML
 
 SELECT @inputData = D
 FROM OPENROWSET (
 	BULK
-	'C:\Users\p7285\GitHub\BD1Proy\Base_de_datos\Archivos XML\Catalogo.xml',
+	'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Archivos XML\Catalogo.xml',
+	--'C:\Users\p7285\GitHub\BD1Proy\Base_de_datos\Archivos XML\Catalogo.xml',
 	SINGLE_BLOB)
 AS inputData(D);
 
@@ -29,13 +32,13 @@ WITH (
 
 -- AQUÍ SE CARGA: Tipos de asociaciones
 
-INSERT INTO [dbo].[TipoAsociacion] (id, descripcion)
-SELECT id, Nombre
-FROM OPENXML(@hdoc, '/Catalogo/TipoAsociaciones/TipoAsociacion', 1)
-WITH (
-	id INT,
-	Nombre VARCHAR(32)
-	);
+--INSERT INTO [dbo].[TipoAsociacion] (id, descripcion)
+--SELECT id, Nombre
+--FROM OPENXML(@hdoc, '/Catalogo/TipoAsociaciones/TipoAsociacion', 1)
+--WITH (
+--	id INT,
+--	Nombre VARCHAR(32)
+--	);
 
 -- CATEGORÍA: Propiedades
 
