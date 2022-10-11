@@ -38,9 +38,9 @@ BEGIN
 		Telefono2 BIGINT,
 		Email VARCHAR(128)
 	);
-	--INSERT INTO [dbo].[Persona] ([idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email])
-	--SELECT td.id AS idTipoDocumentoId, tp.[Nombre], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email] FROM @temp_Persona tp
-	--INNER JOIN [dbo].[TipoDocumentoId] td ON tp.TipoDocumentoIdentidad = td.nombre
+	INSERT INTO [dbo].[Persona] ([idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email])
+	SELECT td.id AS idTipoDocumentoId, tp.[Nombre], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email] FROM @temp_Persona tp
+	INNER JOIN [dbo].[TipoDocumentoId] td ON tp.TipoDocumentoIdentidad = td.nombre
 	
 	EXEC sp_xml_removedocument @hdoc
 

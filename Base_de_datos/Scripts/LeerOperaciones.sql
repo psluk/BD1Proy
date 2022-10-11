@@ -21,35 +21,7 @@ BEGIN CATCH
 
 END CATCH
 
-DECLARE @temp_Persona TABLE 
-(
-    -- Llaves
-    id INT PRIMARY KEY IDENTITY(1,1),
-
-
-    ValorDocumentoIdentidad INT NOT NULL,
-    Nombre VARCHAR(64) NOT NULL,
-    TipoDocumentoIdentidad VARCHAR(32) NOT NULL,
-    Telefono1 BIGINT NOT NULL,
-    Telefono2 BIGINT NOT NULL,
-    Email VARCHAR(128) NOT NULL
-);
 --
---DECLARE @temp_Propiedad TABLE 
---(
---    -- Llaves
---    id INT  PRIMARY KEY IDENTITY(1,1),
---
---    -- Otras columnas
---	
---    NumeroFinca INT NOT NULL,
---	MetrosCuadrados INT NOT NULL,
---	tipoUsoPropiedad varchar(32) NOT NULL,
---	tipoZonaPropiedad varchar(32) NOT NULL,
---	NumeroMedidor int NOT NULL,
---	ValorFiscal BIGINT NOT NULL
---
---);
 --
 --DECLARE @temp_PersonasyPropiedades TABLE
 --(
@@ -156,6 +128,7 @@ EXEC sp_xml_removedocument @hdoc
 
 -- la tabla dbo.InformacionXml tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
 
+DECLARE @FechaOperacion DATE;
 DECLARE @contador INT;
 DECLARE @maximo INT;
 SET @contador = 1;
@@ -166,7 +139,7 @@ WHILE (@contador <= @maximo)
 BEGIN
 
 	--seleccionamos un nodo para procesar
-	SELECT @inDatos = t.xmlData
+	SELECT @inDatos = t.xmlData, @FechaOperacion = t.Fecha
 	FROM dbo.InformacionXml AS t
 	WHERE t.id = @contador
 	--EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
@@ -174,31 +147,18 @@ BEGIN
 	--las inserciones que se pongan dentro de este ciclo se realizaran en cada nodo xml
 	-- osea es como si se realizaran una vez al dia
 
-	EXEC dbo.InsertarPersonasXml @inDatos
+	--EXEC dbo.InsertarPersonasXml @inDatos
+	EXEC [dbo].[InsertarPropiedadesXml] @inDatos, @FechaOperacion
+	-- faltan insertar: propiedades, usuarios, Lectura
+	-- faltan borrar: personas, propiedades, usuarios 
+	-- faltan agregar: asociaciones
+	-- faltan eliminar: asociaciones
+
+	-- Adicionalmente falta: el CRUD de Todo
+	-- faltan acciones: lectura agua, triggers 
 
 
 	-- finalizacion de todos los ciclos
 	--EXEC sp_xml_removedocument @hdoc
 	SET @contador = @contador +1
 END
-
-
---insercion en tabla personas
-
---	INSERT INTO @temp_Persona ([nombre], [TipoDocumentoIdentidad], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email])
---
---	SELECT Nombre, TipoDocumentoIdentidad, ValorDocumentoIdentidad, Telefono1, Telefono2, Email
---	FROM OPENXML(@hdoc, 'Operacion/Personas/Persona', 1)
---	WITH 
---	(
---		ValorDocumentoIdentidad INT,
---		Nombre VARCHAR(64),
---		TipoDocumentoIdentidad VARCHAR(32),
---		Telefono1 BIGINT,
---		Telefono2 BIGINT,
---		Email VARCHAR(128)
---	);
---INSERT INTO [dbo].[Persona] ([idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email])
---SELECT td.id AS idTipoDocumentoId, tp.[Nombre], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email] FROM @temp_Persona tp
---INNER JOIN [dbo].[TipoDocumentoId] td ON tp.TipoDocumentoIdentidad = td.nombre
-

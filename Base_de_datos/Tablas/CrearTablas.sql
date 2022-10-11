@@ -1,6 +1,8 @@
 -- Este script es utilizado para crear las tablas
 -- También crea las relaciones necesarias (llaves primarias y externas)
 
+USE [proyecto]
+
 -- CATEGORÍA: PERSONAS
 
 CREATE TABLE dbo.TipoDocumentoId
