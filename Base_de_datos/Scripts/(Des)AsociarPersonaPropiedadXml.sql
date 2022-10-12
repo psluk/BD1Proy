@@ -49,14 +49,12 @@ BEGIN
 	UPDATE pdp
 	SET    pdp.fechaFin = @inFechaOperacion
 	FROM   [dbo].[PropietarioDePropiedad] AS pdp
-	INNER JOIN [dbo].[Propiedad] AS pro ON pdp.idPropiedad = pro.id
-	INNER JOIN @temp_PersonasyPropiedades AS pyp ON pyp.NumeroFinca = pro.numeroFinca
-	WHERE  pyp.TipoAsociacion = 'Eliminar'
-	AND pdp.fechaInicio IS NOT NULL
+	INNER JOIN [dbo].[Persona] AS per ON pdp.idPersona = per.id
+	INNER JOIN @temp_PersonasyPropiedades AS tpp ON tpp.ValorDocumentoIdentidad = per.idTipoDocumentoId
+	WHERE  tpp.TipoAsociacion = 'Eliminar'
+	AND pdp.fechaInicio IS NOT NULL 
 
 	EXEC sp_xml_removedocument @hdoc
-
-	SELECT * FROM @temp_PersonasyPropiedades
 
 	SET NOCOUNT OFF;
 END

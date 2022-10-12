@@ -44,7 +44,5 @@ BEGIN
 	
 	EXEC sp_xml_removedocument @hdoc
 
-	SELECT * FROM @temp_Persona
-
 	SET NOCOUNT OFF;
 END

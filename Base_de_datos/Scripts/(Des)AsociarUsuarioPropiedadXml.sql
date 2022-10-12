@@ -40,24 +40,21 @@ BEGIN
 	INSERT INTO [dbo].[UsuarioDePropiedad]([idUsuario], [idPropiedad], [fechaInicio])
 	SELECT u.id, pro.id, tup.FechaOperacion
 	FROM @temp_UsuariosyPropiedades AS tup
-	INNER JOIN [dbo].[Persona] AS per ON tup.ValorDocumentoIdentidad = per.valorDocumentoId
-	INNER JOIN [dbo].[Usuario] AS u ON per.id = u.idPersona
-	INNER JOIN [dbo].[Propiedad] AS pro ON tup.NumeroFinca = pro.numeroFinca
+	INNER JOIN [dbo].[Persona] AS per ON tup.ValorDocumentoIdentidad = per.valorDocumentoId --se obtiene el id del documento identidad
+	INNER JOIN [dbo].[Usuario] AS u ON u.idPersona = per.id -- se obtiene el id del usuario usando el id de la persona
+	INNER JOIN [dbo].[Propiedad] AS pro ON tup.NumeroFinca = pro.numeroFinca -- se obtiene el id de la propiedad usando el numero de finca
 	WHERE tup.TipoAsociacion = 'Agregar'
-
 
 	--finalizamos las relaciones que se indican como Eliminar
 	UPDATE udp
 	SET    udp.fechaFin = @inFechaOperacion
-	FROM  [dbo].[UsuarioDePropiedad] AS udp
-	INNER JOIN [dbo].[Propiedad] AS pro ON udp.idPropiedad = pro.id
-	INNER JOIN @temp_UsuariosyPropiedades AS tup ON tup.NumeroFinca = pro.numeroFinca
+	FROM  [dbo].[UsuarioDePropiedad] AS udp -- contine las relaciones de usuarios y propiedades
+	INNER JOIN [dbo].[Propiedad] AS pro ON udp.idPropiedad = pro.id --asi no eliminamos las propiedades no registradas
+	INNER JOIN @temp_UsuariosyPropiedades AS tup ON tup.NumeroFinca = pro.numeroFinca -- obtenemos el numero de finca en relacion 1 a 1
 	WHERE  tup.TipoAsociacion = 'Eliminar'
 	AND udp.fechaInicio IS NOT NULL
 
 	EXEC sp_xml_removedocument @hdoc
-
-	SELECT * FROM @temp_UsuariosyPropiedades
 
 	SET NOCOUNT OFF;
 END

@@ -278,4 +278,9 @@ SELECT P.id, Tipo.id, P.descripcion, P.valor
 FROM [dbo].[TipoParametroSistema] Tipo, @ParametrosSistemaTemp P
 WHERE Tipo.descripcion = P.nombreTipo;
 
+--parametros fijos de TipoUsuario
+INSERT INTO [dbo].[TipoUsuario] (nombre)
+	VALUES ('Administrador'), ('Propietario');
+
+
 EXEC sp_xml_removedocument @hdoc; -- Libera la memoria utilizada para la estructura del XML

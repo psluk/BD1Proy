@@ -21,51 +21,6 @@ BEGIN CATCH
 
 END CATCH
 
---
---
---DECLARE @temp_PersonasyPropiedades TABLE
---(
---    -- Llaves
---    id INT NOT NULL IDENTITY(1,1),
---    ValorDocumentoIdentidad BIGINT NOT NULL,
---    NumeroFinca INT NOT NULL,
---	TipoAsociacion varchar(32) NOT NULL
---
---);
---
---DECLARE @temp_Usuarios TABLE
---(
---    -- Llaves
---    id INT  PRIMARY KEY IDENTITY(1,1),
---	ValorDocumentoIdentidad BIGINT NOT NULL,
---	TipoUsuario varchar(32) NOT NULL,
---	TipoAsociacion varchar(32) NOT NULL,
---	_Password varchar(32) NOT NULL,
---	Username varchar(32) NOT NULL
---
---);
---
---DECLARE @temp_UsuariosyPropiedades TABLE
---(
---    -- Llaves
---    id INT PRIMARY KEY IDENTITY(1,1),
---    ValorDocumentoIdentidad BIGINT NOT NULL,
---    NumeroFinca INT NOT NULL,
---	TipoAsociacion varchar(32) NOT NULL
---
---);
---
---DECLARE @temp_Lecturas TABLE
---(
---    -- Llaves
---    id INT  PRIMARY KEY IDENTITY(1,1),
---    NumeroMedidor int NOT NULL,
---	TipoMovimiento varchar(32) NOT NULL,
---	valor int NOT NULL
---
---);
-
-
 --tabla donde se almacena el xml completo
 DECLARE @tmp TABLE 
 (
@@ -132,7 +87,7 @@ DECLARE @FechaOperacion DATE;
 DECLARE @contador INT;
 DECLARE @maximo INT;
 SET @contador = 1;
-SELECT @maximo = 3;--COUNT(0) FROM dbo.InformacionXml;
+SELECT @maximo = COUNT(0) FROM dbo.InformacionXml;
 
 -- iteramos atravez de todos los nodos del xml
 WHILE (@contador <= @maximo)
@@ -142,23 +97,14 @@ BEGIN
 	SELECT @inDatos = t.xmlData, @FechaOperacion = t.Fecha
 	FROM dbo.InformacionXml AS t
 	WHERE t.id = @contador
-	--EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
 
-	--las inserciones que se pongan dentro de este ciclo se realizaran en cada nodo xml
-	-- osea es como si se realizaran una vez al dia
-
-	--EXEC dbo.InsertarPersonasXml @inDatos
+	PRINT 'Ciclo ';PRINT @contador;
+	EXEC dbo.InsertarPersonasXml @inDatos
 	EXEC [dbo].[InsertarPropiedadesXml] @inDatos, @FechaOperacion
-	-- faltan insertar: propiedades, usuarios, Lectura
-	-- faltan borrar: personas, propiedades, usuarios 
-	-- faltan agregar: asociaciones
-	-- faltan eliminar: asociaciones
+	EXEC [dbo].[AsociacionPersonaPropiedadXml] @inDatos, @FechaOperacion
+	EXEC [dbo].[(Des)InsertarUsuariosXml] @inDatos, @FechaOperacion
+	EXEC [dbo].[AsociacionUsuarioPropiedadXml] @inDatos, @FechaOperacion
+	EXEC [dbo].[InsertarLecturaMedidorXml] @inDatos, @FechaOperacion
 
-	-- Adicionalmente falta: el CRUD de Todo
-	-- faltan acciones: lectura agua, triggers 
-
-
-	-- finalizacion de todos los ciclos
-	--EXEC sp_xml_removedocument @hdoc
 	SET @contador = @contador +1
 END
