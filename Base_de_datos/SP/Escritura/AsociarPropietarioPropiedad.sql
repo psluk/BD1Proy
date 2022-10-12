@@ -1,3 +1,7 @@
+/*
+    Procedimiento que asocia a una persona con una propiedad
+*/
+
 /* Resumen de los códigos de salida de este procedimiento
 -- Éxito --
         0: Inserción realizada correctamente
@@ -15,6 +19,8 @@ ALTER PROCEDURE [dbo].[AsociarPropietarioPropiedad]
     -- Se definen las variables de entrada
     @inValorDocumentoId VARCHAR(32),
     @inNumeroFinca INT,
+
+    -- Para determinar quién está haciendo la transacción
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS

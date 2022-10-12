@@ -1,3 +1,7 @@
+/*
+    Procedimiento que borra una propiedad según su número de finca
+*/
+
 /* Resumen de los códigos de salida de este procedimiento
 -- Éxito --
         0: Eliminación realizada correctamente
@@ -12,6 +16,8 @@
 ALTER PROCEDURE [dbo].[EliminarPropiedad]
     -- Se definen las variables de entrada
     @inNumeroFinca INT,
+
+    -- Para determinar quién está haciendo la transacción
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS

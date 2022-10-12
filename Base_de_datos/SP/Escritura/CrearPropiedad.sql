@@ -1,3 +1,7 @@
+/*
+    Procedimiento que crea una propiedad con unos parámetros dados
+*/
+
 /* Resumen de los códigos de salida de este procedimiento
 -- Éxito --
         0: Inserción realizada correctamente
@@ -20,6 +24,8 @@ ALTER PROCEDURE [dbo].[CrearPropiedad]
     @inNumeroFinca INT,
     @inArea INT,
     @inValorFiscal BIGINT,
+
+    -- Para determinar quién está haciendo la transacción
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS
