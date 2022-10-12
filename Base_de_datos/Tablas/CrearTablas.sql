@@ -287,7 +287,7 @@ CREATE TABLE dbo.ConceptoCobro
 CREATE TABLE dbo.ConceptoCobroDePropiedad
 (
     -- Llaves
-    id INT NOT NULL,
+    id INT NOT NULL IDENTITY(1,1),
     idPropiedad INT NOT NULL,
     idConceptoCobro INT NOT NULL,
 
