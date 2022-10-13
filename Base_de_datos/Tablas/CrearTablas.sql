@@ -483,7 +483,7 @@ CREATE TABLE dbo.MovimientoConsumo
     -- Llaves
     id INT NOT NULL IDENTITY(1,1),
     idTipoMovimiento INT NOT NULL,
-    idAguaDePropidad INT NOT NULL,
+    idAguaDePropiedad INT NOT NULL,
 
     -- Otras columnas
     fecha DATE NOT NULL,
@@ -498,7 +498,7 @@ CREATE TABLE dbo.MovimientoConsumo
         FOREIGN KEY (idTipoMovimiento)
         REFERENCES dbo.TipoMovimientoConsumo (id),
     CONSTRAINT FK_MovimientoConsumo_AguaDePropiedad
-        FOREIGN KEY (idAguaDePropidad)
+        FOREIGN KEY (idAguaDePropiedad)
         REFERENCES dbo.AguaDePropiedad (id),
 );
 
