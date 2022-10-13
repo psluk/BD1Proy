@@ -40,7 +40,13 @@ BEGIN
             -- Si llega acá, el usuario no es administrador
             -- Entonces no retornamos nada
             SET @outResultCode = 50001;     -- Credenciales inválidas
-            SELECT NULL AS 'Finca', NULL AS 'Inicio';
+            SELECT NULL AS 'Finca',
+                NULL AS 'Uso',
+                NULL AS 'Zona',
+                NULL AS 'Area',
+                NULL AS 'Fiscal',
+                NULL AS 'Registro',
+                NULL AS 'Inicio_relacion'
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -64,17 +70,33 @@ BEGIN
             -- No existe
             -- Entonces no retornamos nada
             SET @outResultCode = 50002;     -- Persona inexistente
-            SELECT NULL AS 'Finca', NULL AS 'Inicio';
+            SELECT NULL AS 'Finca',
+                NULL AS 'Uso',
+                NULL AS 'Zona',
+                NULL AS 'Area',
+                NULL AS 'Fiscal',
+                NULL AS 'Registro',
+                NULL AS 'Inicio_relacion'
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
         -- Si llega acá, se buscan las propiedades
-        SELECT P.numeroFinca AS 'Finca', PdP.fechaInicio AS 'Inicio'
+        SELECT P.numeroFinca AS 'Finca',
+            TU.nombre AS 'Uso',
+            TZ.nombre AS 'Zona',
+            P.area AS 'Area',
+            P.valorFiscal AS 'Fiscal',
+            P.fechaRegistro AS 'Registro',
+            PdP.fechaInicio AS 'Inicio_relacion'
         FROM [dbo].[Propiedad] P
         INNER JOIN [dbo].[PropietarioDePropiedad] PdP
         ON PdP.idPropiedad = P.id
+        INNER JOIN [dbo].[TipoUsoPropiedad] TU
+        ON TU.id = P.idTipoUsoPropiedad
+        INNER JOIN [dbo].[TipoZona] TZ
+        ON TZ.id = P.idTipoZona
         WHERE PdP.idPersona = @idPersona
             AND PdP.fechaFin IS NULL; -- NULL = sigue activa la relación
 
@@ -84,7 +106,13 @@ BEGIN
     BEGIN CATCH
         -- Ocurrió un error desconocido
         SET @outResultCode = 50000;     -- Error
-        SELECT NULL AS 'Finca', NULL AS 'Inicio';
+        SELECT NULL AS 'Finca',
+                NULL AS 'Uso',
+                NULL AS 'Zona',
+                NULL AS 'Area',
+                NULL AS 'Fiscal',
+                NULL AS 'Registro',
+                NULL AS 'Inicio_relacion'
         SELECT @outResultCode AS 'resultCode';
 
     END CATCH;
