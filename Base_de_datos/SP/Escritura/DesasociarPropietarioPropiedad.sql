@@ -87,7 +87,7 @@ BEGIN
         DECLARE @LogDescription VARCHAR(512);
         SET @LogDescription = 'Se modifica la tabla [dbo].[PropietarioDePropiedad]: '
             + '{id = "' + CONVERT(VARCHAR, @idPropietarioPropiedad) + '", '
-            + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual) + '"'
+            + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'
             + '}';
 
         BEGIN TRANSACTION tAsociarPropietarioPropiedad

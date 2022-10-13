@@ -120,7 +120,7 @@ BEGIN
         SET @LogDescription = 'Se inserta en la tabla [dbo].[PropietarioDePropiedad]: '
             + '{idPropiedad = "' + CONVERT(VARCHAR, @idPropiedad) + '", '
             + 'idPersona = "' + CONVERT(VARCHAR, @idPersona) + '", '
-            + 'fechaInicio = "' + CONVERT(VARCHAR, @fechaActual) + '"'
+            + 'fechaInicio = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'
             + '}';
 
         BEGIN TRANSACTION tAsociarPropietarioPropiedad
