@@ -1,0 +1,6 @@
+/* Estilos para las fuentes */
+
+html, body, select, input, button {
+    /* Fuente */
+    font-family: 'Roboto', 'Arial Nova', 'Arial', sans-serif;
+}

@@ -1,0 +1,36 @@
+/* Estilos generales */
+
+html,
+body {
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#mainBox {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+#upperDiv {
+    /* Para que la barra superior abarque todo el ancho */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex: 0 1 auto;
+    background-color: lightblue;
+    height: 100px;
+}
+
+.expandDiv {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+iframe {
+    width: calc(100% - 25px);
+    height: calc(100% - 25px);
+    margin: 10px;
+    border: none;
+}

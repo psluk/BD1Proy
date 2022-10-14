@@ -1,0 +1,76 @@
+from flask import Flask, render_template, session, redirect, url_for, request
+from markupsafe import escape
+import logica  # Comunicación con el servidor de la base de datos
+import json
+
+app = Flask(__name__)
+
+app.secret_key = "aa66460520c901b30d309bf7f2a9f9880b2a02b7ef2d177871d7c118ba1355cf"
+
+
+@app.route("/")
+def index():
+    if 'username' not in session:
+        # Si no hay un nombre de usuario en la sesión,
+        # se lo redirige al inicio de sesión
+        return redirect(url_for('login'))
+    return render_template('index.html')
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Se está enviando la información de inicio de sesión
+        # Hay que revisar la información en la base de datos
+        try:
+            request_data = request.get_json()
+        except:
+            # Si falla el "parse" del JSON
+            return "Bad request", 400
+
+        if logica.isUsuarioValido(
+                str(request_data.get('username')),
+                str(request_data.get('password'))
+                ):
+            session['username'] = str(request_data.get('username'))
+            return "Ok", 200
+        else:
+            return "Wrong credentials", 401
+    else:
+        # Si no es "POST", no se está enviando la información de inicio
+        # de sesión, así que solo se revisa si ya hay una sesión o no
+        if 'username' in session:
+            # En este caso, ya hay una sesión, entonces no carga
+            # el inicio de sesión
+            return redirect(url_for('index'))
+        return render_template('login.html')
+
+
+@app.route("/logout")
+def logout():
+    # Cierra la sesión
+    session.pop('username', None)
+    return redirect(url_for('login'))  # Regresa al inicio de sesión
+
+
+# Subpáginas específicas
+
+@app.route("/sub/<subpage>")
+def subpagina(subpage):
+    return render_template(f'subpages/{escape(subpage)}')
+
+@app.route("/sub/get/user_properties")
+def propiedades_de_usuario_actual():
+    # Propiedades propias
+    return json.dumps(logica.propiedadesDeUsuario(
+        usuarioConsultado=session['username'],
+        consultante=session['username']
+        ))
+
+@app.route("/sub/get/user_properties/<usuario>")
+def propiedades_de_usuario(usuario: str = ''):
+    # Propiedades de alguien más
+    return json.dumps(logica.propiedadesDeUsuario(
+        usuarioConsultado=usuario,
+        consultante=session['username']
+        ))

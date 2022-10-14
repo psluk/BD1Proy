@@ -1,0 +1,80 @@
+/* Estilos generales */
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+h1 {
+    text-align: center;
+}
+
+#mainBox {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+#titleDiv {
+    /* Para que el título solo abarque el alto necesario */
+    flex: 0 1 auto;
+}
+
+#expandDiv {
+    /* Esto rellena el resto de la pantalla */
+    flex: 1 1 auto;
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+#loginOuterDiv {
+    padding: 0;
+    width: 100%;
+
+    /* Lo centra verticalmente */
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+#loginDiv {
+    /* margin: auto = centrado*/
+    margin: auto;
+    width: 300px;
+    min-height: 100px;
+    background-color: lightblue;
+    padding: 15px;
+}
+
+#loginForm {
+    width: 100%;
+}
+
+#loginForm label {
+    width: 100%;
+}
+
+#loginForm input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex: 1 0 auto;
+}
+
+.formInput {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+
+.formInput:nth-child(1) {
+    margin-top: 0;
+}
+
+#loginForm input:nth-child(-1) {
+    margin-bottom: 0;
+}

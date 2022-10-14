@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</head>
+
+<body>
+    <div id="mainBox">
+        <div id="titleDiv">
+            <h1>Inicio de sesión</h1>
+        </div>
+        <div id="expandDiv">
+            <div id="loginOuterDiv">
+                <div id="loginDiv">
+                    <form id="loginForm" action="javascript:return false;">
+                        <div class="formInput">
+                            <label>Nombre de usuario</label>
+                            <input type="text" id="usernameBox" placeholder="Nombre de usuario">
+                        </div>
+                        <div class="formInput">
+                            <label>Contraseña</label>
+                            <input type="password" id="passwordBox" placeholder="Contraseña">
+                        </div>
+                        <div class="formInput">
+                            <input type="Submit" id="loginButton" value="Iniciar sesión">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

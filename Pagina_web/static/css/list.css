@@ -1,0 +1,39 @@
+/* Estilos generales */
+
+html,
+body {
+    height: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+table {
+    width: 100%;
+    background-color: lightblue;
+    border-collapse: collapse;
+    border: 1px deepskyblue solid;
+}
+
+th {
+    /* Para que se quede visible el encabezado al bajar */
+    position: sticky;
+    top: 0;
+
+    /* Estilo en sí */
+    background-color: deepskyblue;
+    color: white;
+}
+
+td,
+th {
+    /* Margen interno de las celdas */
+    padding: 0 7px;
+
+    /* Borde */
+    border: 1px deepskyblue solid;
+}
+
+tr:nth-child(2n+1) {
+    /* Para que se intercalen filas blancas on celestes */
+    background-color: white;
+}
