@@ -31,7 +31,7 @@ def login():
         if logica.isUsuarioValido(
                 str(request_data.get('username')),
                 str(request_data.get('password'))
-                ):
+        ):
             session['username'] = str(request_data.get('username'))
             return "Ok", 200
         else:
@@ -53,11 +53,16 @@ def logout():
     return redirect(url_for('login'))  # Regresa al inicio de sesión
 
 
-# Subpáginas específicas
+# Subpáginas
 
 @app.route("/sub/<subpage>")
 def subpagina(subpage):
     return render_template(f'subpages/{escape(subpage)}')
+
+
+# Las API de las subpáginas
+
+# Propiedades de un usuario
 
 @app.route("/sub/get/user_properties")
 def propiedades_de_usuario_actual():
@@ -65,7 +70,8 @@ def propiedades_de_usuario_actual():
     return json.dumps(logica.propiedadesDeUsuario(
         usuarioConsultado=session['username'],
         consultante=session['username']
-        ))
+    ))
+
 
 @app.route("/sub/get/user_properties/<usuario>")
 def propiedades_de_usuario(usuario: str = ''):
@@ -73,4 +79,13 @@ def propiedades_de_usuario(usuario: str = ''):
     return json.dumps(logica.propiedadesDeUsuario(
         usuarioConsultado=usuario,
         consultante=session['username']
-        ))
+    ))
+
+# Propiedades de una persona
+@app.route("/sub/get/owner_properties/<identificacion>")
+def propiedades_de_persona(identificacion: str = ''):
+    # Propiedades de alguien más
+    return json.dumps(logica.propiedadesDePersona(
+        identificacion=identificacion,
+        consultante=session['username']
+    ))

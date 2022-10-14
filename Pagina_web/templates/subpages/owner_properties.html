@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Propiedades de un usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
+    <script>
+        // Formato de fechas
+        const fechaIdioma = 'es-CR';
+        const fechaFormato = { year: "numeric", month: "long", day: "numeric" };
+
+        let correccion_temp;
+
+        if (new Date().getTimezoneOffset() > 0) {
+            // Atrás de UTC (como Costa Rica)
+            correccion_temp = 24;
+        }
+        else {
+            // Delante de UTC
+            correccion_temp = 0;
+        }
+
+        const correccion = correccion_temp;
+
+        // Parámetros dentro del URL
+        const parametrosUrl = new URLSearchParams(window.location.search);
+        const personaBuscada = parametrosUrl.get('id');
+
+        // Enlaces
+        const propiedadesApi = './get/owner_properties'
+
+        function esperarPropiedades(solicitudPropiedades) {
+            // Función que espera hasta que el servidor retorna la respuesta
+            if (solicitudPropiedades.readyState < 4) {
+                // 4 = listo
+                setTimeout(function () { esperarPropiedades(solicitudPropiedades); }, 100);
+                // 100 = revisa cada 100 milisegundos
+            }
+            else {
+                let datos = JSON.parse(solicitudPropiedades.response);
+
+                if (datos.status != undefined) {
+                    // El código de salida debería ser 0
+                    if (datos.status != 0) {
+                        // (Los códigos de error vienen documentados en el script del SP)
+                        switch (datos.status) {
+                            case 50000:
+                                alert("Ocurrió un error\n\nInténtelo nuevamente");
+                                break;
+
+                            case 50001:
+                                alert("No tiene permiso para ver las propiedades de " + personaBuscada);
+                                break;
+
+                            case 50002:
+                                alert("Esa persona no existe");
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return;
+                    }
+                }
+                else {
+                    // No hay código de salida, así que lo recibido no es válido
+                    alert("Ocurrió un error\n\nInténtelo nuevamente");
+                    return;
+                }
+
+                let resultados = datos.results;
+                let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+                if (cuerpoTabla) {
+                    // Hay un <tbody>
+                    cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                    let nuevaFila;              // Fila que se está agregando
+
+                    if (resultados.length > 0) {
+                        for (let i = 0; i < resultados.length; i++) {
+                            nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].numeroFinca;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].uso;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].zona;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].area;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].valorFiscal;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let fechaRegistro = new Date(resultados[i].registro);
+                            fechaRegistro.setHours(correccion);
+                            nuevaFila.lastElementChild.innerText = fechaRegistro.toLocaleDateString(
+                                fechaIdioma, fechaFormato);
+                            
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let fechaRelacion = new Date(resultados[i].inicioRelacion);
+                            fechaRelacion.setHours(correccion);
+                            nuevaFila.lastElementChild.innerText = fechaRelacion.toLocaleDateString(
+                                fechaIdioma, fechaFormato);
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                        }
+                    }
+                    else {
+                        // Si no se retornaron resultados, se agrega una fila que diga que no
+                        // hay propiedades
+                        nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                        nuevaFila.appendChild(document.createElement('td'));
+                        nuevaFila.lastElementChild.setAttribute(
+                            'colspan', document.getElementsByTagName("th").length);
+                        nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                        nuevaFila.lastElementChild.innerText = 'No hay propiedades para visualizar';
+                    }
+                }
+            }
+        }
+
+        function obtenerPropiedades() {
+            let urlRequest = propiedadesApi;
+
+            if (!personaBuscada) {
+                // Si no está la identificación, no se puede continuar
+                let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+                if (cuerpoTabla) {
+                    // Hay un <tbody>
+                    cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                    let nuevaFila;              // Fila que se está agregando
+
+                    nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                    nuevaFila.appendChild(document.createElement('td'));
+                    nuevaFila.lastElementChild.setAttribute(
+                        'colspan', document.getElementsByTagName("th").length);
+                    nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                    nuevaFila.lastElementChild.innerText = 'No se brindó una identificación';
+                }
+                return;
+            }
+
+            urlRequest = urlRequest + "/" + personaBuscada;
+
+            let solicitudPropiedades = new XMLHttpRequest();
+            solicitudPropiedades.open('GET', urlRequest, true); // true = asincrónico
+            solicitudPropiedades.send();
+            esperarPropiedades(solicitudPropiedades);
+        }
+
+        window.addEventListener('load', function () {
+            // Esto se ejecuta hasta después de que se cargue la página
+            obtenerPropiedades();
+        })
+    </script>
+</head>
+
+<body>
+
+    <table id="ownerPropertiesTable">
+        <thead>
+            <tr>
+                <th>Número de finca</th>
+                <th>Uso</th>
+                <th>Tipo de zona</th>
+                <th>Área (m<sup>2</sup>)</th>
+                <th>Valor fiscal</th>
+                <th>Fecha de registro</th>
+                <th>Dueño desde</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="bigCell" colspan="8">Cargando...</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
