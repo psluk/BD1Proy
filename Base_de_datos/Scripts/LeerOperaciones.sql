@@ -80,7 +80,6 @@ SELECT @maximo = COUNT(0) FROM @informacionXML;
 -- iteramos a trav�s de todos los nodos del xml
 WHILE (@contador <= @maximo)
 BEGIN
-
 	--seleccionamos un nodo para procesar
 	SELECT @inDatos = t.xmlData, @FechaOperacion = t.Fecha
 	FROM @informacionXML AS t
@@ -97,7 +96,7 @@ BEGIN
 	EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
 
     -- Se libera de la memoria
-    EXEC sp_xml_removedocument @hdoc
+    EXEC sp_xml_removedocument @hdoc;
 
 	SET @contador = @contador +1
-END
+END;
