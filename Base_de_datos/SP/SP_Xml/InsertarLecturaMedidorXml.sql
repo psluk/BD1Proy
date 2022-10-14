@@ -4,7 +4,7 @@ GO
 -- inserta todas las personas del nodo entregado
 
 ALTER PROCEDURE [dbo].[InsertarLecturaMedidorXml]
-						@inxmlData AS XML = '',
+						@hdoc INT,
 						@inFechaOperacion AS DATE = GETDATE
 AS
 BEGIN
@@ -21,8 +21,6 @@ BEGIN
 		ConsumoMovimiento MONEY
 	
 	);
-	DECLARE @hdoc int;
-	EXEC sp_xml_preparedocument @hdoc OUTPUT, @inxmlData;
 	
 	
 	INSERT INTO @temp_Lecturas (NumeroMedidor, TipoMovimiento, Valor)
@@ -64,7 +62,7 @@ BEGIN
 
 
 	-- insertamos los valores en la tabla Movimiento Consumo, se puede optimizar
-	INSERT INTO [dbo].[MovimientoConsumo] ([idTipoMovimiento], [idAguaDePropidad], [fecha], [consumoMovimiento], [consumoAcumulado])
+	INSERT INTO [dbo].[MovimientoConsumo] ([idTipoMovimiento], [idAguaDePropiedad], [fecha], [consumoMovimiento], [consumoAcumulado])
 	SELECT tmc.id, adp.id, tl.FechaOperacion, tl.ConsumoMovimiento, tl.ConsumoAcumulado
 	FROM @temp_Lecturas AS tl
 	INNER JOIN [dbo].[TipoMovimientoConsumo] tmc ON tl.TipoMovimiento = tmc.nombre
@@ -89,8 +87,6 @@ BEGIN
 	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor
 	WHERE tl.ConsumoAcumulado IS NOT NULL
 	AND tl.TipoMovimiento = 'Ajuste Debito'
-
-	EXEC sp_xml_removedocument @hdoc
 
 	--SELECT * FROM @temp_Lecturas
 

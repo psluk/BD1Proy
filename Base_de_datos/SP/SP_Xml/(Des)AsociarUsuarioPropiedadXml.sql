@@ -4,7 +4,7 @@
 
 
 ALTER PROCEDURE [dbo].[AsociacionUsuarioPropiedadXml]
-						@inxmlData AS XML = '',
+						@hdoc INT,
 						@inFechaOperacion AS DATE = GETDATE
 
 AS
@@ -20,9 +20,6 @@ BEGIN
 		FechaOperacion DATE
 	
 	);
-
-	DECLARE @hdoc int;
-	EXEC sp_xml_preparedocument @hdoc OUTPUT, @inxmlData;
 	
 	INSERT INTO @temp_UsuariosyPropiedades (ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion)
 	SELECT ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion
@@ -53,8 +50,6 @@ BEGIN
 	INNER JOIN @temp_UsuariosyPropiedades AS tup ON tup.NumeroFinca = pro.numeroFinca -- obtenemos el numero de finca en relacion 1 a 1
 	WHERE  tup.TipoAsociacion = 'Eliminar'
 	AND udp.fechaInicio IS NOT NULL
-
-	EXEC sp_xml_removedocument @hdoc
 
 	SET NOCOUNT OFF;
 END

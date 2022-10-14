@@ -2,24 +2,12 @@
 
 USE [proyecto]
 
--- creamos la tabla que almacena los nodos xml
-
--- mediante esta tabla tenemos acceso a todos los nodos del xml
--- y a que dia pertenecen
-BEGIN TRY
-	CREATE TABLE dbo.InformacionXml
-	(
-	id INT  PRIMARY KEY IDENTITY(1,1),
-	Fecha DATE,
-	xmlData XML
-	)
-END TRY
-BEGIN CATCH
-	
-	DELETE dbo.InformacionXml;
-	DBCC CHECKIDENT ([InformacionXml], RESEED, 0);
-
-END CATCH
+DECLARE @informacionXML TABLE
+(
+id INT  PRIMARY KEY IDENTITY(1,1),
+Fecha DATE,
+xmlData XML
+)
 
 --tabla donde se almacena el xml completo
 DECLARE @tmp TABLE 
@@ -72,7 +60,7 @@ INSERT INTO @otra(Fecha)
 )
 
 --unificamos las fechas y sus nodos en una misma tabla
-INSERT INTO dbo.InformacionXml(Fecha, xmlData)
+INSERT INTO @informacionXML(Fecha, xmlData)
 (
 	SELECT t.Fecha,q.xmlData
 	FROM @otra AS t, @otro AS q
@@ -81,30 +69,35 @@ INSERT INTO dbo.InformacionXml(Fecha, xmlData)
 
 EXEC sp_xml_removedocument @hdoc
 
--- la tabla dbo.InformacionXml tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
+-- la tabla @informacionXML tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
 
 DECLARE @FechaOperacion DATE;
 DECLARE @contador INT;
 DECLARE @maximo INT;
 SET @contador = 1;
-SELECT @maximo = COUNT(0) FROM dbo.InformacionXml;
+SELECT @maximo = COUNT(0) FROM @informacionXML;
 
--- iteramos atravez de todos los nodos del xml
+-- iteramos a trav�s de todos los nodos del xml
 WHILE (@contador <= @maximo)
 BEGIN
 
 	--seleccionamos un nodo para procesar
 	SELECT @inDatos = t.xmlData, @FechaOperacion = t.Fecha
-	FROM dbo.InformacionXml AS t
+	FROM @informacionXML AS t
 	WHERE t.id = @contador
 
-	PRINT 'Ciclo ';PRINT @contador;
-	EXEC dbo.InsertarPersonasXml @inDatos
-	EXEC [dbo].[InsertarPropiedadesXml] @inDatos, @FechaOperacion
-	EXEC [dbo].[AsociacionPersonaPropiedadXml] @inDatos, @FechaOperacion
-	EXEC [dbo].[(Des)InsertarUsuariosXml] @inDatos, @FechaOperacion
-	EXEC [dbo].[AsociacionUsuarioPropiedadXml] @inDatos, @FechaOperacion
-	EXEC [dbo].[InsertarLecturaMedidorXml] @inDatos, @FechaOperacion
+    -- Se carga el XML de la operaci�n en memoria
+    EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
+
+	EXEC dbo.InsertarPersonasXml @hdoc
+	EXEC [dbo].[InsertarPropiedadesXml] @hdoc, @FechaOperacion
+	EXEC [dbo].[AsociacionPersonaPropiedadXml] @hdoc, @FechaOperacion
+	EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
+	EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
+	EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
+
+    -- Se libera de la memoria
+    EXEC sp_xml_removedocument @hdoc
 
 	SET @contador = @contador +1
 END

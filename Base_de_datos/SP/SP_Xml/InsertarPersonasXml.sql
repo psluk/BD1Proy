@@ -3,7 +3,7 @@
 -- inserta todas las personas del nodo entregado
 
 ALTER PROCEDURE [dbo].[InsertarPersonasXml]
-						@inxmlData xml
+						@hdoc INT
 
 AS
 BEGIN
@@ -21,8 +21,6 @@ BEGIN
     Telefono2 BIGINT NOT NULL,
     Email VARCHAR(128) NOT NULL
 	);
-	DECLARE @hdoc int;
-	EXEC sp_xml_preparedocument @hdoc OUTPUT, @inxmlData;
 	
 	
 	INSERT INTO @temp_Persona ([nombre], [TipoDocumentoIdentidad], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email])
@@ -41,8 +39,6 @@ BEGIN
 	INSERT INTO [dbo].[Persona] ([idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email])
 	SELECT td.id AS idTipoDocumentoId, tp.[Nombre], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email] FROM @temp_Persona tp
 	INNER JOIN [dbo].[TipoDocumentoId] td ON tp.TipoDocumentoIdentidad = td.nombre
-	
-	EXEC sp_xml_removedocument @hdoc
 
 	SET NOCOUNT OFF;
 END

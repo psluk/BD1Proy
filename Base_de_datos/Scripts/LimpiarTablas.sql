@@ -36,9 +36,23 @@ DELETE dbo.TipoZona;
 DELETE dbo.Persona;
 DELETE dbo.TipoDocumentoId;
 
+DBCC CHECKIDENT (Errors, RESEED, 0);
+DBCC CHECKIDENT (EventLog, RESEED, 0);
+DBCC CHECKIDENT (OrdenReconexion, RESEED, 0);
+DBCC CHECKIDENT (OrdenCorta, RESEED, 0);
+DBCC CHECKIDENT (MovimientoConsumo, RESEED, 0);
+DBCC CHECKIDENT (DetalleConceptoCobro, RESEED, 0);
+DBCC CHECKIDENT (ConceptoCobroDePropiedad, RESEED, 0);
+DBCC CHECKIDENT (Factura, RESEED, 0);
+DBCC CHECKIDENT (EstadoFactura, RESEED, 0);
+DBCC CHECKIDENT (UsuarioDePropiedad, RESEED, 0);
+DBCC CHECKIDENT (PropietarioDePropiedad, RESEED, 0);
+DBCC CHECKIDENT (Usuario, RESEED, 0);
+DBCC CHECKIDENT (TipoUsuario, RESEED, 0);
 DBCC CHECKIDENT (Propiedad, RESEED, 0);
+DBCC CHECKIDENT (Persona, RESEED, 0);
 
-DECLARE @inputData xml; -- Donde se cargar· el XML
+DECLARE @inputData xml; -- Donde se cargar√° el XML
 
 SELECT @inputData = D
 FROM OPENROWSET (
@@ -53,9 +67,9 @@ DECLARE @hdoc INT; -- Identificador (handle)
 -- Arma la estructura del XML en memoria y retorna el handle
 EXEC sp_xml_preparedocument @hdoc OUTPUT, @inputData;
 
--- CATEGORÕA: Personas y usuarios
+-- CATEGOR√çA: Personas y usuarios
 
--- AQUÕ SE CARGA: Tipos de documento de identidad
+-- AQU√ç SE CARGA: Tipos de documento de identidad
 
 INSERT INTO [dbo].[TipoDocumentoId] (id, nombre, mascara)
 SELECT id, Nombre, Mascara
@@ -66,7 +80,7 @@ WITH (
 	Mascara VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de asociaciones
+-- AQU√ç SE CARGA: Tipos de asociaciones
 
 --INSERT INTO [dbo].[TipoAsociacion] (id, descripcion)
 --SELECT id, Nombre
@@ -76,9 +90,9 @@ WITH (
 --	Nombre VARCHAR(32)
 --	);
 
--- CATEGORÕA: Propiedades
+-- CATEGOR√çA: Propiedades
 
--- AQUÕ SE CARGA: Tipos de uso de propiedad
+-- AQU√ç SE CARGA: Tipos de uso de propiedad
 
 INSERT INTO [dbo].[TipoUsoPropiedad] (id, nombre)
 SELECT id, Nombre
@@ -88,7 +102,7 @@ WITH (
 	Nombre VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de zona
+-- AQU√ç SE CARGA: Tipos de zona
 
 INSERT INTO [dbo].[TipoZona] (id, nombre)
 SELECT id, Nombre
@@ -98,9 +112,9 @@ WITH (
 	Nombre VARCHAR(32)
 	);
 
--- CATEGORÕA: Conceptos de cobro
+-- CATEGOR√çA: Conceptos de cobro
 
--- AQUÕ SE CARGA: Tipos de monto de concepto de cobro
+-- AQU√ç SE CARGA: Tipos de monto de concepto de cobro
 
 INSERT INTO [dbo].[TipoMontoConceptoCobro] (id, descripcion)
 SELECT id, Nombre
@@ -110,7 +124,7 @@ WITH (
 	Nombre VARCHAR(32)
 	);
 
--- AQUÕ SE CARGA: Tipos de periodos de concepto de cobro
+-- AQU√ç SE CARGA: Tipos de periodos de concepto de cobro
 
 INSERT INTO [dbo].[TipoPeriodoConceptoCobro] (id, descripcion, cantidadMeses)
 SELECT id, Nombre, QMeses
@@ -121,9 +135,9 @@ WITH (
 	QMeses INT
 	);
 
--- AQUÕ SE CARGA: Conceptos de cobro (CC)
+-- AQU√ç SE CARGA: Conceptos de cobro (CC)
 
--- Se hace una tabla temporal para m·s facilidad
+-- Se hace una tabla temporal para m√°s facilidad
 DECLARE @ConceptoCobroTemp TABLE (
 	id INT,
 	nombre VARCHAR(32),
@@ -135,14 +149,14 @@ DECLARE @ConceptoCobroTemp TABLE (
 	volumenTracto INT,
 	montoTracto MONEY,
 	
-	valorPorcentual MONEY, -- MONEY da precisiÛn de decimal de base 10
+	valorPorcentual MONEY, -- MONEY da precisi√≥n de decimal de base 10
 	valorFijo MONEY,
 	
 	areaMinima INT,
 	areaTracto INT
 );
 
--- Carga la informaciÛn de los nodos XML en la tabla temporal
+-- Carga la informaci√≥n de los nodos XML en la tabla temporal
 INSERT INTO @ConceptoCobroTemp (
 	id,
 	nombre,
@@ -178,7 +192,7 @@ WITH (
 	ValorFijoM3Adicional MONEY
 	);
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobro]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobro]
 
 INSERT INTO [dbo].[ConceptoCobro] (
 	id,
@@ -193,56 +207,56 @@ UPDATE @ConceptoCobroTemp
 	SET volumenTracto = 1
 	WHERE nombre = 'ConsumoAgua' AND volumenTracto = 0;
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroAgua]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroAgua]
 INSERT INTO [dbo].[ConceptoCobroAgua] (
 	id, montoMinimo, consumoMinimo, volumenTracto, montoTracto)
 SELECT CCT.id, CCT.montoMinimo, CCT.volumenMinimo, CCT.volumenTracto, CCT.montoTracto
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'ConsumoAgua';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroPatente]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroPatente]
 INSERT INTO [dbo].[ConceptoCobroPatente] (id, valorPatente)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Patente Comercial';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroImpuestoPropiedad]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroImpuestoPropiedad]
 INSERT INTO [dbo].[ConceptoCobroImpuestoPropiedad] (id, valorPorcentual)
 SELECT CCT.id, CCT.valorPorcentual
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Impuesto a propiedad';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroBasura]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroBasura]
 INSERT INTO [dbo].[ConceptoCobroBasura] (
 	id, montoMinimo, areaMinima, areaTracto, montoTracto)
 SELECT CCT.id, CCT.montoMinimo, CCT.areaMinima, CCT.areaTracto, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Recoleccion Basura';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroParques]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroParques]
 INSERT INTO [dbo].[ConceptoCobroParques] (
 	id, valorFijo)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'MantenimientoParques';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroInteresesMoratorios]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroInteresesMoratorios]
 INSERT INTO [dbo].[ConceptoCobroInteresesMoratorios] (
 	id, valorPorcentual)
 SELECT CCT.id, CCT.valorPorcentual
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Intereses Moratorios';
 
--- Se carga la informaciÛn en la tabla [dbo].[ConceptoCobroReconexionAgua]
+-- Se carga la informaci√≥n en la tabla [dbo].[ConceptoCobroReconexionAgua]
 INSERT INTO [dbo].[ConceptoCobroReconexionAgua] (
 	id, monto)
 SELECT CCT.id, CCT.valorFijo
 FROM @ConceptoCobroTemp CCT
 WHERE CCT.nombre = 'Reconexion';
 
--- CATEGORÕA: Lecturas de medidor
+-- CATEGOR√çA: Lecturas de medidor
 
--- AQUÕ SE CARGA: Tipos de movimientos de lectura de medidor
+-- AQU√ç SE CARGA: Tipos de movimientos de lectura de medidor
 
 INSERT INTO [dbo].[TipoMovimientoConsumo] (id, nombre)
 SELECT id, Nombre
@@ -255,9 +269,9 @@ WITH (
 	Nombre VARCHAR(32)
 	);
 
--- CATEGORÕA: Pagos
+-- CATEGOR√çA: Pagos
 
--- AQUÕ SE CARGA: Tipos de medio de pago
+-- AQU√ç SE CARGA: Tipos de medio de pago
 
 INSERT INTO [dbo].[TipoMedioPago] (id, descripcion)
 SELECT id, Nombre
@@ -267,9 +281,9 @@ WITH (
 	Nombre VARCHAR(64)
 	);
 
--- CATEGORÕA: Par·metros del sistema
+-- CATEGOR√çA: Par√°metros del sistema
 
--- AQUÕ SE CARGA: Tipos de par·metros del sistema
+-- AQU√ç SE CARGA: Tipos de par√°metros del sistema
 
 INSERT INTO [dbo].[TipoParametroSistema] (id, descripcion)
 SELECT id, Nombre
@@ -279,9 +293,9 @@ WITH (
 	Nombre VARCHAR(16)
 	);
 
--- AQUÕ SE CARGA: Par·metros del sistema
+-- AQU√ç SE CARGA: Par√°metros del sistema
 
--- Se hace una tabla temporal para relacionar los par·metros con su tipo
+-- Se hace una tabla temporal para relacionar los par√°metros con su tipo
 DECLARE @ParametrosSistemaTemp TABLE (
 	id INT,
 	descripcion VARCHAR(128),
@@ -289,7 +303,7 @@ DECLARE @ParametrosSistemaTemp TABLE (
 	nombreTipo VARCHAR(16)
 );
 
--- Carga la informaciÛn de los nodos XML en la tabla temporal
+-- Carga la informaci√≥n de los nodos XML en la tabla temporal
 INSERT INTO @ParametrosSistemaTemp (
 	id,
 	descripcion,
@@ -304,7 +318,7 @@ WITH (
 	Valor INT
 	);
 
--- Se carga la informaciÛn en la tabla [dbo].[ParametroSistema]
+-- Se carga la informaci√≥n en la tabla [dbo].[ParametroSistema]
 INSERT INTO [dbo].[ParametroSistema] (
 	id,
 	idTipoParametroSistema,

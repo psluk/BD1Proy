@@ -2,7 +2,7 @@
 -- inserta todas las personas del nodo entregado
 
 ALTER PROCEDURE [dbo].[(Des)InsertarUsuariosXml]
-						@inxmlData AS XML = '',
+						@hdoc INT,
 						@inFechaOperacion AS DATE = GETDATE
 AS
 BEGIN
@@ -18,8 +18,6 @@ BEGIN
 		Username varchar(32) NOT NULL
 	
 	);
-	DECLARE @hdoc int;
-	EXEC sp_xml_preparedocument @hdoc OUTPUT, @inxmlData;
 	
 	
 	INSERT INTO @temp_Usuarios (ValorDocumentoIdentidad, TipoUsuario, TipoAsociacion, Password, Username)
@@ -76,8 +74,6 @@ BEGIN
 	DELETE u
 	FROM [dbo].[Usuario] AS u
 	INNER JOIN @temp_BorrarUsuarios tbu  ON u.id = tbu.idUsuario
-
-	EXEC sp_xml_removedocument @hdoc
 
 	SET NOCOUNT OFF;
 END

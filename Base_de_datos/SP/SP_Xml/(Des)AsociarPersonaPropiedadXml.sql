@@ -4,7 +4,7 @@
 
 
 ALTER PROCEDURE [dbo].[AsociacionPersonaPropiedadXml]
-						@inxmlData AS XML = '',
+						@hdoc INT,
 						@inFechaOperacion AS DATE = GETDATE
 
 AS
@@ -20,9 +20,6 @@ BEGIN
 		FechaOperacion DATE
 	
 	);
-
-	DECLARE @hdoc int;
-	EXEC sp_xml_preparedocument @hdoc OUTPUT, @inxmlData;
 	
 	INSERT INTO @temp_PersonasyPropiedades (ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion)
 	SELECT ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion
@@ -53,8 +50,6 @@ BEGIN
 	INNER JOIN @temp_PersonasyPropiedades AS tpp ON tpp.ValorDocumentoIdentidad = per.idTipoDocumentoId
 	WHERE  tpp.TipoAsociacion = 'Eliminar'
 	AND pdp.fechaInicio IS NOT NULL 
-
-	EXEC sp_xml_removedocument @hdoc
 
 	SET NOCOUNT OFF;
 END
