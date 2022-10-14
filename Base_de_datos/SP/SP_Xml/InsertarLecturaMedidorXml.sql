@@ -5,7 +5,7 @@ GO
 
 ALTER PROCEDURE [dbo].[InsertarLecturaMedidorXml]
 						@hdoc INT,
-						@inFechaOperacion AS DATE = GETDATE
+						@inFechaOperacion DATE
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -18,13 +18,14 @@ BEGIN
 		Valor int NOT NULL,
 		FechaOperacion DATE,
 		ConsumoAcumulado MONEY,
-		ConsumoMovimiento MONEY
+		ConsumoMovimiento MONEY,
+        ConsumoAnterior MONEY
 	
 	);
 	
 	
-	INSERT INTO @temp_Lecturas (NumeroMedidor, TipoMovimiento, Valor)
-	SELECT NumeroMedidor, TipoMovimiento, Valor
+	INSERT INTO @temp_Lecturas (NumeroMedidor, TipoMovimiento, Valor, FechaOperacion)
+	SELECT NumeroMedidor, TipoMovimiento, Valor, @inFechaOperacion
 	FROM OPENXML(@hdoc, 'Operacion/Lecturas/LecturaMedidor', 1)
 	WITH 
 	(
@@ -33,13 +34,11 @@ BEGIN
 		Valor int
 		
 	);
-	UPDATE @temp_Lecturas
-	SET FechaOperacion = @inFechaOperacion;
 
 	-- obtenemos el ConsumoAcumulado viejo segun el numero de medidor
 	-- se asume que el numero de medidor es unico, ya que es el unico identificador
 	UPDATE tl
-	SET    tl.ConsumoAcumulado = adp.consumoAcumulado
+	SET    tl.ConsumoAnterior = adp.consumoAcumulado
 	FROM  @temp_Lecturas AS tl
 	INNER JOIN [dbo].[AguaDePropiedad] AS adp ON tl.NumeroMedidor = adp.numeroMedidor
 
@@ -48,17 +47,24 @@ BEGIN
 
 	--Lectura de Medidor
 	UPDATE tl
-	SET    ConsumoMovimiento = (Valor - ConsumoAcumulado)
+	SET    ConsumoMovimiento = (Valor - ConsumoAnterior)
 	FROM @temp_Lecturas AS tl
-	WHERE ConsumoAcumulado IS NOT NULL
+	WHERE ConsumoAnterior IS NOT NULL
 	AND tl.TipoMovimiento = 'Lectura'
 
-	--Ajuste Credito o Ajuste Debito
+	--Ajuste Credito
 	UPDATE tl
-	SET    ConsumoMovimiento = Valor
+	SET    ConsumoMovimiento = Valor, ConsumoAcumulado = ConsumoAnterior + Valor
 	FROM @temp_Lecturas AS tl
-	WHERE ConsumoAcumulado IS NOT NULL
-	AND (tl.TipoMovimiento = 'Ajuste Credito' OR tl.TipoMovimiento = 'Ajuste Debito')
+	WHERE ConsumoAnterior IS NOT NULL
+	AND (tl.TipoMovimiento = 'Ajuste Credito')
+
+    --Ajuste Debito
+	UPDATE tl
+	SET    ConsumoMovimiento = -Valor, ConsumoAcumulado = ConsumoAnterior - Valor
+	FROM @temp_Lecturas AS tl
+	WHERE ConsumoAnterior IS NOT NULL
+	AND (tl.TipoMovimiento = 'Ajuste Debito')
 
 
 	-- insertamos los valores en la tabla Movimiento Consumo, se puede optimizar
@@ -70,25 +76,13 @@ BEGIN
 	WHERE tl.ConsumoAcumulado IS NOT NULL
 
 
-	--ahora actualizamos el ConsumoAcumumalo en [dbo].[AguaDePropiedad]
+	--ahora actualizamos el ConsumoAcumulado en [dbo].[AguaDePropiedad]
 
-	--Ajuste de Credito o Lectura
 	UPDATE adp
-	SET adp.consumoAcumulado = adp.consumoAcumulado + tl.ConsumoMovimiento
+	SET adp.consumoAcumulado = tl.ConsumoAcumulado
 	FROM [dbo].[AguaDePropiedad] AS adp
 	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor
 	WHERE tl.ConsumoAcumulado IS NOT NULL
-	AND (tl.TipoMovimiento = 'Ajuste Credito' OR tl.TipoMovimiento = 'Lectura')
-
-	--Ajuste de Credito o Lectura
-	UPDATE adp
-	SET adp.consumoAcumulado = adp.consumoAcumulado - tl.ConsumoMovimiento
-	FROM [dbo].[AguaDePropiedad] AS adp
-	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor
-	WHERE tl.ConsumoAcumulado IS NOT NULL
-	AND tl.TipoMovimiento = 'Ajuste Debito'
-
-	--SELECT * FROM @temp_Lecturas
 
 	SET NOCOUNT OFF;
 END
