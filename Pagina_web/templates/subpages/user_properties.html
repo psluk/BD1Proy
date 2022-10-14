@@ -76,37 +76,45 @@
                     // Hay un <tbody>
                     cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
                     let nuevaFila;              // Fila que se está agregando
-                    for (let i = 0; i < resultados.length; i++) {
-                        nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        nuevaFila.lastElementChild.innerText = resultados[i].numeroFinca;
+                    if (resultados.length > 0) {
+                        for (let i = 0; i < resultados.length; i++) {
+                            nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        nuevaFila.lastElementChild.innerText = resultados[i].uso;
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].numeroFinca;
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        nuevaFila.lastElementChild.innerText = resultados[i].zona;
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].uso;
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        nuevaFila.lastElementChild.innerText = resultados[i].area;
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].zona;
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        nuevaFila.lastElementChild.innerText = resultados[i].valorFiscal;
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].area;
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        let fechaRegistro = new Date(resultados[i].registro);
-                        fechaRegistro.setHours(correccion);
-                        nuevaFila.lastElementChild.innerText = fechaRegistro.toLocaleDateString(
-                            fechaIdioma, fechaFormato);
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].valorFiscal;
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                        let fechaRelacion = new Date(resultados[i].inicioRelacion);
-                        fechaRelacion.setHours(correccion);
-                        nuevaFila.lastElementChild.innerText = fechaRelacion.toLocaleDateString(
-                            fechaIdioma, fechaFormato);
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let fechaRegistro = new Date(resultados[i].registro);
+                            fechaRegistro.setHours(correccion);
+                            nuevaFila.lastElementChild.innerText = fechaRegistro.toLocaleDateString(
+                                fechaIdioma, fechaFormato);
 
-                        nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                        }
+                    }
+                    else {
+                        // Si no se retornaron resultados, se agrega una fila que diga que no
+                        // hay propiedades
+                        nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                        nuevaFila.appendChild(document.createElement('td'));
+                        nuevaFila.lastElementChild.setAttribute(
+                            'colspan', document.getElementsByTagName("th").length);
+                        nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                        nuevaFila.lastElementChild.innerText = 'No hay propiedades para visualizar';
                     }
                 }
             }
@@ -144,11 +152,14 @@
                 <th>Área (m<sup>2</sup>)</th>
                 <th>Valor fiscal</th>
                 <th>Fecha de registro</th>
-                <th>Accesible desde</th>
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <tr>
+                <td class="bigCell" colspan="7">Cargando...</td>
+            </tr>
+        </tbody>
     </table>
 </body>
 
