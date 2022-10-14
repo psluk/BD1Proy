@@ -103,6 +103,11 @@
                                 fechaIdioma, fechaFormato);
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Historial de agua";
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./water_history.html?finca=" + resultados[i].numeroFinca);
                         }
                     }
                     else {
