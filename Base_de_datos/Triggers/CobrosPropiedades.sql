@@ -1,5 +1,3 @@
-USE [Proyecto]
-
 ALTER TRIGGER [dbo].[AsignarConceptosCobro]
 ON [dbo].[Propiedad]
 AFTER INSERT
