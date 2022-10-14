@@ -82,10 +82,23 @@ def propiedades_de_usuario(usuario: str = ''):
     ))
 
 # Propiedades de una persona
+
+
 @app.route("/sub/get/owner_properties/<identificacion>")
 def propiedades_de_persona(identificacion: str = ''):
     # Propiedades de alguien más
     return json.dumps(logica.propiedadesDePersona(
         identificacion=identificacion,
+        consultante=session['username']
+    ))
+
+# Lecturas de una propiedad
+
+
+@app.route("/sub/get/water_history/<finca>")
+def lecturas_de_propiedad(finca: str = ''):
+    # Propiedades de alguien más
+    return json.dumps(logica.lecturasDePropiedad(
+        finca=finca,
         consultante=session['username']
     ))

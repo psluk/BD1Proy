@@ -78,7 +78,7 @@ def propiedadesDeUsuario(usuarioConsultado: str = '', consultante: str = ''):
     resultado = {
         "status": 0,
         "results": []
-        }
+    }
 
     try:
         for fila in salida.fetchall():
@@ -92,7 +92,7 @@ def propiedadesDeUsuario(usuarioConsultado: str = '', consultante: str = ''):
                     "valorFiscal": fila[4],
                     "registro": fila[5],
                     "inicioRelacion": fila[6]
-                    })
+                })
         # Avanza a la segunda tabla de salida (con el código de salida)
         if salida.nextset():
             # Copia el código de salida del procedimiento
@@ -103,10 +103,11 @@ def propiedadesDeUsuario(usuarioConsultado: str = '', consultante: str = ''):
         resultado = {
             "status": 500,      # 500 = error interno del servidor
             "results": []
-            }
+        }
 
     cursor.close()
     return resultado
+
 
 def propiedadesDePersona(identificacion: str = '', consultante: str = ''):
     """
@@ -122,7 +123,7 @@ def propiedadesDePersona(identificacion: str = '', consultante: str = ''):
     resultado = {
         "status": 0,
         "results": []
-        }
+    }
 
     try:
         for fila in salida.fetchall():
@@ -136,7 +137,7 @@ def propiedadesDePersona(identificacion: str = '', consultante: str = ''):
                     "valorFiscal": fila[4],
                     "registro": fila[5],
                     "inicioRelacion": fila[6]
-                    })
+                })
         # Avanza a la segunda tabla de salida (con el código de salida)
         if salida.nextset():
             # Copia el código de salida del procedimiento
@@ -147,7 +148,49 @@ def propiedadesDePersona(identificacion: str = '', consultante: str = ''):
         resultado = {
             "status": 500,      # 500 = error interno del servidor
             "results": []
-            }
+        }
+
+    cursor.close()
+    return resultado
+
+
+def lecturasDePropiedad(finca: str = '', consultante: str = ''):
+    """
+    Función que retorna las propiedades que le pertenecen a una persona dada
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerLecturasDePropiedad] ?,?"
+
+    salida = cursor.execute(query, finca, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "fecha": fila[0],
+                    "tipo": fila[1],
+                    "consumo": str(fila[2]),
+                    "acumulado": str(fila[3])
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
 
     cursor.close()
     return resultado
