@@ -111,3 +111,13 @@ def propietarios_de_propiedad(finca: str = ''):
         finca=finca,
         consultante=session['username']
     ))
+
+# Usuarios asociados a una proipedad
+
+
+@app.route("/sub/get/users_of_property/<finca>")
+def usuarios_de_propiedad(finca: str = ''):
+    return json.dumps(logica.usuariosDePropiedad(
+        finca=finca,
+        consultante=session['username']
+    ))
