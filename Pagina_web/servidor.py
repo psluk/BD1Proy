@@ -112,12 +112,22 @@ def propietarios_de_propiedad(finca: str = ''):
         consultante=session['username']
     ))
 
-# Usuarios asociados a una proipedad
+# Usuarios asociados a una propiedad
 
 
 @app.route("/sub/get/users_of_property/<finca>")
 def usuarios_de_propiedad(finca: str = ''):
     return json.dumps(logica.usuariosDePropiedad(
+        finca=finca,
+        consultante=session['username']
+    ))
+
+# Medidores de una propiedad
+
+
+@app.route("/sub/get/water_meters/<finca>")
+def medidores_de_propiedad(finca: str = ''):
+    return json.dumps(logica.medidoresDePropiedad(
         finca=finca,
         consultante=session['username']
     ))
