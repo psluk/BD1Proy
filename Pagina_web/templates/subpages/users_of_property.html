@@ -115,6 +115,12 @@
                                 fechaIdioma, fechaFormato);
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Propiedades";
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./user_properties.html?user=" + resultados[i].nombreUsuario);
                         }
                     }
                     else {

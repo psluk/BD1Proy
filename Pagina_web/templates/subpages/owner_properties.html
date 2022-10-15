@@ -147,6 +147,24 @@
                             nuevoEnlace.setAttribute(
                                 "href",
                                 "./owners_of_property.html?finca=" + resultados[i].numeroFinca);
+                            
+                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
+                            
+                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Medidores";
+                            nuevoEnlace.setAttribute("class", "adminOnly");
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./water_meters.html?finca=" + resultados[i].numeroFinca);
+
+                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
+
+                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Usuarios asociados";
+                            nuevoEnlace.setAttribute("class", "adminOnly");
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./users_of_property.html?finca=" + resultados[i].numeroFinca);
                         }
                     }
                     else {
