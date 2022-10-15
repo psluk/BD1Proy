@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Propiedades de una persona</title>
+    <title>Propietarios de una propiedad</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script>
@@ -26,10 +26,10 @@
 
         // Parámetros dentro del URL
         const parametrosUrl = new URLSearchParams(window.location.search);
-        const personaBuscada = parametrosUrl.get('id');
+        const propiedadBuscada = parametrosUrl.get('finca');
 
         // Enlaces
-        const propiedadesApi = './get/owner_properties'
+        const propiedadesApi = './get/owners_of_property'
 
         function esperarPropiedades(solicitudPropiedades) {
             // Función que espera hasta que el servidor retorna la respuesta
@@ -51,11 +51,11 @@
                                 break;
 
                             case 50001:
-                                alert("No tiene permiso para ver las propiedades de " + personaBuscada);
+                                alert("No tiene permiso para ver los propietarios de " + propiedadBuscada);
                                 break;
 
                             case 50002:
-                                alert("Esa persona no existe");
+                                alert("Esa propiedad no existe");
                                 break;
 
                             default:
@@ -82,26 +82,11 @@
                             nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            nuevaFila.lastElementChild.innerText = resultados[i].numeroFinca;
+                            nuevaFila.lastElementChild.innerText = resultados[i].nombre;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            nuevaFila.lastElementChild.innerText = resultados[i].uso;
+                            nuevaFila.lastElementChild.innerText = resultados[i].id;
 
-                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            nuevaFila.lastElementChild.innerText = resultados[i].zona;
-
-                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            nuevaFila.lastElementChild.innerText = resultados[i].area;
-
-                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            nuevaFila.lastElementChild.innerText = resultados[i].valorFiscal;
-
-                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            let fechaRegistro = new Date(resultados[i].registro);
-                            fechaRegistro.setHours(correccion);
-                            nuevaFila.lastElementChild.innerText = fechaRegistro.toLocaleDateString(
-                                fechaIdioma, fechaFormato);
-                            
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             let fechaRelacion = new Date(resultados[i].inicioRelacion);
                             fechaRelacion.setHours(correccion);
@@ -109,20 +94,6 @@
                                 fechaIdioma, fechaFormato);
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            
-                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Historial de agua";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./water_history.html?finca=" + resultados[i].numeroFinca);
-                            
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-                            
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Propietarios";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./owners_of_property.html?finca=" + resultados[i].numeroFinca);
                         }
                     }
                     else {
@@ -134,16 +105,16 @@
                         nuevaFila.lastElementChild.setAttribute(
                             'colspan', document.getElementsByTagName("th").length);
                         nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
-                        nuevaFila.lastElementChild.innerText = 'No hay propiedades para visualizar';
+                        nuevaFila.lastElementChild.innerText = 'No hay propietarios para visualizar';
                     }
                 }
             }
         }
 
-        function obtenerPropiedades() {
+        function obtenerPropietarios() {
             let urlRequest = propiedadesApi;
 
-            if (!personaBuscada) {
+            if (!propiedadBuscada) {
                 // Si no está la identificación, no se puede continuar
                 let cuerpoTabla = document.getElementsByTagName("tbody")[0];
                 if (cuerpoTabla) {
@@ -157,12 +128,12 @@
                     nuevaFila.lastElementChild.setAttribute(
                         'colspan', document.getElementsByTagName("th").length);
                     nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
-                    nuevaFila.lastElementChild.innerText = 'No se brindó una identificación';
+                    nuevaFila.lastElementChild.innerText = 'No se brindó un número de finca';
                 }
                 return;
             }
 
-            urlRequest = urlRequest + "/" + personaBuscada;
+            urlRequest = urlRequest + "/" + propiedadBuscada;
 
             let solicitudPropiedades = new XMLHttpRequest();
             solicitudPropiedades.open('GET', urlRequest, true); // true = asincrónico
@@ -172,29 +143,25 @@
 
         window.addEventListener('load', function () {
             // Esto se ejecuta hasta después de que se cargue la página
-            obtenerPropiedades();
+            obtenerPropietarios();
         })
     </script>
 </head>
 
 <body>
 
-    <table id="ownerPropertiesTable">
+    <table id="propertyOwnerTable">
         <thead>
             <tr>
-                <th>Número de finca</th>
-                <th>Uso</th>
-                <th>Tipo de zona</th>
-                <th>Área (m<sup>2</sup>)</th>
-                <th>Valor fiscal</th>
-                <th>Fecha de registro</th>
+                <th>Nombre</th>
+                <th>Identificación</th>
                 <th>Dueño desde</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="bigCell" colspan="8">Cargando...</td>
+                <td class="bigCell" colspan="4">Cargando...</td>
             </tr>
         </tbody>
     </table>

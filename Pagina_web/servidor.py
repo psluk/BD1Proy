@@ -97,8 +97,17 @@ def propiedades_de_persona(identificacion: str = ''):
 
 @app.route("/sub/get/water_history/<finca>")
 def lecturas_de_propiedad(finca: str = ''):
-    # Propiedades de alguien más
     return json.dumps(logica.lecturasDePropiedad(
+        finca=finca,
+        consultante=session['username']
+    ))
+
+# Dueños de una propiedad
+
+
+@app.route("/sub/get/owners_of_property/<finca>")
+def propietarios_de_propiedad(finca: str = ''):
+    return json.dumps(logica.propietariosDePropiedad(
         finca=finca,
         consultante=session['username']
     ))
