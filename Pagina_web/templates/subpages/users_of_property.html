@@ -31,6 +31,24 @@
         // Enlaces
         const propiedadesApi = './get/users_of_property'
 
+        function filaUnicaTexto(textoInterno) {
+            // Función que deja una sola fila en la tabla con un texto dado
+            let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+            if (cuerpoTabla) {
+                // Hay un <tbody>
+                cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                let nuevaFila;              // Fila que se está agregando
+
+                nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                nuevaFila.appendChild(document.createElement('td'));
+                nuevaFila.lastElementChild.setAttribute(
+                    'colspan', document.getElementsByTagName("th").length);
+                nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                nuevaFila.lastElementChild.innerText = textoInterno;
+            }
+        }
+
         function esperarUsuarios(solicitudPropiedades) {
             // Función que espera hasta que el servidor retorna la respuesta
             if (solicitudPropiedades.readyState < 4) {
@@ -45,29 +63,34 @@
                     // El código de salida debería ser 0
                     if (datos.status != 0) {
                         // (Los códigos de error vienen documentados en el script del SP)
+                        let textoError;
                         switch (datos.status) {
                             case 50000:
-                                alert("Ocurrió un error\n\nInténtelo nuevamente");
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
                                 break;
 
                             case 50001:
-                                alert("No tiene permiso para ver los usuarios de " + propiedadBuscada);
+                                textoError = "No tiene permiso para ver los usuarios de " + propiedadBuscada;
                                 break;
 
                             case 50002:
-                                alert("Esa propiedad no existe");
+                                textoError = "La finca " + propiedadBuscada + " no existe";
                                 break;
 
                             default:
-                                alert("Ocurrió un error\n\nInténtelo nuevamente");
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
                                 break;
                         }
+                        filaUnicaTexto(textoError);
+                        alert(textoError);
                         return;
                     }
                 }
                 else {
                     // No hay código de salida, así que lo recibido no es válido
-                    alert("Ocurrió un error\n\nInténtelo nuevamente");
+                    let textoError = "Ocurrió un error\n\nInténtelo nuevamente";
+                    filaUnicaTexto(textoError);
+                    alert(textoError);
                     return;
                 }
 
@@ -97,13 +120,7 @@
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
                         // hay usuarios
-                        nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
-
-                        nuevaFila.appendChild(document.createElement('td'));
-                        nuevaFila.lastElementChild.setAttribute(
-                            'colspan', document.getElementsByTagName("th").length);
-                        nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
-                        nuevaFila.lastElementChild.innerText = 'No hay usuarios para visualizar';
+                        filaUnicaTexto('No hay usuarios para visualizar');
                     }
                 }
             }
@@ -114,20 +131,7 @@
 
             if (!propiedadBuscada) {
                 // Si no está la identificación, no se puede continuar
-                let cuerpoTabla = document.getElementsByTagName("tbody")[0];
-                if (cuerpoTabla) {
-                    // Hay un <tbody>
-                    cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
-                    let nuevaFila;              // Fila que se está agregando
-
-                    nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
-
-                    nuevaFila.appendChild(document.createElement('td'));
-                    nuevaFila.lastElementChild.setAttribute(
-                        'colspan', document.getElementsByTagName("th").length);
-                    nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
-                    nuevaFila.lastElementChild.innerText = 'No se brindó un número de finca';
-                }
+                filaUnicaTexto('No se brindó un número de finca');
                 return;
             }
 
@@ -148,7 +152,7 @@
 
 <body>
 
-    <table id="propertyOwnerTable">
+    <table id="associatedUserTable">
         <thead>
             <tr>
                 <th>Nombre de usuario</th>

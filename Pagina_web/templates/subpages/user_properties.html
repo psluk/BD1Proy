@@ -31,6 +31,24 @@
         // Enlaces
         const propiedadesApi = './get/user_properties'
 
+        function filaUnicaTexto(textoInterno) {
+            // Función que deja una sola fila en la tabla con un texto dado
+            let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+            if (cuerpoTabla) {
+                // Hay un <tbody>
+                cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                let nuevaFila;              // Fila que se está agregando
+
+                nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                nuevaFila.appendChild(document.createElement('td'));
+                nuevaFila.lastElementChild.setAttribute(
+                    'colspan', document.getElementsByTagName("th").length);
+                nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                nuevaFila.lastElementChild.innerText = textoInterno;
+            }
+        }
+
         function esperarPropiedades(solicitudPropiedades) {
             // Función que espera hasta que el servidor retorna la respuesta
             if (solicitudPropiedades.readyState < 4) {
@@ -45,29 +63,34 @@
                     // El código de salida debería ser 0
                     if (datos.status != 0) {
                         // (Los códigos de error vienen documentados en el script del SP)
+                        let textoError;
                         switch (datos.status) {
                             case 50000:
-                                alert("Ocurrió un error\n\nInténtelo nuevamente");
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
                                 break;
 
                             case 50001:
-                                alert("No tiene permiso para ver las propiedades de " + usuarioBuscado);
+                                textoError = "No tiene permiso para ver las propiedades de " + usuarioBuscado;
                                 break;
 
                             case 50002:
-                                alert("El usuario no existe");
+                                textoError = "El usuario " + usuarioBuscado + " no existe";
                                 break;
 
                             default:
-                                alert("Ocurrió un error\n\nInténtelo nuevamente");
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
                                 break;
                         }
+                        filaUnicaTexto(textoError);
+                        alert(textoError);
                         return;
                     }
                 }
                 else {
                     // No hay código de salida, así que lo recibido no es válido
-                    alert("Ocurrió un error\n\nInténtelo nuevamente");
+                    let textoError = "Ocurrió un error\n\nInténtelo nuevamente";
+                    filaUnicaTexto(textoError);
+                    alert(textoError);
                     return;
                 }
 
@@ -114,13 +137,7 @@
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
                         // hay propiedades
-                        nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
-
-                        nuevaFila.appendChild(document.createElement('td'));
-                        nuevaFila.lastElementChild.setAttribute(
-                            'colspan', document.getElementsByTagName("th").length);
-                        nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
-                        nuevaFila.lastElementChild.innerText = 'No hay propiedades para visualizar';
+                        filaUnicaTexto('No hay propiedades para visualizar');
                     }
                 }
             }
