@@ -178,11 +178,14 @@
         window.addEventListener('load', function () {
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerPropiedades();
+            document.getElementById("moduleTitle").innerText += " " + personaBuscada;
         })
     </script>
 </head>
 
 <body>
+
+    <h1 id="moduleTitle">Propiedades de</h1>
 
     <table id="ownerPropertiesTable">
         <thead>

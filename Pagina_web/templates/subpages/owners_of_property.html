@@ -150,11 +150,14 @@
         window.addEventListener('load', function () {
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerPropietarios();
+            document.getElementById("moduleTitle").innerText += " " + propiedadBuscada;
         })
     </script>
 </head>
 
 <body>
+
+    <h1 id="moduleTitle">Propietarios de la finca n.º</h1>
 
     <table id="propertyOwnerTable">
         <thead>

@@ -2,9 +2,12 @@
 
 html,
 body {
-    height: 100%;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+h1 {
+    text-align: center;
 }
 
 table {

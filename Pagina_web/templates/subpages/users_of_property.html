@@ -146,11 +146,14 @@
         window.addEventListener('load', function () {
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerUsuarios();
+            document.getElementById("moduleTitle").innerText += " " + propiedadBuscada;
         })
     </script>
 </head>
 
 <body>
+
+    <h1 id="moduleTitle">Usuarios de la finca n.º</h1>
 
     <table id="associatedUserTable">
         <thead>

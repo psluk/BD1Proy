@@ -149,6 +149,7 @@
             if (usuarioBuscado) {
                 // Está revisando las propiedades de alguien más
                 urlRequest = urlRequest + "/" + usuarioBuscado;
+                document.getElementById("moduleTitle").innerText += " " + usuarioBuscado;
             }
 
             let solicitudPropiedades = new XMLHttpRequest();
@@ -165,6 +166,8 @@
 </head>
 
 <body>
+
+    <h1 id="moduleTitle">Propietarios del usuario</h1>
 
     <table id="userPropertiesTable">
         <thead>

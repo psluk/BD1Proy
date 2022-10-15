@@ -152,11 +152,14 @@
         window.addEventListener('load', function () {
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerLecturas();
+            document.getElementById("moduleTitle").innerText += " " + propiedadBuscada;
         })
     </script>
 </head>
 
 <body>
+
+    <h1 id="moduleTitle">Historial de agua de la finca n.º</h1>
 
     <table id="waterHistoryTable">
         <thead>
