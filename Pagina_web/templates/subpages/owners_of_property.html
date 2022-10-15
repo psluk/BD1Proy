@@ -31,11 +31,11 @@
         // Enlaces
         const propiedadesApi = './get/owners_of_property'
 
-        function esperarPropiedades(solicitudPropiedades) {
+        function esperarPropietarios(solicitudPropiedades) {
             // Función que espera hasta que el servidor retorna la respuesta
             if (solicitudPropiedades.readyState < 4) {
                 // 4 = listo
-                setTimeout(function () { esperarPropiedades(solicitudPropiedades); }, 100);
+                setTimeout(function () { esperarPropietarios(solicitudPropiedades); }, 100);
                 // 100 = revisa cada 100 milisegundos
             }
             else {
@@ -59,6 +59,7 @@
                                 break;
 
                             default:
+                                alert("Ocurrió un error\n\nInténtelo nuevamente");
                                 break;
                         }
                         return;
@@ -138,7 +139,7 @@
             let solicitudPropiedades = new XMLHttpRequest();
             solicitudPropiedades.open('GET', urlRequest, true); // true = asincrónico
             solicitudPropiedades.send();
-            esperarPropiedades(solicitudPropiedades);
+            esperarPropietarios(solicitudPropiedades);
         }
 
         window.addEventListener('load', function () {

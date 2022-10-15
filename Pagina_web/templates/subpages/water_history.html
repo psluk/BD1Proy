@@ -31,11 +31,11 @@
         // Enlaces
         const aguaApi = './get/water_history'
 
-        function esperarPropiedades(solicitudAgua) {
+        function esperarLecturas(solicitudAgua) {
             // Función que espera hasta que el servidor retorna la respuesta
             if (solicitudAgua.readyState < 4) {
                 // 4 = listo
-                setTimeout(function () { esperarPropiedades(solicitudAgua); }, 100);
+                setTimeout(function () { esperarLecturas(solicitudAgua); }, 100);
                 // 100 = revisa cada 100 milisegundos
             }
             else {
@@ -142,7 +142,7 @@
             let solicitudAgua = new XMLHttpRequest();
             solicitudAgua.open('GET', urlRequest, true); // true = asincrónico
             solicitudAgua.send();
-            esperarPropiedades(solicitudAgua);
+            esperarLecturas(solicitudAgua);
         }
 
         window.addEventListener('load', function () {
