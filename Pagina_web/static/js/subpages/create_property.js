@@ -159,7 +159,7 @@ function esperarRespuesta(solicitudCrear) {
     } else {
         if (solicitudCrear.status != 200) {
             try {
-                alert("Ocurrió un error:" + JSON.parse(solicitudCrear.response).statusInfo + ".\n\nInténtelo nuevamente.");
+                alert("Ocurrió un error: " + JSON.parse(solicitudCrear.response).statusInfo + ".\n\nInténtelo nuevamente.");
             } catch (error) {
                 alert("Ocurrió un error (" + solicitudCrear.status + ").\n\nInténtelo nuevamente.");
             }
