@@ -87,7 +87,62 @@ BEGIN
         BEGIN TRANSACTION tBorrarPropiedad
             -- Empieza la transacción
 
-            -- Se elimina
+            -- Se eliminan las filas de otras tablas que dependen de esta
+            DELETE UdP
+            FROM [dbo].[UsuarioDePropiedad] UdP
+            WHERE UdP.[idPropiedad] = @idPropiedad;
+
+            DELETE PdP 
+            FROM [dbo].[PropietarioDePropiedad] PdP
+            WHERE PdP.[idPropiedad] = @idPropiedad;
+            
+            DELETE Reco
+            FROM [dbo].[OrdenReconexion] Reco
+            INNER JOIN [dbo].[OrdenCorta] Corta
+            ON Reco.[idOrdenCorta] = Corta.[id]
+            WHERE Corta.[idPropiedad] = @idPropiedad;
+
+            DELETE Corta
+            FROM [dbo].[OrdenCorta] Corta
+            WHERE [idPropiedad] = @idPropiedad;
+
+            DELETE P
+            FROM [dbo].[Pago] P
+            INNER JOIN [dbo].[Factura] F
+            ON P.[id] = F.[id]
+            WHERE F.[idPropiedad] = @idPropiedad;
+
+            DELETE DCCA
+            FROM [dbo].[DetalleConceptoCobroAgua] DCCA
+            INNER JOIN [dbo].[DetalleConceptoCobro] DCC
+            ON DCCA.[idDetalleConceptoCobro] = DCC.[id]
+            INNER JOIN [dbo].[Factura] F
+            ON DCC.[idFactura] = F.[id]
+            WHERE F.[idPropiedad] = @idPropiedad;
+
+            DELETE DCC
+            FROM [dbo].[DetalleConceptoCobro] DCC
+            INNER JOIN [dbo].[Factura] F
+            ON DCC.[idFactura] = F.[id]
+            WHERE F.[idPropiedad] = @idPropiedad;
+
+            DELETE Mov
+            FROM [dbo].[MovimientoConsumo] Mov
+            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
+            ON Mov.[idAguaDePropiedad] = CCdP.[id]
+            WHERE CCdP.[idPropiedad] = @idPropiedad;
+
+            DELETE AdP
+            FROM [dbo].[AguaDePropiedad] AdP
+            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
+            ON AdP.[id] = CCdP.[id]
+            WHERE CCdP.[idPropiedad] = @idPropiedad;
+
+            DELETE CCdP
+            FROM [dbo].[ConceptoCobroDePropiedad] CCdP
+            WHERE CCdP.[idPropiedad] = @idPropiedad;
+
+            -- Se elimina la propiedad
             DELETE FROM [dbo].[Propiedad]
             WHERE [id] = @idPropiedad;
 
