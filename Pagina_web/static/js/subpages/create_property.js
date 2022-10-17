@@ -20,7 +20,7 @@ function esperarZonas(solicitudZonas) {
     // Función que espera hasta que el servidor retorna la información
     if (solicitudZonas.readyState < 4) {
         // 4 = listo
-        setTimeout(function() {esperarZonas(solicitudZonas);}, 100)
+        setTimeout(function () { esperarZonas(solicitudZonas); }, 100)
         // 100 = revisa cada 100 milisegundos
     } else {
         if (solicitudZonas.status != 200) {
@@ -79,7 +79,7 @@ function esperarUsos(solicitudUsos) {
     // Función que espera hasta que el servidor retorna la información
     if (solicitudUsos.readyState < 4) {
         // 4 = listo
-        setTimeout(function() {esperarUsos(solicitudUsos);}, 100)
+        setTimeout(function () { esperarUsos(solicitudUsos); }, 100)
         // 100 = revisa cada 100 milisegundos
     } else {
         if (solicitudUsos.status != 200) {
@@ -154,7 +154,7 @@ function esperarRespuesta(solicitudCrear) {
     // Función que espera hasta que el servidor retorna la información
     if (solicitudCrear.readyState < 4) {
         // 4 = listo
-        setTimeout(function() {esperarRespuesta(solicitudCrear);}, 100)
+        setTimeout(function () { esperarRespuesta(solicitudCrear); }, 100)
         // 100 = revisa cada 100 milisegundos
     } else {
         if (solicitudCrear.status != 200) {
@@ -189,12 +189,26 @@ window.addEventListener('load', function () {
         document.getElementById(formId).onsubmit = function () {
             document.getElementById(buttonId).disabled = true;
 
+            if (document.getElementById(listaZonas).disabled || document.getElementById(listaUsos).disabled) {
+                alert("Deben haberse cargado los tipos de uso y de zona para poder continuar");
+                document.getElementById(buttonId).disabled = false;
+                return;
+            } else if (document.getElementById(finca).value != parseFloat(document.getElementById(finca).value).toString()) {
+                alert("Valor de área no válido");
+                document.getElementById(buttonId).disabled = false;
+                return;
+            } else if (document.getElementById(finca).value != parseInt(document.getElementById(finca).value).toString()) {
+                alert("Valor de número de finca no válido");
+                document.getElementById(buttonId).disabled = false;
+                return;
+            }
+
             let datosPropiedad = {
-                'numeroFinca': document.getElementById(finca).value,
-                'area': document.getElementById(area).value,
+                'numeroFinca': parseInt(document.getElementById(finca).value),
+                'area': Math.round(parseFloat(document.getElementById(finca).value)),
                 'tipoZona': document.getElementById(listaZonas).selectedOptions[0].value,
                 'tipoUso': document.getElementById(listaUsos).selectedOptions[0].value,
-                'valorFiscal': document.getElementById(valor).value
+                'valorFiscal': parseInt(document.getElementById(valor).value)
             }
 
             let solicitudCrear = new XMLHttpRequest();
