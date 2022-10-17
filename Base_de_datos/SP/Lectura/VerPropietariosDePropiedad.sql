@@ -5,7 +5,7 @@
 
 /* Resumen de los códigos de salida de este procedimiento
 -- Éxito --
-        0: Inserción realizada correctamente
+        0: Correcto
 
 -- Error --
     50000: Ocurrió un error desconocido
