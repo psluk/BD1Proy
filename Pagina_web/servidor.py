@@ -131,3 +131,68 @@ def medidores_de_propiedad(finca: str = ''):
         finca=finca,
         consultante=session['username']
     ))
+
+# Lista de tipos de uso
+
+
+@app.route("/sub/get/categories/uses")
+def tipos_de_uso():
+    return json.dumps(logica.listaDeUsos(
+        consultante=session['username']
+    ))
+
+# Lista de tipos de zona
+
+
+@app.route("/sub/get/categories/areas")
+def tipos_de_zona():
+    return json.dumps(logica.listaDeZonas(
+        consultante=session['username']
+    ))
+
+# Creación de propiedades
+
+
+@app.route("/sub/post/property", methods=['POST'])
+def crear_propiedad():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    resultado = logica.crearPropiedad(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    )
+    
+    info = ""
+    codigo_estado = 200
+    if resultado["status"] == 0:
+        info = "OK"
+    elif resultado["status"] == 500:
+        info = "Error interno del servidor"
+        codigo_estado = 500
+    elif resultado["status"] == 50000:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50001:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50002:
+        info = "Credenciales incorrectas"
+        codigo_estado = 401
+    elif resultado["status"] == 50003:
+        info = "Número de finca inválido"
+        codigo_estado = 400
+    elif resultado["status"] == 50004:
+        info = "Valor de área inválido"
+    elif resultado["status"] == 50005:
+        info = "No existe el tipo de zona"
+    elif resultado["status"] == 50006:
+        info = "No existe el tipo de uso"
+    elif resultado["status"] == 50007:
+        info = "Ya hay una propiedad con ese número de finca"
+    
+    resultado["statusInfo"] = info
+    return json.dumps(resultado), codigo_estado
