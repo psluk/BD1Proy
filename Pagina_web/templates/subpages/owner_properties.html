@@ -165,6 +165,15 @@
                             nuevoEnlace.setAttribute(
                                 "href",
                                 "./users_of_property.html?finca=" + resultados[i].numeroFinca);
+
+                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
+
+                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Eliminar propiedad";
+                            nuevoEnlace.setAttribute("class", "adminOnly");
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./delete_property.html?finca=" + resultados[i].numeroFinca);
                         }
                     }
                     else {

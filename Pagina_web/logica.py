@@ -432,3 +432,43 @@ def crearPropiedad(informacion: dict = {}, consultante: str = '', consultante_ip
     cursor.close()
 
     return resultado
+
+def eliminarPropiedad(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta eliminar una propiedad
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[EliminarPropiedad] ?, ?, ?"
+
+    datos = []
+    for i in ['numeroFinca']:
+        datos.append(str(informacion[i]))
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0
+    }
+
+    try:
+        # Copia el código de salida del procedimiento
+        # a lo que se retorna
+        resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado

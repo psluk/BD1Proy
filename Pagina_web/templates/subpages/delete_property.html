@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Eliminar propiedad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+    <script src="{{ url_for('static', filename='js/subpages/delete_property.js') }}"></script>
+</head>
+
+<body>
+    <div id="mainBox">
+        <div id="titleDiv">
+            <h1>Eliminar propiedad</h1>
+            <p>Por favor, ingrese los datos solicitados.</p>
+        </div>
+        <div id="expandDiv">
+            <div id="formOuterDiv">
+                <div id="formDiv">
+                    <form id="form" action="javascript:return false;">
+                        <div class="formInput">
+                            <label>Número de finca por eliminar</label>
+                            <input type="number" min="0" step="1" id="numberBox" placeholder="Número de finca">
+                        </div>
+                        <div class="formInput">
+                            <input type="Submit" id="createButton" value="Eliminar propiedad">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

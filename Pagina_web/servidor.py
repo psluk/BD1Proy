@@ -196,3 +196,42 @@ def crear_propiedad():
     
     resultado["statusInfo"] = info
     return json.dumps(resultado), codigo_estado
+
+# Eliminación de propiedades
+
+
+@app.route("/sub/post/property_delete", methods=['POST'])
+def eliminar_propiedad():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    resultado = logica.eliminarPropiedad(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    )
+    
+    info = ""
+    codigo_estado = 200
+    if resultado["status"] == 0:
+        info = "OK"
+    elif resultado["status"] == 500:
+        info = "Error interno del servidor"
+        codigo_estado = 500
+    elif resultado["status"] == 50000:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50001:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50002:
+        info = "Credenciales incorrectas"
+        codigo_estado = 401
+    elif resultado["status"] == 50003:
+        info = "No existe una propiedad con ese número de finca"
+        codigo_estado = 400
+    
+    resultado["statusInfo"] = info
+    return json.dumps(resultado), codigo_estado
