@@ -205,7 +205,7 @@ window.addEventListener('load', function () {
 
             let datosPropiedad = {
                 'numeroFinca': parseInt(document.getElementById(finca).value),
-                'area': Math.round(parseFloat(document.getElementById(finca).value)),
+                'area': Math.round(parseFloat(document.getElementById(area).value)),
                 'tipoZona': document.getElementById(listaZonas).selectedOptions[0].value,
                 'tipoUso': document.getElementById(listaUsos).selectedOptions[0].value,
                 'valorFiscal': parseInt(document.getElementById(valor).value)

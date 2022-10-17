@@ -17,14 +17,14 @@ BEGIN
     FROM inserted i, [dbo].[ConceptoCobro] CC
     WHERE CC.id = 1 OR CC.id = 2 OR CC.id = 4 OR CC.id = 5 OR CC.id = 6;
 
-    -- Se agrega la recolección de basura (3) para zonas no agrícolas:
+    -- Se agrega la recolección de basura (3) para zonas de uso no agrícola:
     INSERT INTO [ConceptoCobroDePropiedad] (
         [idConceptoCobro], [idPropiedad], [fechaInicio]
         )
     SELECT CC.[id], i.[id], i.[fechaRegistro]
     FROM inserted i, [dbo].[ConceptoCobro] CC
     WHERE CC.id = 3
-        AND i.idTipoZona != 2;              -- 2 = zona agrícola
+        AND i.idTipoUsoPropiedad != 5;  -- 5 = zona agrícola
 
     -- Se agrega el mantenimiento de parques (7) para zonas comerciales
     -- e industriales:
@@ -34,6 +34,6 @@ BEGIN
     SELECT CC.[id], i.[id], i.[fechaRegistro]
     FROM inserted i, [dbo].[ConceptoCobro] CC
     WHERE CC.id = 7
-        AND (i.idTipoZona = 4 OR i.idTipoUsoPropiedad = 5);
+        AND (i.idTipoZona = 4 OR i.idTipoZona = 5);
         -- 4 = industrial, 5 = comercial
 END;
