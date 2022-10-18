@@ -41,7 +41,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega acá, se buscan los propietarios
+        -- Si llega acá, se retorna la información
         SELECT P.nombre AS 'Nombre', P.valorDocumentoId AS 'ID',
             TDI.nombre AS 'Tipo', P.telefono1 AS 'Telefono 1',
             P.telefono2 AS 'Telefono2', P.email AS 'Correo'

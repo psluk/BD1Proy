@@ -41,7 +41,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega acá, se buscan los propietarios
+        -- Si llega acá, se retorna la información
         SELECT U.nombreDeUsuario AS 'Usuario', TU.[nombre] AS 'Tipo', P.nombre AS 'Nombre', P.[valorDocumentoId] AS 'Identificacion'
         FROM [dbo].[Usuario] U
         INNER JOIN [dbo].[Persona] P

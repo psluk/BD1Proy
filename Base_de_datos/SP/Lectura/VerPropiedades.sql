@@ -46,7 +46,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega acá, se buscan las propiedades
+        -- Si llega acá, se retorna la información
         SELECT P.numeroFinca AS 'Finca',
             TU.nombre AS 'Uso',
             TZ.nombre AS 'Zona',
