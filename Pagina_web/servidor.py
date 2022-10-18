@@ -262,3 +262,13 @@ def todas_las_personas():
     return json.dumps(logica.todasLasPersonas(
         consultante=session['username']
     ))
+
+# Conceptos de cobro de propiedad
+
+
+@app.route("/sub/get/criteria_of_property/<finca>")
+def conceptos_de_propiedad(finca: str = ''):
+    return json.dumps(logica.conceptosDePropiedad(
+        finca=finca,
+        consultante=session['username']
+    ))

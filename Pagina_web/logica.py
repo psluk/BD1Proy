@@ -598,3 +598,41 @@ def todasLasPersonas(consultante: str = ''):
 
     cursor.close()
     return resultado
+
+def conceptosDePropiedad(finca: str = '', consultante: str = ''):
+    """
+    Función que retorna la lista de conceptos de cobro de una propiedad
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerConceptoCobroDePropiedad] ?, ?"
+
+    salida = cursor.execute(query, finca, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "nombre": fila[0],
+                    "inicioRelacion": fila[1]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado

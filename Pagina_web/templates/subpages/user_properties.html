@@ -158,6 +158,15 @@
                             nuevoEnlace.setAttribute(
                                 "href",
                                 "./users_of_property.html?finca=" + resultados[i].numeroFinca);
+
+                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
+
+                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.innerText = "Ver conceptos de cobro";
+                            nuevoEnlace.setAttribute("class", "adminOnly");
+                            nuevoEnlace.setAttribute(
+                                "href",
+                                "./criteria_of_property.html?finca=" + resultados[i].numeroFinca);
                             
                             nuevaFila.lastElementChild.appendChild(document.createElement('br'));
                             
