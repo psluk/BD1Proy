@@ -61,14 +61,18 @@ BEGIN
             SELECT 1 FROM [dbo].[PropietarioDePropiedad] PdP
             INNER JOIN [dbo].[Propiedad] Pro ON Pro.id = PdP.idPropiedad
             INNER JOIN [dbo].[Persona] Per ON Per.id = PdP.idPersona
-            WHERE PdP.fechaFin IS NULL  -- La relación debe estar activa (fechaFin = NULL)
+		    WHERE Per.valorDocumentoId = @inValorDocumentoId
+			AND Pro.numeroFinca = @inNumeroFinca 
+			AND PdP.fechaFin IS NULL  -- La relación debe estar activa (fechaFin = NULL)
             )
         BEGIN
             SET @idPropietarioPropiedad = (
                 SELECT PdP.id FROM [dbo].[PropietarioDePropiedad] PdP
                 INNER JOIN [dbo].[Propiedad] Pro ON Pro.id = PdP.idPropiedad
                 INNER JOIN [dbo].[Persona] Per ON Per.id = PdP.idPersona
-                WHERE PdP.fechaFin IS NULL
+                WHERE Per.valorDocumentoId = @inValorDocumentoId
+				AND Pro.numeroFinca = @inNumeroFinca 
+				AND PdP.fechaFin IS NULL
                 );
         END
         ELSE
@@ -78,6 +82,7 @@ BEGIN
             SET NOCOUNT OFF;
             RETURN;
         END;
+
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora

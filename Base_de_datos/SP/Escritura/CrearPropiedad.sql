@@ -1,20 +1,20 @@
 /*
-    Procedimiento que crea una propiedad con unos parámetros dados
+    Procedimiento que crea una propiedad con unos parï¿½metros dados
 */
 
-/* Resumen de los códigos de salida de este procedimiento
--- Éxito --
-        0: Inserción realizada correctamente
+/* Resumen de los cï¿½digos de salida de este procedimiento
+-- ï¿½xito --
+        0: Inserciï¿½n realizada correctamente
 
 -- Error --
-    50000: Ocurrió un error desconocido
-    50001: Ocurrió un error desconocido en una transacción
+    50000: Ocurriï¿½ un error desconocido
+    50001: Ocurriï¿½ un error desconocido en una transacciï¿½n
     50002: Credenciales incorrectas
-    50003: Número de finca inválido
-    50004: Valor de área inválido
+    50003: Nï¿½mero de finca invï¿½lido
+    50004: Valor de ï¿½rea invï¿½lido
     50005: No existe el tipo de zona
     50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese número de finca
+    50007: Ya hay una propiedad con ese nï¿½mero de finca
 */
 
 ALTER PROCEDURE [dbo].[CrearPropiedad]
@@ -25,20 +25,20 @@ ALTER PROCEDURE [dbo].[CrearPropiedad]
     @inArea INT,
     @inValorFiscal BIGINT,
 
-    -- Para determinar quién está haciendo la transacción
+    -- Para determinar quiï¿½n estï¿½ haciendo la transacciï¿½n
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el código de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+    -- Se define la variable donde se guarda el cï¿½digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (ï¿½xito)
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
     BEGIN TRY
         -- Empiezan las validaciones
 
-        -- 1. ¿Existe el usuario como administrador?
+        -- 1. ï¿½Existe el usuario como administrador?
         DECLARE @idUser INT;            -- Para guardar el ID del usuario
         IF EXISTS(
             SELECT 1 FROM [dbo].[Usuario] U
@@ -62,27 +62,27 @@ BEGIN
             RETURN;
         END;
 
-        -- 2. ¿Número de finca válido?
+        -- 2. ï¿½Nï¿½mero de finca vï¿½lido?
         IF @inNumeroFinca < 0
         BEGIN
-            -- Número de finca inválido (negativo)
+            -- Nï¿½mero de finca invï¿½lido (negativo)
             SET @outResultCode = 50003;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
         
-        -- 3. ¿Valor de área válido?
+        -- 3. ï¿½Valor de ï¿½rea vï¿½lido?
         IF @inArea < 0
         BEGIN
-            -- Valor de área inválido (negativo)
+            -- Valor de ï¿½rea invï¿½lido (negativo)
             SET @outResultCode = 50004;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
-        -- 4. ¿Existe el tipo de zona?
+        -- 4. ï¿½Existe el tipo de zona?
         DECLARE @idTipoZona INT;            -- Para el ID del tipo de zona
         IF EXISTS(
             SELECT 1 FROM [dbo].[TipoZona] TZ
@@ -103,7 +103,7 @@ BEGIN
             RETURN;
         END;
 
-        -- 5. ¿Existe el tipo de uso de la propiedad?
+        -- 5. ï¿½Existe el tipo de uso de la propiedad?
         DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
         IF EXISTS(
             SELECT 1 FROM [dbo].[TipoUsoPropiedad] TU
@@ -124,21 +124,21 @@ BEGIN
             RETURN;
         END;
 
-        -- 6. ¿Ya existe el el número de finca?
+        -- 6. ï¿½Ya existe el el nï¿½mero de finca?
         IF EXISTS(
             SELECT 1 FROM [dbo].[Propiedad] P
             WHERE P.numeroFinca = @inNumeroFinca
             )
         BEGIN
-            -- Ya existe el número de finca
+            -- Ya existe el nï¿½mero de finca
             SET @outResultCode = 50007;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
-        -- Si llega acá, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitácora
+        -- Si llega acï¿½, ya pasaron las validaciones
+        -- Se crea el mensaje para la bitï¿½cora
         DECLARE @LogDescription VARCHAR(512);
         SET @LogDescription = 'Se inserta en la tabla [dbo].[Propiedad]: '
             + '{idTipoZona = "' + CONVERT(VARCHAR, @idTipoZona) + '", '
@@ -149,7 +149,7 @@ BEGIN
             + '}';
 
         BEGIN TRANSACTION tCrearPropiedad
-            -- Empieza la transacción
+            -- Empieza la transacciï¿½n
 
             -- Se inserta la propiedad
             INSERT INTO [dbo].[Propiedad] (
@@ -187,14 +187,14 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- Si llega acá, hubo algún error
+        -- Si llega acï¿½, hubo algï¿½n error
 
         SET @outResultCode = 50000;     -- Error desconocido
 
-        IF @@TRANCOUNT > 0              -- ¿Fue dentro de una transacción?
+        IF @@TRANCOUNT > 0              -- ï¿½Fue dentro de una transacciï¿½n?
         BEGIN
             ROLLBACK TRANSACTION tCrearPropiedad;
-            SET @outResultCode = 50001; -- Error desconocido dentro de la transacción
+            SET @outResultCode = 50001; -- Error desconocido dentro de la transacciï¿½n
         END;
         
         -- Registra el error

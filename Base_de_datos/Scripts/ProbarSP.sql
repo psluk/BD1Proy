@@ -2,7 +2,7 @@
 
 
 --_________________________________________________________________________________________________________________________________________________
---EXEC CrearUsuario '46228548','Administrador','PRUEBAprueba', 'NombrePrueba', 'guiltyChough3','199.999.999';
+--EXEC CrearUsuario '123456789','Administrador','PRUEBAprueba', 'NombrePrueba', 'goofyEggs0','199.999.999';
 --@inValorDocumentoIdentidad VARCHAR(32), @inTipoUsuario VARCHAR(32), @inPassword VARCHAR(32), @inDbUsername VARCHAR(32), @inUsername VARCHAR(32), @inUserIp VARCHAR(64)	
 --																							   nombre a registrar		  nombre de quien registra
 
@@ -25,14 +25,36 @@
 --_________________________________________________________________________________________________________________________________________________
 
 
---EXEC CrearPersona 'Cedula CR', 'nombrecito', '123456789', 11111111, 22222222,'pruebita@hotmail.com', 'guiltyChough3','199.999.999'
+--EXEC CrearPersona 'Cedula CR', 'nombrecito', '123456789', 11111111, 22222222,'pruebita@hotmail.com', 'goofyEggs0','199.999.999'
 -- @inNuevoTipoDocumentoId VARCHAR(32),@inNuevoNombre VARCHAR(64),@inNuevoValorDocumentoId VARCHAR(32),@inNuevoTelefono1 BIGINT,
 -- @inNuevoTelefono2 BIGINT,@inNuevoEmail VARCHAR(128),@inUsername VARCHAR(32),@inUserIp VARCHAR(64)
 
-	--SELECT * FROM Persona p WHERE p.Id >= 650 
+	--SELECT * FROM Persona p WHERE p.Id > 666 
 	--DELETE FROM Persona WHERE Persona.id >=650
 
 --_________________________________________________________________________________________________________________________________________________
 
-EXEC LeerPersona '84374642';
+--EXEC LeerPersona '84374642';
 -- @inValorDocumentoId
+
+--_________________________________________________________________________________________________________________________________________________
+
+--EXEC EliminarPersona '123456789','goofyEggs0', '199.999.999'
+-- @inValorDocumentoId VARCHAR(32),@inUsername VARCHAR(32),@inUserIp VARCHAR(64)
+
+--_________________________________________________________________________________________________________________________________________________
+
+
+--EXEC EliminarUsuario 'PRUEBAprueba' ,'NombrePrueba' ,'goofyEggs0', '199.999.999'
+-- @inPassword VARCHAR(32),@inDbUsername VARCHAR(32),@inUsername VARCHAR(32),@inUserIp VARCHAR(64)
+
+--_________________________________________________________________________________________________________________________________________________
+
+--EXEC DesasociarUsuarioPropiedad 'NombrePrueba',1612 ,'goofyEggs0', '199.999.999'
+--@inDbUsername VARCHAR(32),@inNumeroFinca INT,@inUsername VARCHAR(32),@inUserIp VARCHAR(64)
+
+--_________________________________________________________________________________________________________________________________________________
+
+--EXEC AsociarUsuarioPropiedad 'NombrePrueba',1612 ,'goofyEggs0', '199.999.999'
+--@inDbUsername VARCHAR(32), @inNumeroFinca INT,@inUsername VARCHAR(32),@inUserIp VARCHAR(64)
+
