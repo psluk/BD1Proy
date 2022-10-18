@@ -637,3 +637,90 @@ def conceptosDePropiedad(finca: str = '', consultante: str = ''):
 
     cursor.close()
     return resultado
+
+def leerPropiedad(finca: str = '', consultante: str = ''):
+    """
+    Función que retorna información de una propiedad
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerUnaPropiedad] ?, ?"
+
+    salida = cursor.execute(query, finca, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "numeroFinca": fila[0],
+                    "uso": fila[1],
+                    "zona": fila[2],
+                    "area": fila[3],
+                    "valorFiscal": fila[4],
+                    "registro": fila[5],
+                    "numeroMedidor": fila[6]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
+
+def actualizarPropiedad(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta crear una propiedad
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[ActualizarPropiedad] ?, ?, ?, ?, ?, ?, ?"
+
+    datos = []
+    for i in ['tipoUso', 'tipoZona', 'numeroFinca', 'area', 'valorFiscal']:
+        datos.append(str(informacion[i]))
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        datos[1],
+        datos[2],
+        datos[3],
+        datos[4],
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0
+    }
+
+    try:
+        # Copia el código de salida del procedimiento
+        # a lo que se retorna
+        resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado

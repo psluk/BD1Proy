@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Actualizar propiedad</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+    <script src="{{ url_for('static', filename='js/subpages/update_property.js') }}"></script>
+</head>
+
+<body>
+    <div id="mainBox">
+        <div id="titleDiv">
+            <h1>Actualizar propiedad</h1>
+            <p>Por favor, ingrese los datos solicitados.</p>
+        </div>
+        <div id="expandDiv">
+            <div id="formOuterDiv">
+                <div id="formDiv">
+                    <form id="form" action="javascript:return false;">
+                        <div class="formInput">
+                            <label>Número de finca</label>
+                            <input type="number" min="0" step="1" id="numberBox" placeholder="Número de finca" disabled>
+                        </div>
+                        <div class="formInput">
+                            <label>Área (m<sup>2</sup>)</label>
+                            <input type="number" min="0" id="areaBox" placeholder="Área">
+                        </div>
+                        <div class="formInput">
+                            <label>Tipo de zona</label>
+                            <select name="tipoZona" id="areaType" disabled>
+                                <option value="1">Cargando...</option>
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <label>Tipo de uso</label>
+                            <select name="tipoUso" id="useType" disabled>
+                                <option value="1">Cargando...</option>
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <label>Valor fiscal</label>
+                            <input type="number" min="0" id="valueBox" placeholder="Valor fiscal">
+                        </div>
+                        <div class="formInput">
+                            <label>Número de medidor</label>
+                            <input type="number" min="1" id="waterBox" placeholder="Número de medidor" disabled>
+                        </div>
+                        <div class="formInput">
+                            <input type="Submit" id="updateButton" value="Actualizar propiedad">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
