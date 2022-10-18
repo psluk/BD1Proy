@@ -47,7 +47,7 @@ BEGIN
 
 	--Lectura de Medidor
 	UPDATE tl
-	SET    ConsumoMovimiento = (Valor - ConsumoAnterior)
+	SET  ConsumoMovimiento = (Valor - ConsumoAnterior), ConsumoAcumulado = Valor
 	FROM @temp_Lecturas AS tl
 	WHERE ConsumoAnterior IS NOT NULL
 	AND tl.TipoMovimiento = 'Lectura'
