@@ -15,6 +15,8 @@
     50005: No existe el tipo de zona
     50006: No existe el tipo de uso de la propiedad
     50007: Ya hay una propiedad con ese n�mero de finca
+    50008: Valor de medidor inválido
+    50009: Ya existe una propiedad con ese medidor
 */
 
 ALTER PROCEDURE [dbo].[CrearPropiedad]
@@ -24,6 +26,7 @@ ALTER PROCEDURE [dbo].[CrearPropiedad]
     @inNumeroFinca INT,
     @inArea INT,
     @inValorFiscal BIGINT,
+    @inNumeroMedidor INT,
 
     -- Para determinar qui�n est� haciendo la transacci�n
     @inUsername VARCHAR(32),
@@ -124,7 +127,7 @@ BEGIN
             RETURN;
         END;
 
-        -- 6. �Ya existe el el n�mero de finca?
+        -- 6. �Ya existe el n�mero de finca?
         IF EXISTS(
             SELECT 1 FROM [dbo].[Propiedad] P
             WHERE P.numeroFinca = @inNumeroFinca
@@ -132,6 +135,29 @@ BEGIN
         BEGIN
             -- Ya existe el n�mero de finca
             SET @outResultCode = 50007;
+            SELECT @outResultCode AS 'resultCode';
+            SET NOCOUNT OFF;
+            RETURN;
+        END;
+
+        -- 7. ¿Número de medidor válido?
+        IF @inArea < 1
+        BEGIN
+            -- Valor de medidor inválido
+            SET @outResultCode = 50008;
+            SELECT @outResultCode AS 'resultCode';
+            SET NOCOUNT OFF;
+            RETURN;
+        END;
+
+        -- 8. ¿Ya existe el número de medidor?
+        IF EXISTS(
+            SELECT 1 FROM [dbo].[AguaDePropiedad] AdP
+            WHERE AdP.[numeroMedidor] = @inNumeroMedidor
+            )
+        BEGIN
+            -- Ya existe el número de medidor
+            SET @outResultCode = 50009;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -146,7 +172,7 @@ BEGIN
             + 'numeroFinca = "' + CONVERT(VARCHAR, @inNumeroFinca) + '", '
             + 'valorFiscal = "' + CONVERT(VARCHAR, @inValorFiscal) + '", '
             + 'area = "' + CONVERT(VARCHAR, @inArea) + '"'
-            + '}';
+            + '} y el medidor {nnumeroMedidor = "' + CONVERT(VARCHAR, @inNumeroMedidor) + '"}';
 
         BEGIN TRANSACTION tCrearPropiedad
             -- Empieza la transacci�n
@@ -168,6 +194,15 @@ BEGIN
                 @inValorFiscal,
                 GETDATE()
             );
+
+            -- Se inserta el medidor
+            INSERT INTO [dbo].[AguaDePropiedad] ([id], [numeroMedidor], [consumoAcumulado])
+            SELECT CCdP.[id], @inNumeroMedidor, 0
+            FROM [dbo].[ConceptoCobroDePropiedad] CCdP
+            INNER JOIN [dbo].[Propiedad] P
+            ON CCdP.idPropiedad = P.id
+            WHERE CCdP.idConceptoCobro = 1          -- 1 = agua
+                AND P.numeroFinca = @inNumeroFinca;
 
             -- Se inserta el evento
             INSERT INTO [dbo].[EventLog] (

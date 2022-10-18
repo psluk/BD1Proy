@@ -397,10 +397,10 @@ def crearPropiedad(informacion: dict = {}, consultante: str = '', consultante_ip
 
     cursor = odbc.connect(CONNECTION_STRING)
 
-    query = "EXEC [dbo].[CrearPropiedad] ?, ?, ?, ?, ?, ?, ?"
+    query = "EXEC [dbo].[CrearPropiedad] ?, ?, ?, ?, ?, ?, ?, ?"
 
     datos = []
-    for i in ['tipoUso', 'tipoZona', 'numeroFinca', 'area', 'valorFiscal']:
+    for i in ['tipoUso', 'tipoZona', 'numeroFinca', 'area', 'valorFiscal', 'numeroMedidor']:
         datos.append(str(informacion[i]))
 
     salida = cursor.execute(
@@ -410,6 +410,7 @@ def crearPropiedad(informacion: dict = {}, consultante: str = '', consultante_ip
         datos[2],
         datos[3],
         datos[4],
+        datos[5],
         consultante,
         consultante_ip
         )

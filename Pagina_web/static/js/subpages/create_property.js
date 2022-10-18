@@ -15,6 +15,7 @@ const buttonId = 'createButton';
 const finca = 'numberBox';
 const area = 'areaBox';
 const valor = 'valueBox';
+const medidor = 'waterBox';
 
 function esperarZonas(solicitudZonas) {
     // Función que espera hasta que el servidor retorna la información
@@ -201,6 +202,10 @@ window.addEventListener('load', function () {
                 alert("Valor de número de finca no válido");
                 document.getElementById(buttonId).disabled = false;
                 return;
+            } else if (document.getElementById(medidor).value != parseInt(document.getElementById(medidor).value).toString()) {
+                alert("Valor de número de medidor no válido");
+                document.getElementById(buttonId).disabled = false;
+                return;
             }
 
             let datosPropiedad = {
@@ -208,7 +213,8 @@ window.addEventListener('load', function () {
                 'area': Math.round(parseFloat(document.getElementById(area).value)),
                 'tipoZona': document.getElementById(listaZonas).selectedOptions[0].value,
                 'tipoUso': document.getElementById(listaUsos).selectedOptions[0].value,
-                'valorFiscal': parseInt(document.getElementById(valor).value)
+                'valorFiscal': parseInt(document.getElementById(valor).value),
+                'numeroMedidor': parseInt(document.getElementById(medidor).value)
             }
 
             let solicitudCrear = new XMLHttpRequest();
