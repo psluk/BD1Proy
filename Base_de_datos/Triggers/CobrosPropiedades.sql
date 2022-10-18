@@ -34,6 +34,6 @@ BEGIN
     SELECT CC.[id], i.[id], i.[fechaRegistro]
     FROM inserted i, [dbo].[ConceptoCobro] CC
     WHERE CC.id = 7
-        AND (i.idTipoZona = 4 OR i.idTipoZona = 5);
-        -- 4 = industrial, 5 = comercial
+        AND (i.idTipoZona = 1 OR i.idTipoZona = 5);
+        -- 1 = residencial, 5 = comercial
 END;
