@@ -235,3 +235,30 @@ def eliminar_propiedad():
     
     resultado["statusInfo"] = info
     return json.dumps(resultado), codigo_estado
+
+# Obtener todas las propiedades
+
+
+@app.route("/sub/get/all_properties")
+def todas_las_propiedades():
+    return json.dumps(logica.todasLasPropiedades(
+        consultante=session['username']
+    ))
+
+# Obtener todos los usuarios
+
+
+@app.route("/sub/get/all_users")
+def todos_los_usuarios():
+    return json.dumps(logica.todosLosUsuarios(
+        consultante=session['username']
+    ))
+
+# Obtener todas las personas
+
+
+@app.route("/sub/get/all_people")
+def todas_las_personas():
+    return json.dumps(logica.todasLasPersonas(
+        consultante=session['username']
+    ))

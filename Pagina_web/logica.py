@@ -472,3 +472,129 @@ def eliminarPropiedad(informacion: dict = {}, consultante: str = '', consultante
     cursor.close()
 
     return resultado
+
+def todasLasPropiedades(consultante: str = ''):
+    """
+    Función que retorna la lista completa de propiedades
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerPropiedades] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "numeroFinca": fila[0],
+                    "uso": fila[1],
+                    "zona": fila[2],
+                    "area": fila[3],
+                    "valorFiscal": fila[4],
+                    "registro": fila[5]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
+
+def todosLosUsuarios(consultante: str = ''):
+    """
+    Función que retorna la lista completa de usuarios
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerUsuarios] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "nombreUsuario": fila[0],
+                    "tipo": fila[1],
+                    "nombrePersona": fila[2],
+                    "idPersona": fila[3]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
+
+def todasLasPersonas(consultante: str = ''):
+    """
+    Función que retorna la lista completa de personas
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerPersonas] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "nombre": fila[0],
+                    "id": fila[1],
+                    "tipoId": fila[2],
+                    "telefonos": [
+                        fila[3],
+                        fila[4]
+                        ],
+                    "email": fila[5]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
