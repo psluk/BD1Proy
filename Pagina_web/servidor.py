@@ -193,6 +193,10 @@ def crear_propiedad():
         info = "No existe el tipo de uso"
     elif resultado["status"] == 50007:
         info = "Ya hay una propiedad con ese número de finca"
+    elif resultado["status"] == 50008:
+        info = "Número de medidor inválido"
+    elif resultado["status"] == 50009:
+        info = "Ya existe un medidor con ese número"
     
     resultado["statusInfo"] = info
     return json.dumps(resultado), codigo_estado
