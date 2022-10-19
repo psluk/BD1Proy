@@ -106,6 +106,25 @@ BEGIN
             RETURN;
         END;
 
+
+		-- 4. ¿Existe la asociacion?
+        
+        IF EXISTS(
+            SELECT 1 FROM [dbo].[UsuarioDePropiedad] udp
+			INNER JOIN Usuario u ON u.id = udp.idUsuario
+			INNER JOIN Propiedad p ON p.id = udp.idPropiedad
+            WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
+			AND p.numeroFinca = @inDbUsername
+			AND udp.fechaFin = NULL
+            )
+        BEGIN
+			--ya existe
+            SET @outResultCode = 50002; -- No existe la propiedad
+            SELECT @outResultCode AS 'resultCode';
+            SET NOCOUNT OFF;
+            RETURN;
+        END;
+
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
         DECLARE @fechaActual DATETIME;
