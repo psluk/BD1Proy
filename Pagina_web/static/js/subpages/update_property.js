@@ -1,5 +1,5 @@
 /*
-    Funcionalidad del menú para creación de propiedades
+    Funcionalidad del menú para actualización de propiedades
 */
 
 // Enlaces
@@ -222,7 +222,7 @@ window.addEventListener('load', function () {
         datosDePropiedad(solicitudPropiedad);
     }
 
-    // Cambia el comportamiento por defecto de los campos de inicio de sesión
+    // Cambia el comportamiento por defecto de los campos del formulario
     if (document.getElementById(formId)) {
         document.getElementById(formId).onsubmit = function () {
             document.getElementById(buttonId).disabled = true;

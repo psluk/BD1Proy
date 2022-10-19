@@ -724,3 +724,85 @@ def actualizarPropiedad(informacion: dict = {}, consultante: str = '', consultan
     cursor.close()
 
     return resultado
+
+def asociarUsuario(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta agregar una asociación
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[AsociarUsuarioPropiedad] ?, ?, ?, ?"
+
+    datos = []
+    for i in ['usuario', 'numeroFinca']:
+        datos.append(str(informacion[i]))
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        datos[1],
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0
+    }
+
+    try:
+        # Copia el código de salida del procedimiento
+        # a lo que se retorna
+        resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado
+
+def desasociarUsuario(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta quitar una asociación
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[DesasociarUsuarioPropiedad] ?, ?, ?, ?"
+
+    datos = []
+    for i in ['usuario', 'numeroFinca']:
+        datos.append(str(informacion[i]))
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        datos[1],
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0
+    }
+
+    try:
+        # Copia el código de salida del procedimiento
+        # a lo que se retorna
+        resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado

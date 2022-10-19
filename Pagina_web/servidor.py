@@ -332,3 +332,35 @@ def actualizar_propiedad():
     
     resultado["statusInfo"] = info
     return json.dumps(resultado), codigo_estado
+
+# Asociación de usuarios
+
+
+@app.route("/sub/push/property_link", methods=['POST'])
+def asociar_usuario():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    return json.dumps(logica.asociarUsuario(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    ))
+
+# Dessociación de usuarios
+
+
+@app.route("/sub/push/property_unlink", methods=['POST'])
+def desasociar_usuario():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    return json.dumps(logica.desasociarUsuario(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    ))

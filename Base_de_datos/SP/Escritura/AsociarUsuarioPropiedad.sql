@@ -72,8 +72,7 @@ BEGIN
 		FROM [dbo].[Usuario] u
 		WHERE EXISTS(SELECT 1 
 					 FROM [dbo].[Usuario] u
-					 WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)) 
-			  AND CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY);
+					 WHERE u.nombreDeUsuario = @inDbUsername);
 
 		IF @Numero = 0
         BEGIN

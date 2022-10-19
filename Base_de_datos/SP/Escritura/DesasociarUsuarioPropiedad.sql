@@ -18,6 +18,7 @@
 	50008: Ya hay un Usuario con ese nombre
 	50009: No existe la persona/Usuario indicado
 	50010: Ya hay una Persona con ese documento identidad
+    50011: No existe la relación
 */
 
 ALTER PROCEDURE [dbo].[DesasociarUsuarioPropiedad]
@@ -70,13 +71,13 @@ BEGIN
 					 FROM [dbo].[UsuarioDePropiedad] udp
 					 INNER JOIN [dbo].[Usuario] u ON udp.idUsuario = u.id
 					 INNER JOIN [dbo].[Propiedad] p ON udp.idPropiedad = p.id
-					 WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
+					 WHERE u.nombreDeUsuario = @inDbUsername
 					 AND p.numeroFinca = @inNumeroFinca );
 
 		IF @idUsuarioPropiedad = 0
         BEGIN
             -- Relacion no encontrada, no existe
-            SET @outResultCode = 50002;
+            SET @outResultCode = 50011;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;

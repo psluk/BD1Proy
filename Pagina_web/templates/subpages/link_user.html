@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Asociar y desasociar usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+    <script src="{{ url_for('static', filename='js/subpages/link_users.js') }}"></script>
+</head>
+
+<body>
+    <div id="mainBox">
+        <div id="titleDiv">
+            <h1>Asociar y desasociar usuarios</h1>
+            <p>Por favor, ingrese los datos solicitados.</p>
+        </div>
+        <div id="expandDiv">
+            <div id="formOuterDiv">
+                <div id="formDiv">
+                    <form id="form" action="javascript:return false;">
+                        <div class="formInput">
+                            <label>Número de finca</label>
+                            <input type="number" min="0" step="1" id="numberBox" placeholder="Número de finca">
+                        </div>
+                        <div class="formInput">
+                            <label>Nombre de usuario</label>
+                            <input type="text" id="userBox" placeholder="Nombre de usuario">
+                        </div>
+                        <div class="formInput">
+                            <label>Tipo de operación</label>
+                            <select name="tipoZona" id="operationList">
+                                <option value="1">Asociación</option>
+                                <option value="2">Desasociación</option>
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <input type="Submit" id="updateButton" value="Ejecutar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
