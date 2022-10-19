@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
 </head>
 
 <body>
@@ -15,13 +16,19 @@
             <!-- noParameters = no se le pide al usuario que digite nada -->
             <!-- fullPage = recarga toda la ventana -->
             <a href="/sub/create_property.html" class="adminOnly noParameters">Crear propiedad</a>
+            <a href="/sub/update_property.html?finca=" class="adminOnly">Actualizar propiedad</a>
             <a href="/sub/delete_property.html" class="adminOnly noParameters">Eliminar propiedad</a>
             <a href="/sub/water_history.html?finca=" class="adminOnly">Ver historial de agua</a>
+            <a href="/sub/criteria_of_property.html?finca=" class="adminOnly">CC de propiedad</a>
             <a href="/sub/water_meters.html?finca=" class="adminOnly">Ver medidores de una propiedad</a>
             <a href="/sub/users_of_property.html?finca=" class="adminOnly">Ver usuarios de propiedad</a>
             <a href="/sub/owners_of_property.html?finca=" class="adminOnly">Ver dueños de propiedad</a>
             <a href="/sub/owner_properties.html?id=" class="adminOnly">Ver propiedades de persona</a>
             <a href="/sub/user_properties.html?user=" class="adminOnly">Ver propiedades de usuario</a>
+            <a href="/sub/link_user.html" class="adminOnly noParameters">Asociar y desasociar usuarios</a>
+            <a href="/sub/see_people.html" class="adminOnly noParameters">Todas las personas</a>
+            <a href="/sub/see_properties.html" class="adminOnly noParameters">Todas las propiedades</a>
+            <a href="/sub/see_users.html" class="adminOnly noParameters">Todos los usuarios</a>
             <a href="/logout" class="fullPage">Cerrar sesión</a>
         </div>
         <div class="expandDiv">

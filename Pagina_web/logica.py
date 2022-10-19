@@ -806,3 +806,25 @@ def desasociarUsuario(informacion: dict = {}, consultante: str = '', consultante
     cursor.close()
 
     return resultado
+
+def usuarioEsAdmin(consultante: str = ''):
+    """
+    Función que retorna el tipo de usuario
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerTipoDeUsuario] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = False
+
+    try:
+        fila = salida.fetchone()
+        if fila[0] != None and fila[0] == True:
+            resultado = True
+    except:
+        resultado = False
+
+    cursor.close()
+    return resultado

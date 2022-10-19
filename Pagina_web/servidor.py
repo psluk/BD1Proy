@@ -349,7 +349,7 @@ def asociar_usuario():
         consultante_ip=request.remote_addr
     ))
 
-# Dessociación de usuarios
+# Desasociación de usuarios
 
 
 @app.route("/sub/push/property_unlink", methods=['POST'])
@@ -364,3 +364,24 @@ def desasociar_usuario():
         consultante=session['username'],
         consultante_ip=request.remote_addr
     ))
+
+# Tipo de usuario
+
+
+@app.route("/sub/get/usertype")
+def tipo_de_usuario():
+    if logica.usuarioEsAdmin(
+        consultante=session['username']
+    ):
+        return "1"
+    else:
+        return "0"
+
+@app.route("/get/usertype")
+def tipo_de_usuario2():
+    if logica.usuarioEsAdmin(
+        consultante=session['username']
+    ):
+        return "1"
+    else:
+        return "0"

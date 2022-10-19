@@ -48,3 +48,7 @@ tr:nth-child(2n+1) {
     text-align: center;
     padding: 20px;
 }
+
+.adminOnly {
+    display: none;
+}

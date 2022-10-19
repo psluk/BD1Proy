@@ -8,7 +8,8 @@ BEGIN
         FROM [dbo].[Usuario] U
         INNER JOIN [dbo].[TipoUsuario] TU
         ON U.[idTipoUsuario] = TU.[id]
-        WHERE u.[nombreDeUsuario] = @inNombreUsuario)
+        WHERE u.[nombreDeUsuario] = @inNombreUsuario
+            AND TU.nombre = 'Administrador')
     BEGIN
         SET @output = 1;
     END;

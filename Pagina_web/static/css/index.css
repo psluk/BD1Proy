@@ -42,3 +42,7 @@ iframe {
     flex: auto;
     text-decoration: none;
 }
+
+.adminOnly {
+    display: none;
+}
