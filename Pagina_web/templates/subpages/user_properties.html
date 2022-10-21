@@ -138,6 +138,7 @@
 
                             nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
                             nuevoEnlace.innerText = "Propietarios";
+                            nuevoEnlace.setAttribute("class", "adminOnly");
                             nuevoEnlace.setAttribute(
                                 "href",
                                 "./owners_of_property.html?finca=" + resultados[i].numeroFinca);

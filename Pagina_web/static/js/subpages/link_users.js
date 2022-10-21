@@ -48,6 +48,10 @@ function esperarRespuesta(solicitudOperacion) {
                 case 50011:
                     alert("No existe la relación.\n\nInténtelo nuevamente.");
                     break;
+                
+                case 50012:
+                    alert("Ya existe la relación.")
+                    break;
             
                 default:
                     alert("Ocurrió un error.\n\nInténtelo nuevamente.");
