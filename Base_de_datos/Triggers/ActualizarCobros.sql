@@ -44,8 +44,8 @@ BEGIN
         ON CCdP.[idPropiedad] = D.[id]
         INNER JOIN inserted I
         ON CCdP.[idPropiedad] = I.[id]
-        WHERE (D.idTipoUsoPropiedad = 5 OR D.idTipoUsoPropiedad = 1)
-            AND (I.idTipoUsoPropiedad != 1 AND I.idTipoUsoPropiedad != 5)
+        WHERE (D.idTipoZona = 5 OR D.idTipoZona = 1)
+            AND (I.idTipoZona != 1 AND I.idTipoZona != 5)
             AND CCdP.[idConceptoCobro] = 7;
 
         -- Pasa a ser comercial o residencial
@@ -56,7 +56,7 @@ BEGIN
         FROM deleted D
         INNER JOIN inserted I
         ON D.[id] = I.[id]
-        WHERE (D.idTipoUsoPropiedad != 1 AND D.idTipoUsoPropiedad != 5)
-            AND (I.idTipoUsoPropiedad = 5 OR I.idTipoUsoPropiedad = 1);
+        WHERE (D.idTipoZona != 1 AND D.idTipoZona != 5)
+            AND (I.idTipoZona = 5 OR I.idTipoZona = 1);
     END;
 END;
