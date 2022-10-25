@@ -7,7 +7,7 @@
 
 ## Fecha de entrega
 
-1. **Primer avance:** 6 de octubre del 2022
+1. **Segundo avance:** 7 de octubre del 2022
 
 ## Archivos de referencia
 
