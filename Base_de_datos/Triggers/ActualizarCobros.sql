@@ -17,46 +17,48 @@ BEGIN
         UPDATE CCdP
         SET fechaFin = GETDATE()
         FROM [dbo].[ConceptoCobroDePropiedad] CCdP
-        INNER JOIN deleted D
-        ON CCdP.[idPropiedad] = D.[id]
-        INNER JOIN inserted I
-        ON CCdP.[idPropiedad] = I.[id]
+        INNER JOIN deleted D ON CCdP.[idPropiedad] = D.[id]
+        INNER JOIN inserted I ON CCdP.[idPropiedad] = I.[id]
         WHERE D.idTipoUsoPropiedad != 5
-            AND I.idTipoUsoPropiedad = 5
-            AND CCdP.[idConceptoCobro] = 3;
+        AND I.idTipoUsoPropiedad = 5
+        AND CCdP.[idConceptoCobro] = 3;
 
         -- Pasó de uso no agrícola a agrícola (5)
         INSERT INTO [ConceptoCobroDePropiedad] (
-            [idConceptoCobro], [idPropiedad], [fechaInicio]
+            [idConceptoCobro], 
+			[idPropiedad], 
+			[fechaInicio]
             )
-        SELECT 3, d.id, GETDATE()
+        SELECT 3, 
+			   d.id, 
+			   GETDATE()
         FROM deleted D
-        INNER JOIN inserted I
-        ON D.[id] = I.[id]
+        INNER JOIN inserted I ON D.[id] = I.[id]
         WHERE D.idTipoUsoPropiedad = 5
-            AND I.idTipoUsoPropiedad != 5;
+        AND I.idTipoUsoPropiedad != 5;
 
         -- Pasa de comercial o residencial (5 o 1) a otra
         UPDATE CCdP
         SET fechaFin = GETDATE()
         FROM [dbo].[ConceptoCobroDePropiedad] CCdP
-        INNER JOIN deleted D
-        ON CCdP.[idPropiedad] = D.[id]
-        INNER JOIN inserted I
-        ON CCdP.[idPropiedad] = I.[id]
+        INNER JOIN deleted D ON CCdP.[idPropiedad] = D.[id]
+        INNER JOIN inserted I ON CCdP.[idPropiedad] = I.[id]
         WHERE (D.idTipoZona = 5 OR D.idTipoZona = 1)
-            AND (I.idTipoZona != 1 AND I.idTipoZona != 5)
-            AND CCdP.[idConceptoCobro] = 7;
+        AND (I.idTipoZona != 1 AND I.idTipoZona != 5)
+        AND CCdP.[idConceptoCobro] = 7;
 
         -- Pasa a ser comercial o residencial
         INSERT INTO [ConceptoCobroDePropiedad] (
-            [idConceptoCobro], [idPropiedad], [fechaInicio]
+            [idConceptoCobro], 
+			[idPropiedad], 
+			[fechaInicio]
             )
-        SELECT 7, d.id, GETDATE()
+        SELECT 7, 
+			   d.id, 
+			   GETDATE()
         FROM deleted D
-        INNER JOIN inserted I
-        ON D.[id] = I.[id]
+        INNER JOIN inserted I ON D.[id] = I.[id]
         WHERE (D.idTipoZona != 1 AND D.idTipoZona != 5)
-            AND (I.idTipoZona = 5 OR I.idTipoZona = 1);
+        AND (I.idTipoZona = 5 OR I.idTipoZona = 1);
     END;
 END;

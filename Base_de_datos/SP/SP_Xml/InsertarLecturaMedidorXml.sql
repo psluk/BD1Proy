@@ -8,7 +8,9 @@ ALTER PROCEDURE [dbo].[InsertarLecturaMedidorXml]
 						@inFechaOperacion DATE
 AS
 BEGIN
+
 	SET NOCOUNT ON;
+
 	DECLARE @temp_Lecturas TABLE
 	(
 	    -- Llaves
@@ -24,8 +26,15 @@ BEGIN
 	);
 	
 	
-	INSERT INTO @temp_Lecturas (NumeroMedidor, TipoMovimiento, Valor, FechaOperacion)
-	SELECT NumeroMedidor, TipoMovimiento, Valor, @inFechaOperacion
+	INSERT INTO @temp_Lecturas (
+				NumeroMedidor, 
+				TipoMovimiento, 
+				Valor, 
+				FechaOperacion)
+	SELECT NumeroMedidor, 
+		   TipoMovimiento, 
+		   Valor, 
+		   @inFechaOperacion
 	FROM OPENXML(@hdoc, 'Operacion/Lecturas/LecturaMedidor', 1)
 	WITH 
 	(
@@ -68,8 +77,17 @@ BEGIN
 
 
 	-- insertamos los valores en la tabla Movimiento Consumo, se puede optimizar
-	INSERT INTO [dbo].[MovimientoConsumo] ([idTipoMovimiento], [idAguaDePropiedad], [fecha], [consumoMovimiento], [consumoAcumulado])
-	SELECT tmc.id, adp.id, tl.FechaOperacion, tl.ConsumoMovimiento, tl.ConsumoAcumulado
+	INSERT INTO [dbo].[MovimientoConsumo] (
+				[idTipoMovimiento], 
+				[idAguaDePropiedad], 
+				[fecha], 
+				[consumoMovimiento], 
+				[consumoAcumulado])
+	SELECT tmc.id, 
+		   adp.id, 
+		   tl.FechaOperacion, 
+		   tl.ConsumoMovimiento, 
+		   tl.ConsumoAcumulado
 	FROM @temp_Lecturas AS tl
 	INNER JOIN [dbo].[TipoMovimientoConsumo] tmc ON tl.TipoMovimiento = tmc.nombre
 	INNER JOIN [dbo].[AguaDePropiedad] adp ON tl.NumeroMedidor = adp.numeroMedidor

@@ -6,8 +6,15 @@ ALTER PROCEDURE [dbo].[(Des)InsertarUsuariosXml]
 						@inFechaOperacion AS DATE = GETDATE
 AS
 BEGIN
+
 	SET NOCOUNT ON;
-	DECLARE @temp_Usuarios TABLE
+
+	--Declaraciones variables
+
+	--Declaraciones tablas
+
+
+	DECLARE @temp_Usuarios TABLE -- tabla temporal para guardar la info del XML
 	(
 	    -- Llaves
 	    id INT  PRIMARY KEY IDENTITY(1,1),
@@ -19,10 +26,29 @@ BEGIN
 	
 	);
 	
+	DECLARE @temp_BorrarUsuarios TABLE -- tabla temporal que indica usuarios existentes para borrado
+	(
+	    -- Llaves
+	    id INT  PRIMARY KEY IDENTITY(1,1),
+		idUsuario int NOT NULL,
+		ValorDocumentoIdentidad BIGINT NOT NULL,
+		Password varchar(32) NOT NULL,
+		Username varchar(32) NOT NULL
 	
-	INSERT INTO @temp_Usuarios (ValorDocumentoIdentidad, TipoUsuario, TipoAsociacion, Password, Username)
+	);
+
 	
-	SELECT ValorDocumentoIdentidad, TipoUsuario, TipoAsociacion, Password, Username
+	INSERT INTO @temp_Usuarios (
+				ValorDocumentoIdentidad, 
+				TipoUsuario, 
+				TipoAsociacion, 
+				Password, 
+				Username)
+	SELECT ValorDocumentoIdentidad, 
+		   TipoUsuario, 
+		   TipoAsociacion, 
+		   Password, 
+		   Username
 	FROM OPENXML(@hdoc, 'Operacion/Usuario/Usuario', 1)
 	WITH 
 	(
@@ -33,24 +59,21 @@ BEGIN
 		Username varchar(32)
 	);
 
-	INSERT INTO [dbo].[Usuario] ([idPersona], [idTipoUsuario], [nombreDeUsuario], [clave])
-	SELECT p.id, tpu.id, tu.Username, tu.Password	
+	INSERT INTO [dbo].[Usuario] (
+				[idPersona], 
+				[idTipoUsuario], 
+				[nombreDeUsuario], 
+				[clave])
+	SELECT p.id, 
+		   tpu.id, 
+		   tu.Username, 
+		   tu.Password	
 	FROM @temp_Usuarios AS tu
 	INNER JOIN [dbo].[Persona] p ON tu.ValorDocumentoIdentidad = p.valorDocumentoId --obtenemos el id del documento identidad
 	INNER JOIN [dbo].[TipoUsuario] tpu ON tu.TipoUsuario = tpu.nombre --obtenemos el valor del id del tipo Usuario
 	WHERE tu.TipoAsociacion = 'Agregar'
 	
-	--declaramos una nueva tabla para almacenar usuarios existentes indicados para borrado
-		DECLARE @temp_BorrarUsuarios TABLE
-	(
-	    -- Llaves
-	    id INT  PRIMARY KEY IDENTITY(1,1),
-		idUsuario int NOT NULL,
-		ValorDocumentoIdentidad BIGINT NOT NULL,
-		Password varchar(32) NOT NULL,
-		Username varchar(32) NOT NULL
 	
-	);
 
 	--Sabiendo cuales usuarios si existen, realizamos una union entre los Usuarios y @temp_Usuarios
 	--De esta forma juntamos los usuarios existentes y sus ordenes de borrado

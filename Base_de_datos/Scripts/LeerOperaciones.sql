@@ -1,55 +1,58 @@
-
-
 USE [proyecto]
 
-DECLARE @informacionXML TABLE
+
+--Declaracion de variables
+
+DECLARE @VarPrincipalXML xml; -- variables contenedora del XML principal
+DECLARE @hdoc int -- handler del xml leeido
+DECLARE @FechaOperacion DATE; -- transporte de fecha a los SP
+DECLARE @contador INT; -- Permite pasar por cada nodo del XML principal
+DECLARE @maximo INT; -- indica el numero de repeticiones
+
+
+--Declaracion de tablas temporales
+
+DECLARE @tabInformacionXML TABLE --Tabla relacionando nodo XML y Fecha
 (
 id INT  PRIMARY KEY IDENTITY(1,1),
 Fecha DATE,
 xmlData XML
 )
 
---tabla donde se almacena el xml completo
-DECLARE @tmp TABLE 
+DECLARE @tabPrincipalXML TABLE 
 (
-	xmlData XML
+xmlData XML
+) --Tabla contenedora del XML principal
+
+DECLARE @tabNodosXML TABLE --Tabla para construir los nodo XML del XML principal
+(
+id INT  PRIMARY KEY IDENTITY(1,1),
+xmlData XML
 )
---insertamos el documento xml para poder trabajar con el 
-INSERT INTO @tmp(xmlData)
+
+DECLARE @tabFechasXML TABLE --Tabla para construir las Fechas de cada nodo XML del XML principal
+(
+id INT  PRIMARY KEY IDENTITY(1,1),
+Fecha DATE
+)
+
+
+--Inserciones
+
+
+--Esto se realiza asi para poder usar "CROSS APPLY" y
+--construir la tabla con los nodos
+INSERT INTO @TabPrincipalXML(xmlData) --Insertamos el XMl principal en la Tabla contenedora
 (
 SELECT CAST(MY_XML AS xml) AS hola
       FROM OPENROWSET(BULK 'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Archivos XML\Operaciones.xml', SINGLE_BLOB) AS T(MY_XML)
-)
+) 
 
-DECLARE @inDatos xml;
-SELECT @inDatos = C
-FROM OPENROWSET (BULK 'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Archivos XML\Operaciones.xml', SINGLE_BLOB) AS inDatos(C);
-DECLARE @hdoc int
-EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
+SELECT @VarPrincipalXML = t.xmlData -- Insertamos el XMl principal en la varible
+FROM @TabPrincipalXML t
+EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos; -- abrimos el xml
 
-
---tabla donde se almacena cada nodo operacion
-DECLARE @otro TABLE 
-(
-	id INT  PRIMARY KEY IDENTITY(1,1),
-	xmlData XML
-)
---insertamos los nodos en la tabla de nodos
-INSERT INTO @otro(xmlData)
-(
-	SELECT x.Operacion.query('.') Operacion
-	FROM @tmp t
-	CROSS APPLY t.xmlData.nodes('Datos/Operacion') x(Operacion)
-)
-
---tabla donde se almacena cada fecha de operacion
-DECLARE @otra TABLE 
-(
-	id INT  PRIMARY KEY IDENTITY(1,1),
-	Fecha DATE
-)
---insertamos la fechas en la tabla de fechas
-INSERT INTO @otra(Fecha)
+INSERT INTO @tabFechasXML(Fecha) --insertamos la fechas en la tabla de fechas
 (
 	SELECT Fecha
 	FROM OPENXML (@hdoc, 'Datos/Operacion' , 1)
@@ -59,33 +62,45 @@ INSERT INTO @otra(Fecha)
 	)
 )
 
---unificamos las fechas y sus nodos en una misma tabla
-INSERT INTO @informacionXML(Fecha, xmlData)
+EXEC sp_xml_removedocument @hdoc
+
+INSERT INTO @tabNodosXML(xmlData) --insertamos los nodos XML en la tabla de nodos
 (
-	SELECT t.Fecha,q.xmlData
-	FROM @otra AS t, @otro AS q
+	SELECT x.Operacion.query('.') Operacion
+	FROM @TabPrincipalXML t
+	CROSS APPLY t.xmlData.nodes('Datos/Operacion') x(Operacion)
+)
+
+
+INSERT INTO @tabInformacionXML( --unificamos las fechas y sus nodos en una misma tabla
+			Fecha, 
+			xmlData) 
+(
+	SELECT t.Fecha,
+		   q.xmlData
+	FROM @tabFechasXML AS t, 
+		 @tabNodosXML AS q
 	WHERE t.id = q.id
 )
 
-EXEC sp_xml_removedocument @hdoc
 
--- la tabla @informacionXML tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
 
-DECLARE @FechaOperacion DATE;
-DECLARE @contador INT;
-DECLARE @maximo INT;
-SET @contador = 1;
-SELECT @maximo = COUNT(0) FROM @informacionXML;
+-- la tabla @tabInformacionXML tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
+
+
+SET @contador = 1; -- inicializamo el contador en la primera entrada
+SELECT @maximo = COUNT(0) FROM @tabInformacionXML; --el valor de la ultima entrada
 
 -- iteramos a trav�s de todos los nodos del xml
 WHILE (@contador <= @maximo)
 BEGIN
-	--seleccionamos un nodo para procesar
-	SELECT @inDatos = t.xmlData, @FechaOperacion = t.Fecha
-	FROM @informacionXML AS t
+	--seleccionamos un nodo para procesar y su fecha
+	SELECT @VarPrincipalXML = t.xmlData, 
+		   @FechaOperacion = t.Fecha
+	FROM @tabInformacionXML AS t
 	WHERE t.id = @contador
 
-    -- Se carga el XML de la operaci�n en memoria
+    -- Se carga el XML de la operacion en memoria
     EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
 
 	EXEC dbo.InsertarPersonasXml @hdoc

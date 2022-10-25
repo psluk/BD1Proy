@@ -1,0 +1,34 @@
+ActualizarPropiedad.sql  (optimizar)
+AsociarPropietarioPropiedad.sql
+AsociarUsuarioPropiedad.sql
+CrearPersona.sql
+CrearPropiedad.sql
+CrearUsuario.sql
+DesasociarPropietarioPropiedad.sql
+DesasociarUsuarioPropiedad.sql
+EliminarPersona.sql
+EliminarPropiedad.sql
+EliminarUsuario.sql
+
+LeerPersona.sql
+ObtenerUsos.sql
+ObtenerZonas.sql
+VerConceptoCobroDePropiedad.sql
+VerLecturasDePropiedad.sql
+VerMedidoresDePropiedad.sql
+VerPersonas.sql
+VerPropiedades.sql
+VerPropiedadesDePersona.sql
+VerPropiedadesDeUsuario.sql
+VerPropietariosDePropiedad.sql
+VerTipoDeUsuario.sql
+VerUnaPropiedad.sql (completar info incompleta)
+VerUsuarios.sql (completar info incompleta)
+VerUsuariosDePropiedad.sql (completar info incompleta)
+
+(Des)AsociarPersonaPropiedadXml.sql  (optimizar)
+(Des)AsociarUsuarioPropiedadXml.sql  (optimizar)
+(Des)InsertarUsuariosXml.sql  (optimizar)
+InsertarLecturaMedidorXml.sql  (optimizar)
+InsertarPersonasXml.sql
+InsertarPropiedadesXml.sql (reimplementar) 

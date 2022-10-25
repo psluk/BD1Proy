@@ -25,29 +25,32 @@ BEGIN
 
         -- Verificamos que el usuario sea administrador
         IF NOT EXISTS(
-                SELECT 1 FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador'
-                )
+					   SELECT 1 FROM [dbo].[Usuario] U
+					   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+					   WHERE U.nombreDeUsuario = @inUsername
+					   AND T.nombre = 'Administrador'
+					 )
         BEGIN
             -- Si llega acá, el usuario no es administrador
             -- Entonces no retornamos nada
             SET @outResultCode = 50001;     -- Credenciales inválidas
-            SELECT NULL AS 'Usuario', NULL AS 'Tipo', NULL AS 'Nombre', NULL AS 'Identificacion';
+            SELECT NULL AS 'Usuario', 
+				   NULL AS 'Tipo', 
+				   NULL AS 'Nombre', 
+				   NULL AS 'Identificacion';
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
         -- Si llega acá, se retorna la información
-        SELECT U.nombreDeUsuario AS 'Usuario', TU.[nombre] AS 'Tipo', P.nombre AS 'Nombre', P.[valorDocumentoId] AS 'Identificacion'
+        SELECT U.nombreDeUsuario AS 'Usuario', 
+			   TU.[nombre] AS 'Tipo', 
+			   P.nombre AS 'Nombre', 
+			   P.[valorDocumentoId] AS 'Identificacion'
         FROM [dbo].[Usuario] U
-        INNER JOIN [dbo].[Persona] P
-        ON U.[idPersona] = P.[id]
-        INNER JOIN [dbo].[TipoUsuario] TU
-        ON U.[idTipoUsuario] = TU.[id];
+        INNER JOIN [dbo].[Persona] P ON U.[idPersona] = P.[id]
+        INNER JOIN [dbo].[TipoUsuario] TU ON U.[idTipoUsuario] = TU.[id];
 
         SELECT @outResultCode AS 'resultCode';
 
@@ -55,7 +58,10 @@ BEGIN
     BEGIN CATCH
         -- Ocurrió un error desconocido
         SET @outResultCode = 50000;     -- Error
-        SELECT NULL AS 'Usuario', NULL AS 'Tipo', NULL AS 'Nombre', NULL AS 'Identificacion';
+        SELECT NULL AS 'Usuario', 
+			   NULL AS 'Tipo', 
+			   NULL AS 'Nombre', 
+			   NULL AS 'Identificacion';
         SELECT @outResultCode AS 'resultCode';
 
     END CATCH;

@@ -9,7 +9,9 @@ ALTER PROCEDURE [dbo].[AsociacionPersonaPropiedadXml]
 
 AS
 BEGIN
+
 	SET NOCOUNT ON;
+
 	DECLARE @temp_PersonasyPropiedades TABLE
 	(
 	    -- Llaves
@@ -21,8 +23,13 @@ BEGIN
 	
 	);
 	
-	INSERT INTO @temp_PersonasyPropiedades (ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion)
-	SELECT ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion
+	INSERT INTO @temp_PersonasyPropiedades (
+				ValorDocumentoIdentidad, 
+				NumeroFinca, 
+				TipoAsociacion)
+	SELECT ValorDocumentoIdentidad, 
+		   NumeroFinca, 
+		   TipoAsociacion
 	FROM OPENXML(@hdoc, 'Operacion/PersonasyPropiedades/PropiedadPersona', 1)
 	WITH 
 	(
@@ -30,12 +37,18 @@ BEGIN
 		NumeroFinca INT,
 		TipoAsociacion varchar(32)
 	);
+
 	UPDATE @temp_PersonasyPropiedades
 	SET FechaOperacion = @inFechaOperacion;
 
 	--inicializamos las relaciones que se indican como Agregar
-	INSERT INTO [dbo].[PropietarioDePropiedad]([idPersona], [idPropiedad], [fechaInicio])
-	SELECT per.id, pro.id, tpp.FechaOperacion
+	INSERT INTO [dbo].[PropietarioDePropiedad](
+				[idPersona], 
+				[idPropiedad],
+				[fechaInicio])
+	SELECT per.id, 
+		   pro.id, 
+		   tpp.FechaOperacion
 	FROM @temp_PersonasyPropiedades AS tpp
 	INNER JOIN [dbo].[Persona] AS per ON tpp.ValorDocumentoIdentidad = per.valorDocumentoId
 	INNER JOIN [dbo].[Propiedad] AS pro ON pro.numeroFinca = tpp.NumeroFinca

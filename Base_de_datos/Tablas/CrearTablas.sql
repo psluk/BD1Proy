@@ -36,7 +36,7 @@ CREATE TABLE dbo.Persona
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_Persona_TipoDocumentoId FOREIGN KEY (idTipoDocumentoId)
-        REFERENCES dbo.TipoDocumentoId (id)
+    REFERENCES dbo.TipoDocumentoId (id)
 );
 
 -- CATEGORÍA: USUARIOS
@@ -69,9 +69,9 @@ CREATE TABLE dbo.Usuario
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_Usuario_Persona FOREIGN KEY (idPersona)
-        REFERENCES dbo.Persona (id),
+    REFERENCES dbo.Persona (id),
     CONSTRAINT FK_Usuario_TipoUsuario FOREIGN KEY (idTipoUsuario)
-        REFERENCES dbo.TipoUsuario (id)
+    REFERENCES dbo.TipoUsuario (id)
 );
 
 -- CATEGORÍA: PROPIEDADES
@@ -118,9 +118,9 @@ CREATE TABLE dbo.Propiedad
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_Propiedad_TipoUsoPropiedad FOREIGN KEY (idTipoUsoPropiedad)
-        REFERENCES dbo.TipoUsoPropiedad (id),
+    REFERENCES dbo.TipoUsoPropiedad (id),
     CONSTRAINT FK_Propiedad_TipoZona FOREIGN KEY (idTipoZona)
-        REFERENCES dbo.TipoZona (id)
+    REFERENCES dbo.TipoZona (id)
 );
 
 -- CATEGORÍA: Propiedad + (Persona o Usuario)
@@ -141,9 +141,9 @@ CREATE TABLE dbo.PropietarioDePropiedad
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_PropietarioDePropiedad_Persona FOREIGN KEY (idPersona)
-        REFERENCES dbo.Persona (id),
+    REFERENCES dbo.Persona (id),
     CONSTRAINT FK_PropietarioDePropiedad_Propiedad FOREIGN KEY (idPropiedad)
-        REFERENCES dbo.Propiedad (id)
+    REFERENCES dbo.Propiedad (id)
 );
 
 CREATE TABLE dbo.UsuarioDePropiedad
@@ -162,9 +162,9 @@ CREATE TABLE dbo.UsuarioDePropiedad
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_UsuarioDePropiedad_Persona FOREIGN KEY (idUsuario)
-        REFERENCES dbo.Usuario (id),
+    REFERENCES dbo.Usuario (id),
     CONSTRAINT FK_UsuarioDePropiedad_Propiedad FOREIGN KEY (idPropiedad)
-        REFERENCES dbo.Propiedad (id)
+    REFERENCES dbo.Propiedad (id)
 );
 
 -- CATEGORÍA: Facturas
@@ -199,9 +199,9 @@ CREATE TABLE dbo.Factura
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_Factura_Propiedad FOREIGN KEY (idPropiedad)
-        REFERENCES dbo.Propiedad (id),
+    REFERENCES dbo.Propiedad (id),
     CONSTRAINT FK_Factura_EstadoFactura FOREIGN KEY (idEstadoFactura)
-        REFERENCES dbo.EstadoFactura (id)
+    REFERENCES dbo.EstadoFactura (id)
 );
 
 -- CATEGORÍA: Pagos
@@ -232,9 +232,9 @@ CREATE TABLE dbo.Pago
 
 	-- Se asocian las llaves externas
 	CONSTRAINT FK_Pago_Factura FOREIGN KEY (id)
-		REFERENCES dbo.Factura (id),
-	CONSTRAINT FK_Pago_TipoMedioPago FOREIGN KEY
-		(idTipoMedioPago) REFERENCES dbo.TipoMedioPago (id)
+	REFERENCES dbo.Factura (id),
+	CONSTRAINT FK_Pago_TipoMedioPago FOREIGN KEY (idTipoMedioPago) 
+	REFERENCES dbo.TipoMedioPago (id)
 );
 
 -- CATEGORÍA: Conceptos de cobro
@@ -278,10 +278,10 @@ CREATE TABLE dbo.ConceptoCobro
     CONSTRAINT PK_ConceptoCobro PRIMARY KEY CLUSTERED (id),
 
 	 -- Se asocian las llaves externas
-	 CONSTRAINT FK_ConceptoCobro_TipoPeriodoConceptoCobro FOREIGN KEY
-		(idTipoPeriodoConceptoCobro) REFERENCES dbo.TipoPeriodoConceptoCobro (id),
-	 CONSTRAINT FK_ConceptoCobro_TipoMontoConceptoCobro FOREIGN KEY
-		(idTipoMontoConceptoCobro) REFERENCES dbo.TipoMontoConceptoCobro (id)
+	 CONSTRAINT FK_ConceptoCobro_TipoPeriodoConceptoCobro FOREIGN KEY (idTipoPeriodoConceptoCobro) 
+	 REFERENCES dbo.TipoPeriodoConceptoCobro (id),
+	 CONSTRAINT FK_ConceptoCobro_TipoMontoConceptoCobro FOREIGN KEY (idTipoMontoConceptoCobro) 
+     REFERENCES dbo.TipoMontoConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroDePropiedad
@@ -300,9 +300,9 @@ CREATE TABLE dbo.ConceptoCobroDePropiedad
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroDePropiedad_Propiedad FOREIGN KEY (idPropiedad)
-        REFERENCES dbo.Propiedad (id),
+    REFERENCES dbo.Propiedad (id),
     CONSTRAINT FK_ConceptoCobroDePropiedad_ConceptoCobro FOREIGN KEY (idConceptoCobro)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.DetalleConceptoCobro
@@ -320,9 +320,9 @@ CREATE TABLE dbo.DetalleConceptoCobro
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_DetalleConceptoCobro_Factura FOREIGN KEY (idFactura)
-        REFERENCES dbo.Factura (id),
+    REFERENCES dbo.Factura (id),
     CONSTRAINT FK_DetalleConceptoCobro_ConceptoCobro FOREIGN KEY (idConceptoCobro)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 -- CATEGORÍA: Clases de concepto de cobro
@@ -343,7 +343,7 @@ CREATE TABLE dbo.ConceptoCobroAgua
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroAgua_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroPatente
@@ -359,7 +359,7 @@ CREATE TABLE dbo.ConceptoCobroPatente
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroPatente_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroImpuestoPropiedad
@@ -376,7 +376,7 @@ CREATE TABLE dbo.ConceptoCobroImpuestoPropiedad
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroImpuestoPropiedad_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroBasura
@@ -395,7 +395,7 @@ CREATE TABLE dbo.ConceptoCobroBasura
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroBasura_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroParques
@@ -411,7 +411,7 @@ CREATE TABLE dbo.ConceptoCobroParques
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroParques_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroInteresesMoratorios
@@ -428,7 +428,7 @@ CREATE TABLE dbo.ConceptoCobroInteresesMoratorios
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroInteresesMoratorios_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroReconexionAgua
@@ -444,7 +444,7 @@ CREATE TABLE dbo.ConceptoCobroReconexionAgua
 
 	-- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroReconexionAgua_ConceptoCobro FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobro (id)
+    REFERENCES dbo.ConceptoCobro (id)
 );
 
 -- CATEGORÍA: Agua
@@ -463,7 +463,7 @@ CREATE TABLE dbo.AguaDePropiedad
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_AguaDePropiedad_ConceptoCobroDePropiedad FOREIGN KEY (id)
-        REFERENCES dbo.ConceptoCobroDePropiedad (id)
+    REFERENCES dbo.ConceptoCobroDePropiedad (id)
 );
 
 CREATE TABLE dbo.TipoMovimientoConsumo
@@ -494,12 +494,10 @@ CREATE TABLE dbo.MovimientoConsumo
     CONSTRAINT PK_MovimientoConsumo PRIMARY KEY CLUSTERED (id),
 
     -- Se asocian las llaves externas
-    CONSTRAINT FK_MovimientoConsumo_TipoMovimientoConsumo
-        FOREIGN KEY (idTipoMovimiento)
-        REFERENCES dbo.TipoMovimientoConsumo (id),
-    CONSTRAINT FK_MovimientoConsumo_AguaDePropiedad
-        FOREIGN KEY (idAguaDePropiedad)
-        REFERENCES dbo.AguaDePropiedad (id),
+    CONSTRAINT FK_MovimientoConsumo_TipoMovimientoConsumo FOREIGN KEY (idTipoMovimiento)
+    REFERENCES dbo.TipoMovimientoConsumo (id),
+    CONSTRAINT FK_MovimientoConsumo_AguaDePropiedad FOREIGN KEY (idAguaDePropiedad)
+    REFERENCES dbo.AguaDePropiedad (id),
 );
 
 CREATE TABLE dbo.DetalleConceptoCobroAgua
@@ -513,12 +511,10 @@ CREATE TABLE dbo.DetalleConceptoCobroAgua
         (idDetalleConceptoCobro),
 
     -- Se asocian las llaves externas
-    CONSTRAINT FK_DetalleConceptoCobroAgua_DetalleConceptoCobro
-        FOREIGN KEY (idDetalleConceptoCobro)
-        REFERENCES dbo.DetalleConceptoCobro (id),
-    CONSTRAINT FK_DetalleConceptoCobroAgua_MovimientoConsumo
-        FOREIGN KEY (idMovimiento)
-        REFERENCES dbo.MovimientoConsumo (id)
+    CONSTRAINT FK_DetalleConceptoCobroAgua_DetalleConceptoCobro FOREIGN KEY (idDetalleConceptoCobro)
+    REFERENCES dbo.DetalleConceptoCobro (id),
+    CONSTRAINT FK_DetalleConceptoCobroAgua_MovimientoConsumo FOREIGN KEY (idMovimiento)
+    REFERENCES dbo.MovimientoConsumo (id)
 );
 
 CREATE TABLE dbo.OrdenCorta
@@ -538,9 +534,9 @@ CREATE TABLE dbo.OrdenCorta
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_OrdenCorta_Factura FOREIGN KEY (idFactura)
-        REFERENCES dbo.Factura (id),
+    REFERENCES dbo.Factura (id),
     CONSTRAINT FK_OrdenCorta_Propiedad FOREIGN KEY (idPropiedad)
-        REFERENCES dbo.Propiedad (id)
+    REFERENCES dbo.Propiedad (id)
 );
 
 CREATE TABLE dbo.OrdenReconexion
@@ -559,9 +555,9 @@ CREATE TABLE dbo.OrdenReconexion
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_OrdenReconexion_Factura FOREIGN KEY (idFactura)
-        REFERENCES dbo.Factura (id),
+    REFERENCES dbo.Factura (id),
     CONSTRAINT FK_OrdenReconexion_OrdenCorta FOREIGN KEY (idOrdenCorta)
-        REFERENCES dbo.OrdenCorta (id)
+    REFERENCES dbo.OrdenCorta (id)
 );
 
 -- CATEGORÍA: Parámetros del sistema
@@ -592,9 +588,8 @@ CREATE TABLE dbo.ParametroSistema
     CONSTRAINT PK_ParametroSistema PRIMARY KEY CLUSTERED (id),
 
 	-- Se asocian las llaves externas
-    CONSTRAINT FK_ParametroSistema_TipoParametroSistema
-		FOREIGN KEY (idTipoParametroSistema)
-        REFERENCES dbo.TipoParametroSistema (id)
+    CONSTRAINT FK_ParametroSistema_TipoParametroSistema FOREIGN KEY (idTipoParametroSistema)
+    REFERENCES dbo.TipoParametroSistema (id)
 );
 
 -- CATEGORÍA: Registro de actividades y errores
@@ -615,7 +610,7 @@ CREATE TABLE [dbo].[EventLog]
 
 	-- Se asocian las llaves externas
 	CONSTRAINT [FK_EventLog_Usuario] FOREIGN KEY ([PostByUserId])
-		REFERENCES dbo.Usuario (id)
+	REFERENCES dbo.Usuario (id)
 );
 
 CREATE TABLE [dbo].[Errors]

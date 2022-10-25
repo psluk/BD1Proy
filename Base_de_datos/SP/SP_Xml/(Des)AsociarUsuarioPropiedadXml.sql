@@ -9,7 +9,9 @@ ALTER PROCEDURE [dbo].[AsociacionUsuarioPropiedadXml]
 
 AS
 BEGIN
+
 	SET NOCOUNT ON;
+
 	DECLARE @temp_UsuariosyPropiedades TABLE
 	(
 	    -- Llaves
@@ -21,8 +23,13 @@ BEGIN
 	
 	);
 	
-	INSERT INTO @temp_UsuariosyPropiedades (ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion)
-	SELECT ValorDocumentoIdentidad, NumeroFinca, TipoAsociacion
+	INSERT INTO @temp_UsuariosyPropiedades (
+				ValorDocumentoIdentidad, 
+				NumeroFinca, 
+				TipoAsociacion)
+	SELECT ValorDocumentoIdentidad, 
+		   NumeroFinca, 
+		   TipoAsociacion
 	FROM OPENXML(@hdoc, 'Operacion/PropiedadesyUsuarios/UsuarioPropiedad', 1)
 	WITH 
 	(
@@ -30,12 +37,18 @@ BEGIN
 		NumeroFinca INT,
 		TipoAsociacion varchar(32)
 	);
+	
 	UPDATE @temp_UsuariosyPropiedades
 	SET FechaOperacion = @inFechaOperacion;
 
 	--inicializamos las relaciones que se indican como Agregar
-	INSERT INTO [dbo].[UsuarioDePropiedad]([idUsuario], [idPropiedad], [fechaInicio])
-	SELECT u.id, pro.id, tup.FechaOperacion
+	INSERT INTO [dbo].[UsuarioDePropiedad](
+				[idUsuario], 
+				[idPropiedad], 
+				[fechaInicio])
+	SELECT u.id, 
+		   pro.id, 
+		   tup.FechaOperacion
 	FROM @temp_UsuariosyPropiedades AS tup
 	INNER JOIN [dbo].[Persona] AS per ON tup.ValorDocumentoIdentidad = per.valorDocumentoId --se obtiene el id del documento identidad
 	INNER JOIN [dbo].[Usuario] AS u ON u.idPersona = per.id -- se obtiene el id del usuario usando el id de la persona

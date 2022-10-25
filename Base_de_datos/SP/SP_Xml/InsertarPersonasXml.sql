@@ -7,7 +7,9 @@ ALTER PROCEDURE [dbo].[InsertarPersonasXml]
 
 AS
 BEGIN
+
 	SET NOCOUNT ON;
+
 	DECLARE @temp_Persona TABLE 
 	(
     -- Llave
@@ -23,9 +25,20 @@ BEGIN
 	);
 	
 	
-	INSERT INTO @temp_Persona ([nombre], [TipoDocumentoIdentidad], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email])
+	INSERT INTO @temp_Persona (
+				[nombre], 
+				[TipoDocumentoIdentidad], 
+				[ValorDocumentoIdentidad], 
+				[telefono1], 
+				[telefono2], 
+				[email])
 	
-	SELECT Nombre, TipoDocumentoIdentidad, ValorDocumentoIdentidad, Telefono1, Telefono2, Email
+	SELECT Nombre, 
+		   TipoDocumentoIdentidad, 
+		   ValorDocumentoIdentidad, 
+		   Telefono1, 
+		   Telefono2, 
+		   Email
 	FROM OPENXML(@hdoc, 'Operacion/Personas/Persona', 1)
 	WITH 
 	(
@@ -36,8 +49,21 @@ BEGIN
 		Telefono2 BIGINT,
 		Email VARCHAR(128)
 	);
-	INSERT INTO [dbo].[Persona] ([idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email])
-	SELECT td.id AS idTipoDocumentoId, tp.[Nombre], [ValorDocumentoIdentidad], [telefono1], [telefono2], [email] FROM @temp_Persona tp
+
+	INSERT INTO [dbo].[Persona] (
+				[idTipoDocumentoId], 
+				[nombre], 
+				[valorDocumentoId],
+				[telefono1], 
+				[telefono2], 
+				[email])
+	SELECT td.id AS idTipoDocumentoId, 
+		   tp.[Nombre], 
+		   [ValorDocumentoIdentidad], 
+		   [telefono1], 
+		   [telefono2], 
+		   [email] 
+	FROM @temp_Persona tp
 	INNER JOIN [dbo].[TipoDocumentoId] td ON tp.TipoDocumentoIdentidad = td.nombre
 
 	SET NOCOUNT OFF;

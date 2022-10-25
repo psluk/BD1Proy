@@ -16,12 +16,16 @@ BEGIN
 
     -- Retorna 1 si lo encuentra. Si no, 0
     SELECT (CASE
-        WHEN EXISTS (SELECT 1 FROM [dbo].[Usuario] U
-            WHERE CAST(U.nombreDeUsuario AS BINARY) = CAST(@inUsername AS BINARY)
-                AND CAST(U.clave AS BINARY) = CAST(@inClave AS BINARY))
-        THEN 1
-        ELSE 0
-        END) AS 'Resultado'
+			WHEN EXISTS (
+						 SELECT 1 
+						 FROM [dbo].[Usuario] U
+						 WHERE CAST(U.nombreDeUsuario AS BINARY) = CAST(@inUsername AS BINARY)
+						 AND CAST(U.clave AS BINARY) = CAST(@inClave AS BINARY)
+						) 
+			THEN 1
+			ELSE 0
+			END
+		   ) AS 'Resultado'
 
     SET NOCOUNT OFF;
 END;
