@@ -82,4 +82,20 @@
     <CC id="6" Nombre="Intereses Moratorios" TipoMontoCC ="3" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="30000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
     <CC id="7" Nombre="MantenimientoParques" TipoMontoCC ="1" PeriodoMontoCC ="4" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="2000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
   </CCs>
+  <TipoDePagos>
+    <TipoDePago id="1" tipoPago="Efectivo"/>
+    <TipoDePago id="2" tipoPago="Tarjeta de débito o crédito"/>
+    <TipoDePago id="3" tipoPago="Transferencia bancaria"/>
+    <TipoDePago id="4" tipoPago="Arreglo de Pago"/>
+  </TipoDePagos>
+  <EstadoDeFacturas>
+    <EstadoFactura id="1" EstadoFactura="Pendiente de pago"/>
+    <EstadoFactura id="2" EstadoFactura="Pagado normal"/>
+    <EstadoFactura id="3" EstadoFactura="Pagado mediante arreglo de pago"/>
+    <EstadoFactura id="4" EstadoFactura="Anulado"/>
+  </EstadoDeFacturas>
+  <EstadoOrdenesDeCorta>
+    <EstadoOrdenes id="1" EstadoOrdenes="Pendiente de pago"/>
+    <EstadoOrdenes id="2" EstadoOrdenes="Pago de reconexión realizado"/>
+  </EstadoOrdenesDeCorta>
 </Catalogo>
