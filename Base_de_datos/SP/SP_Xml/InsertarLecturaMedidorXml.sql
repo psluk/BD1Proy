@@ -1,7 +1,6 @@
 USE proyecto
 GO
---SP insercion de personas mediante xml
--- inserta todas las personas del nodo entregado
+-- SP que inserta lectura medidor
 
 ALTER PROCEDURE [dbo].[InsertarLecturaMedidorXml]
 						@hdoc INT,
@@ -52,7 +51,6 @@ BEGIN
 	INNER JOIN [dbo].[AguaDePropiedad] AS adp ON tl.NumeroMedidor = adp.numeroMedidor
 
 	-- obtenemos el ConsumoMovimiento
-
 
 	--Lectura de Medidor
 	UPDATE tl

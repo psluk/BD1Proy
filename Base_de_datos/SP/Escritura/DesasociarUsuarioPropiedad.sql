@@ -7,17 +7,9 @@
         0: Inserción realizada correctamente
 
 -- Error --
-    50000: Ocurri� un error desconocido
-    50001: Ocurri� un error desconocido en una transacci�n
+    50000: Ocurrio un error desconocido
+    50001: Ocurrio un error desconocido en una transaccion
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
-	50008: Ya hay un Usuario con ese nombre
-	50009: No existe la persona/Usuario indicado
-	50010: Ya hay una Persona con ese documento identidad
     50011: No existe la relación
 */
 
@@ -34,6 +26,8 @@ BEGIN
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
 	DECLARE @idUsuarioPropiedad INT = 0;    -- Para guardar el ID de la asociación
+	DECLARE @fechaActual DATETIME;
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -42,19 +36,20 @@ BEGIN
 
         -- 1. ¿Existe el usuario como administrador?
         DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T
+				   ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id \
+						    FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -85,10 +80,10 @@ BEGIN
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
-        DECLARE @fechaActual DATETIME;
+        
         SET @fechaActual = GETDATE();
 
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se modifica la tabla [dbo].[UsuarioDePropiedad]: '
             + '{id = "' + CONVERT(VARCHAR, @idUsuarioPropiedad) + '", '
             + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'

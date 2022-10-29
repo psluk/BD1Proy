@@ -25,12 +25,11 @@ BEGIN
 
         -- Verificamos que el usuario sea administrador
         IF NOT EXISTS(  -- ¿Es administrador?
-                SELECT 1 FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador'
-                )
+					  SELECT 1 FROM [dbo].[Usuario] U
+					  INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+					  WHERE U.nombreDeUsuario = @inUsername
+					  AND T.nombre = 'Administrador'
+					 )
         BEGIN
             -- Si llega acá, el usuario no puede ver las categorías
             SET @outResultCode = 50001;     -- Credenciales inválidas

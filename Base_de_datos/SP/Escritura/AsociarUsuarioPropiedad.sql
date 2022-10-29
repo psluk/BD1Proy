@@ -7,17 +7,12 @@
         0: Inserción realizada correctamente
 
 -- Error --
-    50000: Ocurri� un error desconocido
-    50001: Ocurri� un error desconocido en una transacci�n
+    50000: Ocurrio un error desconocido
+    50001: Ocurrio un error desconocido en una transaccion
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
-	50008: Ya hay un Usuario con ese nombre
+    50003: Numero de finca invalido
 	50009: No existe la persona/Usuario indicado
-	50010: Ya hay una Persona con ese documento identidad
+	50014: Ya existe la asociacion
 */
 
 ALTER PROCEDURE [dbo].[AsociarUsuarioPropiedad]
@@ -34,6 +29,9 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
 	DECLARE @Numero AS INT = 0;
 	DECLARE @idPropiedad INT;       -- Para guardar el ID de la propiedad
+	DECLARE @idUser INT;            -- Para guardar el ID del usuario
+	DECLARE @fechaActual DATETIME;
+    DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -41,20 +39,22 @@ BEGIN
         -- Empiezan las validaciones
 
         -- 1. ¿Existe el usuario como administrador?
-        DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T
+				   ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+                   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+							FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T
+							ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -70,9 +70,10 @@ BEGIN
 		--de no existir @Numero = 0
 		SELECT @Numero = u.id
 		FROM [dbo].[Usuario] u
-		WHERE EXISTS(SELECT 1 
-					 FROM [dbo].[Usuario] u
-					 WHERE u.nombreDeUsuario = @inDbUsername);
+		WHERE EXISTS( SELECT 1 
+					  FROM [dbo].[Usuario] u
+					  WHERE u.nombreDeUsuario = @inDbUsername
+					);
 
 		IF @Numero = 0
         BEGIN
@@ -86,21 +87,21 @@ BEGIN
 
         -- 3. ¿Existe la propiedad?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Propiedad] P
-            WHERE P.numeroFinca = @inNumeroFinca
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Propiedad] P
+				   WHERE P.numeroFinca = @inNumeroFinca
+				 )
         BEGIN
 			-- si existe
-            SET @idPropiedad = (
-                SELECT P.id FROM [dbo].[Propiedad] P
-                WHERE P.numeroFinca = @inNumeroFinca
-                );
+            SET @idPropiedad = ( SELECT P.id 
+								 FROM [dbo].[Propiedad] P
+								 WHERE P.numeroFinca = @inNumeroFinca
+							   );
         END
         ELSE
         BEGIN
-			--no exuiste
-            SET @outResultCode = 50004; -- No existe la propiedad
+			--no existe
+            SET @outResultCode = 50003; -- No existe la propiedad
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -109,17 +110,17 @@ BEGIN
 
 		-- 4. ¿Existe la asociacion?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[UsuarioDePropiedad] udp
-			INNER JOIN Usuario u ON u.id = udp.idUsuario
-			INNER JOIN Propiedad p ON p.id = udp.idPropiedad
-            WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
-			AND p.numeroFinca = @inDbUsername
-			AND udp.fechaFin = NULL
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[UsuarioDePropiedad] udp
+				   INNER JOIN Usuario u ON u.id = udp.idUsuario
+				   INNER JOIN Propiedad p ON p.id = udp.idPropiedad
+				   WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
+				   AND p.numeroFinca = @inDbUsername
+				   AND udp.fechaFin = NULL
+				 )
         BEGIN
 			--ya existe
-            SET @outResultCode = 50002; -- No existe la propiedad
+            SET @outResultCode = 50014; -- ya existe la asociacion
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -127,10 +128,9 @@ BEGIN
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
-        DECLARE @fechaActual DATETIME;
+        
         SET @fechaActual = GETDATE();
-
-        DECLARE @LogDescription VARCHAR(512);
+		
         SET @LogDescription = 'Se inserta en la tabla [dbo].[UsuarioDePropiedad]: '
             + '{idUsuario = "' + CONVERT(VARCHAR, @Numero) + '", '
             + 'idPropiedad = "' + CONVERT(VARCHAR, @idPropiedad) + '", '

@@ -24,6 +24,9 @@ AS
 BEGIN
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+	DECLARE @idUser INT;            -- Para guardar el ID del usuario
+	DECLARE @idPropiedad INT;       -- Donde se guardará el ID de la propiedad
+	DECLARE @LogDescription AS VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -31,20 +34,20 @@ BEGIN
         -- Empiezan las validaciones
 
         -- 1. ¿Existe el usuario como administrador?
-        DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+                 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+						    FROM [dbo].[Usuario] U
+						    INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+						    WHERE U.nombreDeUsuario = @inUsername
+						    AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -55,17 +58,17 @@ BEGIN
         END;
 
         -- 2. ¿Número de finca válido?
-        DECLARE @idPropiedad INT;       -- Donde se guardará el ID de la propiedad
-        IF EXISTS (
-            SELECT 1 FROM [dbo].[Propiedad] P
-            WHERE P.numeroFinca = @inNumeroFinca
-            )
+
+        IF EXISTS ( SELECT 1 
+					FROM [dbo].[Propiedad] P
+					WHERE P.numeroFinca = @inNumeroFinca
+				  )
         BEGIN
             -- Sí existe
-            SET @idPropiedad = (
-                SELECT P.id FROM [dbo].[Propiedad] P
-                WHERE P.numeroFinca = @inNumeroFinca
-            )
+            SET @idPropiedad = ( SELECT P.id 
+								 FROM [dbo].[Propiedad] P
+								 WHERE P.numeroFinca = @inNumeroFinca
+							   )
         END
         ELSE
         BEGIN
@@ -78,7 +81,7 @@ BEGIN
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
-        DECLARE @LogDescription AS VARCHAR(512);
+        
         SET @LogDescription = 'Se elimina de la tabla [dbo].[Propiedad]: '
             + '{id = "' + CONVERT(VARCHAR, @idPropiedad) + '", '
             + 'numeroFinca = "' + CONVERT(VARCHAR, @inNumeroFinca) + '"'
@@ -98,8 +101,7 @@ BEGIN
             
             DELETE Reco
             FROM [dbo].[OrdenReconexion] Reco
-            INNER JOIN [dbo].[OrdenCorta] Corta
-            ON Reco.[idOrdenCorta] = Corta.[id]
+            INNER JOIN [dbo].[OrdenCorta] Corta ON Reco.[idOrdenCorta] = Corta.[id]
             WHERE Corta.[idPropiedad] = @idPropiedad;
 
             DELETE Corta
@@ -108,34 +110,28 @@ BEGIN
 
             DELETE P
             FROM [dbo].[Pago] P
-            INNER JOIN [dbo].[Factura] F
-            ON P.[id] = F.[id]
+            INNER JOIN [dbo].[Factura] F ON P.[id] = F.[id]
             WHERE F.[idPropiedad] = @idPropiedad;
 
             DELETE DCCA
             FROM [dbo].[DetalleConceptoCobroAgua] DCCA
-            INNER JOIN [dbo].[DetalleConceptoCobro] DCC
-            ON DCCA.[idDetalleConceptoCobro] = DCC.[id]
-            INNER JOIN [dbo].[Factura] F
-            ON DCC.[idFactura] = F.[id]
+            INNER JOIN [dbo].[DetalleConceptoCobro] DCC ON DCCA.[idDetalleConceptoCobro] = DCC.[id]
+            INNER JOIN [dbo].[Factura] F ON DCC.[idFactura] = F.[id]
             WHERE F.[idPropiedad] = @idPropiedad;
 
             DELETE DCC
             FROM [dbo].[DetalleConceptoCobro] DCC
-            INNER JOIN [dbo].[Factura] F
-            ON DCC.[idFactura] = F.[id]
+            INNER JOIN [dbo].[Factura] F ON DCC.[idFactura] = F.[id]
             WHERE F.[idPropiedad] = @idPropiedad;
 
             DELETE Mov
             FROM [dbo].[MovimientoConsumo] Mov
-            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
-            ON Mov.[idAguaDePropiedad] = CCdP.[id]
+            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP ON Mov.[idAguaDePropiedad] = CCdP.[id]
             WHERE CCdP.[idPropiedad] = @idPropiedad;
 
             DELETE AdP
             FROM [dbo].[AguaDePropiedad] AdP
-            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
-            ON AdP.[id] = CCdP.[id]
+            INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP ON AdP.[id] = CCdP.[id]
             WHERE CCdP.[idPropiedad] = @idPropiedad;
 
             DELETE CCdP

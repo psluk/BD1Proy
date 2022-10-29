@@ -10,14 +10,7 @@
     50000: Ocurri� un error desconocido
     50001: Ocurri� un error desconocido en una transacci�n
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
-	50008: Ya hay un Usuario con ese nombre
 	50009: No existe el la persona asociada a ese numero de identidad
-	50010: Ya hay una Persona con ese documento identidad
 */
 
 AlTER PROCEDURE [dbo].[EliminarPersona]
@@ -36,6 +29,12 @@ BEGIN
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
+	DECLARE @idTipoDocumentoId AS INT = -1; -- por defecto (negativo)
+	DECLARE @Nombre VARCHAR(64);
+	DECLARE @Telefono1 BIGINT;
+	DECLARE @Telefono2 BIGINT;
+	DECLARE @Email VARCHAR(128);
+	DECLARE @LogDescription VARCHAR(512);
 	
 
     SET NOCOUNT ON;         -- Para evitar interferencias
@@ -44,19 +43,18 @@ BEGIN
         -- Empiezan las validaciones
         -- 1. �Existe el usuario como administrador?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+                   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+						    FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador');
         END
         ELSE
         BEGIN
@@ -88,20 +86,18 @@ BEGIN
 
 	-- recopilamos la informacion de la persona por ser eliminada
 
-	DECLARE @idTipoDocumentoId AS INT = -1; -- por defecto (negativo)
-	DECLARE @Nombre VARCHAR(64);
-	DECLARE @Telefono1 BIGINT;
-	DECLARE @Telefono2 BIGINT;
-	DECLARE @Email VARCHAR(128);
-
-	SELECT @idTipoDocumentoId =[idTipoDocumentoId], @Nombre =[nombre], @Telefono1 =[telefono1], @Telefono2 =[telefono2],@Email =[email]
+	SELECT @idTipoDocumentoId =[idTipoDocumentoId], 
+		   @Nombre =[nombre], 
+		   @Telefono1 =[telefono1], 
+		   @Telefono2 =[telefono2],
+		   @Email =[email]
 	FROM Persona p
 	WHERE p.valorDocumentoId = @inValorDocumentoId
 	
 		
         -- Si llega ac�, ya pasaron las validaciones
         -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se Elimina en la tabla [dbo].[Persona]: '
             + '{ValorDocumentoId = "' + @inValorDocumentoId + '", '
 			+ 'TipoDocumentoId = "' + CAST(@idTipoDocumentoId AS VARCHAR(32)) + '"'

@@ -2,21 +2,21 @@
     Procedimiento que crea una propiedad con unos par�metros dados
 */
 
-/* Resumen de los c�digos de salida de este procedimiento
--- �xito --
-        0: Inserci�n realizada correctamente
+/* Resumen de los codigos de salida de este procedimiento
+-- exito --
+        0: Insercion realizada correctamente
 
 -- Error --
-    50000: Ocurri� un error desconocido
-    50001: Ocurri� un error desconocido en una transacci�n
+    50000: Ocurrio un error desconocido
+    50001: Ocurrio un error desconocido en una transaccion
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
+    50003: Numero de finca invalido
+    50004: Valor de area invalido
     50005: No existe el tipo de zona
     50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
+    50007: Ya hay una propiedad con ese numero de finca
     50008: Valor de medidor inválido
-    50009: Ya existe una propiedad con ese medidor
+    50013: Ya existe una propiedad con ese medidor
 */
 
 ALTER PROCEDURE [dbo].[CrearPropiedad]
@@ -35,6 +35,10 @@ AS
 BEGIN
     -- Se define la variable donde se guarda el c�digo de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (�xito)
+	DECLARE @idUser INT;            -- Para guardar el ID del usuario
+	DECLARE @idTipoZona INT;            -- Para el ID del tipo de zona
+	DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -42,20 +46,20 @@ BEGIN
         -- Empiezan las validaciones
 
         -- 1. �Existe el usuario como administrador?
-        DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+                   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+						    FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -65,20 +69,20 @@ BEGIN
             RETURN;
         END;
 
-        -- 2. �N�mero de finca v�lido?
+        -- 2. �Numero de finca valido?
         IF @inNumeroFinca < 0
         BEGIN
-            -- N�mero de finca inv�lido (negativo)
+            -- Numero de finca invalido (negativo)
             SET @outResultCode = 50003;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
         
-        -- 3. �Valor de �rea v�lido?
+        -- 3. �Valor de area valido?
         IF @inArea < 0
         BEGIN
-            -- Valor de �rea inv�lido (negativo)
+            -- Valor de area invalido (negativo)
             SET @outResultCode = 50004;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
@@ -86,16 +90,16 @@ BEGIN
         END;
 
         -- 4. �Existe el tipo de zona?
-        DECLARE @idTipoZona INT;            -- Para el ID del tipo de zona
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[TipoZona] TZ
-            WHERE TZ.nombre = @inNombreTipoZonaPropiedad
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[TipoZona] TZ
+				   WHERE TZ.nombre = @inNombreTipoZonaPropiedad
+				 )
         BEGIN
-            SET @idTipoZona = (
-                SELECT TZ.id FROM [dbo].[TipoZona] TZ
-                WHERE TZ.nombre = @inNombreTipoZonaPropiedad
-            );
+            SET @idTipoZona = ( SELECT TZ.id 
+								FROM [dbo].[TipoZona] TZ
+								WHERE TZ.nombre = @inNombreTipoZonaPropiedad
+							  );
         END
         ELSE
         BEGIN
@@ -107,16 +111,16 @@ BEGIN
         END;
 
         -- 5. �Existe el tipo de uso de la propiedad?
-        DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[TipoUsoPropiedad] TU
-            WHERE TU.nombre = @inNombreTipoUsoPropiedad
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[TipoUsoPropiedad] TU
+				   WHERE TU.nombre = @inNombreTipoUsoPropiedad
+				 )
         BEGIN
-            SET @idTipoUso = (
-                SELECT TU.id FROM [dbo].[TipoUsoPropiedad] TU
-                WHERE TU.nombre = @inNombreTipoUsoPropiedad
-            );
+            SET @idTipoUso = ( SELECT TU.id 
+							   FROM [dbo].[TipoUsoPropiedad] TU
+							   WHERE TU.nombre = @inNombreTipoUsoPropiedad
+							 );
         END
         ELSE
         BEGIN
@@ -127,13 +131,13 @@ BEGIN
             RETURN;
         END;
 
-        -- 6. �Ya existe el n�mero de finca?
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Propiedad] P
-            WHERE P.numeroFinca = @inNumeroFinca
-            )
+        -- 6. �Ya existe el numero de finca?
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Propiedad] P
+				   WHERE P.numeroFinca = @inNumeroFinca
+				 )
         BEGIN
-            -- Ya existe el n�mero de finca
+            -- Ya existe el numero de finca
             SET @outResultCode = 50007;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
@@ -141,7 +145,7 @@ BEGIN
         END;
 
         -- 7. ¿Número de medidor válido?
-        IF @inArea < 1
+        IF @inNumeroMedidor < 1
         BEGIN
             -- Valor de medidor inválido
             SET @outResultCode = 50008;
@@ -151,13 +155,13 @@ BEGIN
         END;
 
         -- 8. ¿Ya existe el número de medidor?
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[AguaDePropiedad] AdP
-            WHERE AdP.[numeroMedidor] = @inNumeroMedidor
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[AguaDePropiedad] AdP
+				   WHERE AdP.[numeroMedidor] = @inNumeroMedidor
+				 )
         BEGIN
             -- Ya existe el número de medidor
-            SET @outResultCode = 50009;
+            SET @outResultCode = 50013;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -165,7 +169,7 @@ BEGIN
 
         -- Si llega ac�, ya pasaron las validaciones
         -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se inserta en la tabla [dbo].[Propiedad]: '
             + '{idTipoZona = "' + CONVERT(VARCHAR, @idTipoZona) + '", '
             + 'tipoUsoPropiedad = "' + CONVERT(VARCHAR, @idTipoUso) + '", '
@@ -196,13 +200,18 @@ BEGIN
             );
 
             -- Se inserta el medidor
-            INSERT INTO [dbo].[AguaDePropiedad] ([id], [numeroMedidor], [consumoAcumulado])
-            SELECT CCdP.[id], @inNumeroMedidor, 0
+            INSERT INTO [dbo].[AguaDePropiedad] (
+				[id], 
+				[numeroMedidor], 
+				[consumoAcumulado]
+			)
+            SELECT CCdP.[id], 
+				   @inNumeroMedidor, 
+				   0
             FROM [dbo].[ConceptoCobroDePropiedad] CCdP
-            INNER JOIN [dbo].[Propiedad] P
-            ON CCdP.idPropiedad = P.id
+            INNER JOIN [dbo].[Propiedad] P ON CCdP.idPropiedad = P.id
             WHERE CCdP.idConceptoCobro = 1          -- 1 = agua
-                AND P.numeroFinca = @inNumeroFinca;
+            AND P.numeroFinca = @inNumeroFinca;
 
             -- Se inserta el evento
             INSERT INTO [dbo].[EventLog] (

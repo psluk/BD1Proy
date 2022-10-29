@@ -1,20 +1,17 @@
 ﻿/*
-    Procedimiento que crea una propiedad con unos par�metros dados
+    Procedimiento que crea un usuario con los parametros dados
 */
 
-/* Resumen de los c�digos de salida de este procedimiento
--- �xito --
-        0: Inserci�n realizada correctamente
+/* Resumen de los codigos de salida de este procedimiento
+-- exito --
+        0: Insercion realizada correctamente
 
 -- Error --
-    50000: Ocurri� un error desconocido
-    50001: Ocurri� un error desconocido en una transacci�n
+    50000: Ocurrio un error desconocido
+    50001: Ocurrio un error desconocido en una transaccion
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
+    50003: Numero de finca invalido
+    50004: Valor de area invalido
 	50008: Ya hay un Usuario con ese nombre
 	50009: No existe el la persona asociada a ese numero de identidad
 */
@@ -37,6 +34,7 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoUsuario AS INT = -1; -- por defecto (negativo)
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -44,19 +42,19 @@ BEGIN
         -- Empiezan las validaciones
         -- 1. �Existe el usuario como administrador?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+                   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+						    FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -95,9 +93,9 @@ BEGIN
 		--de no existir @Numero = 0
 		SELECT @Numero = p.id
 		FROM [dbo].[Persona] p
-		WHERE EXISTS(SELECT 1 
-					 FROM [dbo].[Persona] 
-					 WHERE p.valorDocumentoId = CAST(@inValorDocumentoIdentidad AS BIGINT));
+		WHERE EXISTS( SELECT 1 
+					  FROM [dbo].[Persona] 
+					  WHERE p.valorDocumentoId = CAST(@inValorDocumentoIdentidad AS BIGINT));
 
 		IF @Numero = 0
         BEGIN
@@ -111,9 +109,9 @@ BEGIN
 
         -- 3. Tipo de usuario valido?
 
-        IF NOT EXISTS(SELECT 1 
-				  FROM TipoUsuario tu 
-				  WHERE tu.nombre = @inTipoUsuario)
+        IF NOT EXISTS( SELECT 1 
+					   FROM TipoUsuario tu 
+					   WHERE tu.nombre = @inTipoUsuario)
         BEGIN
             -- Tipo de usuario invalido
             SET @outResultCode = 50004;
@@ -122,13 +120,16 @@ BEGIN
             RETURN;
         END;
 
-		SET @idTipoUsuario = (SELECT id FROM [dbo].[TipoUsuario] tu WHERE tu.nombre = @inTipoUsuario)
+		SET @idTipoUsuario = (SELECT id 
+							  FROM [dbo].[TipoUsuario] tu 
+							  WHERE tu.nombre = @inTipoUsuario
+							 )
 
         -- 4. �Ya existe el nombre de usuario?
-        IF EXISTS(
-            SELECT 1 FROM Usuario u
-            WHERE u.nombreDeUsuario = @inDbUsername
-            )
+        IF EXISTS( SELECT 1 
+				   FROM Usuario u
+				   WHERE u.nombreDeUsuario = @inDbUsername
+				 )
         BEGIN
             -- Usuario ya existe
             SET @outResultCode = 50008;
@@ -139,7 +140,7 @@ BEGIN
 		
         -- Si llega ac�, ya pasaron las validaciones
         -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se inserta en la tabla [dbo].[Usuario]: '
             + '{Username = "' + @inDbUsername + '", '
             + 'Password = "' + @inPassword + '"'

@@ -1,5 +1,5 @@
---SP insercion de personas mediante xml
--- inserta todas las personas del nodo entregado
+--SP (Des)asociacion Personas y propiedades
+-- segun la informacion del nodo recibido
 
 
 

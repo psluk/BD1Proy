@@ -1,5 +1,10 @@
 /*
     segun el valor del documento identidad intentara buscar un a la persona correspondite
+
+
+-- Error --
+	50000: Ocurrió un error desconocido
+    50009: No existe el la persona asociada a ese numero de identidad
 */
 
 ALTER PROCEDURE [dbo].[LeerPersona]
@@ -12,22 +17,53 @@ BEGIN
 	
 	SET NOCOUNT ON;         -- Para evitar interferencias
 
-	IF NOT EXISTS(SELECT 1 FROM [dbo].[Persona] p WHERE p.valorDocumentoId = @inValorDocumentoIdentidad)
-	BEGIN
-		--no se encontro a la persona
-		SELECT [idTipoDocumentoId] = NULL, [nombre]= NULL, [valorDocumentoId]= NULL, [telefono1]= NULL, [telefono2]= NULL, [email]= NULL
-		SET @outResultCode = 50009;
-	END
+	BEGIN TRY
 
-	ELSE
-	BEGIN
-		--si se encontro a la persona
-		SELECT [idTipoDocumentoId], [nombre], [valorDocumentoId], [telefono1], [telefono2], [email]
-		FROM Persona p
-		WHERE p.valorDocumentoId = @inValorDocumentoIdentidad
+		IF NOT EXISTS(SELECT 1 
+					  FROM [dbo].[Persona] p 
+					  WHERE p.valorDocumentoId = @inValorDocumentoIdentidad
+					 )
+		BEGIN
+			--no se encontro a la persona
+			SELECT [idTipoDocumentoId] = NULL, 
+				   [nombre]= NULL, 
+				   [valorDocumentoId]= NULL, 
+				   [telefono1]= NULL, 
+				   [telefono2]= NULL, 
+				   [email]= NULL
+			SET @outResultCode = 50009;
+		END
 
-	END
-	SELECT @outResultCode AS 'resultCode';
+		ELSE
+		BEGIN
+			--si se encontro a la persona
+			SELECT [idTipoDocumentoId], 
+				   [nombre], 
+				   [valorDocumentoId], 
+				   [telefono1], 
+				   [telefono2], 
+				   [email]
+			FROM Persona p
+			WHERE p.valorDocumentoId = @inValorDocumentoIdentidad
 
-    SET NOCOUNT OFF;
+		END
+
+		SELECT @outResultCode AS 'resultCode';
+		
+	END TRY
+
+	BEGIN CATCH
+        -- Si llega acá, es porque ocurrió un error
+
+        SELECT [idTipoDocumentoId] = NULL, 
+				   [nombre]= NULL, 
+				   [valorDocumentoId]= NULL, 
+				   [telefono1]= NULL, 
+				   [telefono2]= NULL, 
+				   [email]= NULL
+		SET @outResultCode = 50000;
+
+    END CATCH;
+
+	SET NOCOUNT OFF;
 END;

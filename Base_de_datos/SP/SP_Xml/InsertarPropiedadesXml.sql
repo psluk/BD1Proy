@@ -1,5 +1,5 @@
 
---SP insercion de personas mediante xml
+--SP insercion de propiedades mediante xml
 -- inserta todas las personas del nodo entregado
 
 

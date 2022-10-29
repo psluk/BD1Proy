@@ -25,6 +25,9 @@ AS
 BEGIN
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+	DECLARE @idUser INT;            -- Para guardar el ID del usuario
+	DECLARE @fechaActual DATETIME;
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -32,20 +35,21 @@ BEGIN
         -- Empiezan las validaciones
 
         -- 1. ¿Existe el usuario como administrador?
-        DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = (SELECT U.id 
+						   FROM [dbo].[Usuario] U
+						   INNER JOIN [dbo].[TipoUsuario] T
+						   ON U.idTipoUsuario = T.id
+						   WHERE U.nombreDeUsuario = @inUsername
+						   AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -57,13 +61,13 @@ BEGIN
 
         -- 2. ¿Existe la asociación?
         DECLARE @idPropietarioPropiedad INT;    -- Para guardar el ID de la asociación
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[PropietarioDePropiedad] PdP
-            INNER JOIN [dbo].[Propiedad] Pro ON Pro.id = PdP.idPropiedad
-            INNER JOIN [dbo].[Persona] Per ON Per.id = PdP.idPersona
-		    WHERE Per.valorDocumentoId = @inValorDocumentoId
-			AND Pro.numeroFinca = @inNumeroFinca 
-			AND PdP.fechaFin IS NULL  -- La relación debe estar activa (fechaFin = NULL)
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[PropietarioDePropiedad] PdP
+				   INNER JOIN [dbo].[Propiedad] Pro ON Pro.id = PdP.idPropiedad
+				   INNER JOIN [dbo].[Persona] Per ON Per.id = PdP.idPersona
+				   WHERE Per.valorDocumentoId = @inValorDocumentoId
+				   AND Pro.numeroFinca = @inNumeroFinca 
+				   AND PdP.fechaFin IS NULL  -- La relación debe estar activa (fechaFin = NULL)
             )
         BEGIN
             SET @idPropietarioPropiedad = (
@@ -86,10 +90,10 @@ BEGIN
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
-        DECLARE @fechaActual DATETIME;
+        
         SET @fechaActual = GETDATE();
 
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se modifica la tabla [dbo].[PropietarioDePropiedad]: '
             + '{id = "' + CONVERT(VARCHAR, @idPropietarioPropiedad) + '", '
             + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'

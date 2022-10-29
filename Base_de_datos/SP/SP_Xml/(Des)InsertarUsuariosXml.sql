@@ -39,11 +39,12 @@ BEGIN
 
 	
 	INSERT INTO @temp_Usuarios (
-				ValorDocumentoIdentidad, 
-				TipoUsuario, 
-				TipoAsociacion, 
-				Password, 
-				Username)
+		ValorDocumentoIdentidad, 
+		TipoUsuario, 
+		TipoAsociacion, 
+		Password, 
+		Username
+	)
 	SELECT ValorDocumentoIdentidad, 
 		   TipoUsuario, 
 		   TipoAsociacion, 
@@ -60,10 +61,11 @@ BEGIN
 	);
 
 	INSERT INTO [dbo].[Usuario] (
-				[idPersona], 
-				[idTipoUsuario], 
-				[nombreDeUsuario], 
-				[clave])
+		[idPersona], 
+		[idTipoUsuario], 
+		[nombreDeUsuario], 
+		[clave]
+	)
 	SELECT p.id, 
 		   tpu.id, 
 		   tu.Username, 
@@ -79,8 +81,16 @@ BEGIN
 	--De esta forma juntamos los usuarios existentes y sus ordenes de borrado
 	--e ignoramos las ordenes de borrado sin sentido
 
-	INSERT INTO @temp_BorrarUsuarios(idUsuario, ValorDocumentoIdentidad, Password, Username)
-	SELECT u.id, tu.ValorDocumentoIdentidad ,u.clave, u.nombreDeUsuario
+	INSERT INTO @temp_BorrarUsuarios(
+		idUsuario, 
+		ValorDocumentoIdentidad, 
+		Password, 
+		Username
+	)
+	SELECT u.id, 
+		   tu.ValorDocumentoIdentidad ,
+		   u.clave, 
+		   u.nombreDeUsuario
 	FROM @temp_Usuarios AS tu
 	INNER JOIN [dbo].[Usuario] u ON tu.Username = u.nombreDeUsuario
 	WHERE tu.Password = u.clave

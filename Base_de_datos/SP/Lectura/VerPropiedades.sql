@@ -24,23 +24,24 @@ BEGIN
     BEGIN TRY
 
         -- Verificamos que el usuario sea administrador
-        IF NOT EXISTS(
-                SELECT 1 FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador'
-                )
+        IF NOT EXISTS( SELECT 1 
+					   FROM [dbo].[Usuario] U
+					   INNER JOIN [dbo].[TipoUsuario] T
+					   ON U.idTipoUsuario = T.id
+					   WHERE U.nombreDeUsuario = @inUsername
+					   AND T.nombre = 'Administrador'
+					 )
         BEGIN
             -- Si llega acá, el usuario no es administrador
             -- Entonces no retornamos nada
             SET @outResultCode = 50001;     -- Credenciales inválidas
             SELECT NULL AS 'Finca',
-                NULL AS 'Uso',
-                NULL AS 'Zona',
-                NULL AS 'Area',
-                NULL AS 'Fiscal',
-                NULL AS 'Registro'
+				   NULL AS 'Uso',
+				   NULL AS 'Zona',
+				   NULL AS 'Area',
+				   NULL AS 'Fiscal',
+				   NULL AS 'Registro'
+
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -48,16 +49,14 @@ BEGIN
 
         -- Si llega acá, se retorna la información
         SELECT P.numeroFinca AS 'Finca',
-            TU.nombre AS 'Uso',
-            TZ.nombre AS 'Zona',
-            P.area AS 'Area',
-            P.valorFiscal AS 'Fiscal',
-            P.fechaRegistro AS 'Registro'
+			   TU.nombre AS 'Uso',
+			   TZ.nombre AS 'Zona',
+			   P.area AS 'Area',
+			   P.valorFiscal AS 'Fiscal',
+			   P.fechaRegistro AS 'Registro'
         FROM [dbo].[Propiedad] P
-        INNER JOIN [dbo].[TipoUsoPropiedad] TU
-        ON TU.id = P.idTipoUsoPropiedad
-        INNER JOIN [dbo].[TipoZona] TZ
-        ON TZ.id = P.idTipoZona;
+        INNER JOIN [dbo].[TipoUsoPropiedad] TU ON TU.id = P.idTipoUsoPropiedad
+        INNER JOIN [dbo].[TipoZona] TZ ON TZ.id = P.idTipoZona;
 
         SELECT @outResultCode AS 'resultCode';
 
@@ -66,11 +65,12 @@ BEGIN
         -- Ocurrió un error desconocido
         SET @outResultCode = 50000;     -- Error
         SELECT NULL AS 'Finca',
-                NULL AS 'Uso',
-                NULL AS 'Zona',
-                NULL AS 'Area',
-                NULL AS 'Fiscal',
-                NULL AS 'Registro'
+               NULL AS 'Uso',
+               NULL AS 'Zona',
+               NULL AS 'Area',
+               NULL AS 'Fiscal',
+               NULL AS 'Registro'
+
         SELECT @outResultCode AS 'resultCode';
 
     END CATCH;

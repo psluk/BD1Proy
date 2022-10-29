@@ -1,23 +1,17 @@
 ﻿/*
-    Procedimiento que crea una propiedad con unos par�metros dados
+    Procedimiento que crea una persona segun los parametros dados
 */
 
-/* Resumen de los c�digos de salida de este procedimiento
--- �xito --
-        0: Inserci�n realizada correctamente
+/* Resumen de los codigos de salida de este procedimiento
+-- exito --
+        0: Insercion realizada correctamente
 
 -- Error --
-    50000: Ocurri� un error desconocido
-    50001: Ocurri� un error desconocido en una transacci�n
+    50000: Ocurrio un error desconocido
+    50001: Ocurrio un error desconocido en una transaccion
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
-	50008: Ya hay un Usuario con ese nombre
-	50009: No existe el la persona asociada a ese numero de identidad
 	50010: Ya hay una Persona con ese documento identidad
+	50012: El tipo documento no existe
 */
 
 ALTER PROCEDURE [dbo].[CrearPersona]
@@ -40,6 +34,7 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoDocumentoId AS INT = -1; -- por defecto (negativo)
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -47,19 +42,18 @@ BEGIN
         -- Empiezan las validaciones
         -- 1. �Existe el usuario como administrador?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+							FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador');
         END
         ELSE
         BEGIN
@@ -76,14 +70,14 @@ BEGIN
 		--de no existir @Numero = 0
 		SELECT @Numero = p.id
 		FROM [dbo].[Persona] p
-		WHERE EXISTS(SELECT 1 
-					 FROM [dbo].[Persona] 
-					 WHERE p.valorDocumentoId = @inNuevoValorDocumentoId);
+		WHERE EXISTS( SELECT 1 
+					  FROM [dbo].[Persona] 
+					  WHERE p.valorDocumentoId = @inNuevoValorDocumentoId);
 
 		IF @Numero != 0
         BEGIN
-            -- N�mero de DocumentoIdentidad ya existe
-            SET @outResultCode = 50009;
+            -- Numero de DocumentoIdentidad ya existe
+            SET @outResultCode = 50010;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -93,14 +87,15 @@ BEGIN
 
 		SELECT @idTipoDocumentoId = td.id
 		FROM TipoDocumentoId td
-		WHERE EXISTS(SELECT 1 
-					 FROM TipoDocumentoId
-					 WHERE TipoDocumentoId.nombre = @inNuevoTipoDocumentoId) AND td.nombre = 'Cedula CR';
+		WHERE EXISTS( SELECT 1 
+					  FROM TipoDocumentoId
+					  WHERE TipoDocumentoId.nombre = @inNuevoTipoDocumentoId
+					) --AND td.nombre = 'Cedula CR';
 
 		IF @idTipoDocumentoId = -1
         BEGIN
             -- el tipo documento no existe
-            SET @outResultCode = 50009;
+            SET @outResultCode = 50012;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -108,7 +103,7 @@ BEGIN
 		
         -- Si llega ac�, ya pasaron las validaciones
         -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se inserta en la tabla [dbo].[Persona]: '
             + '{ValorDocumentoId = "' + @inNuevoValorDocumentoId + '", '
 			+ 'TipoDocumentoId = "' + CAST(@idTipoDocumentoId AS VARCHAR(32)) + '"'
@@ -123,12 +118,12 @@ BEGIN
 
             -- Se inserta la propiedad
             INSERT INTO [dbo].[Persona] (
-			[idTipoDocumentoId],
-			[nombre],
-			[valorDocumentoId],
-			[telefono1],
-			[telefono2],
-			[email]
+				[idTipoDocumentoId],
+				[nombre],
+				[valorDocumentoId],
+				[telefono1],
+				[telefono2],
+				[email]
             )
             VALUES (
             @idTipoDocumentoId,
@@ -141,10 +136,10 @@ BEGIN
 			
             -- Se inserta el evento
             INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
+				[LogDescription],
+				[PostTime],
+				[PostByUserId],
+				[PostInIp]
             )
             VALUES (
                 @LogDescription,

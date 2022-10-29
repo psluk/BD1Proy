@@ -4,20 +4,13 @@
 
 /* Resumen de los c�digos de salida de este procedimiento
 -- �xito --
-        0: Inserci�n realizada correctamente
+        0: Borrado realizado correctamente
 
 -- Error --
     50000: Ocurri� un error desconocido
     50001: Ocurri� un error desconocido en una transacci�n
     50002: Credenciales incorrectas
-    50003: N�mero de finca inv�lido
-    50004: Valor de �rea inv�lido
-    50005: No existe el tipo de zona
-    50006: No existe el tipo de uso de la propiedad
-    50007: Ya hay una propiedad con ese n�mero de finca
-	50008: Ya hay un Usuario con ese nombre
 	50009: No existe la persona/Usuario indicado
-	50010: Ya hay una Persona con ese documento identidad
 */
 
 ALTER PROCEDURE [dbo].[EliminarUsuario]
@@ -36,6 +29,7 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoUsuario AS INT = -1; -- por defecto (negativo)
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -43,19 +37,19 @@ BEGIN
         -- Empiezan las validaciones
         -- 1. �Existe el usuario como administrador?
         
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = (SELECT U.id 
+						   FROM [dbo].[Usuario] U
+						   INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+						   WHERE U.nombreDeUsuario = @inUsername
+						   AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -74,7 +68,7 @@ BEGIN
 		WHERE EXISTS(SELECT 1 
 					 FROM [dbo].[Usuario] u
 					 WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)) 
-			  AND CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY);
+					 AND CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY);
 
 		IF @Numero = 0
         BEGIN
@@ -97,7 +91,7 @@ BEGIN
 		WHERE EXISTS(SELECT 1 
 					 FROM [dbo].[Usuario] u
 					 WHERE CAST(u.clave AS BINARY) = CAST(@inPassword AS BINARY)) 
-			  AND CAST(u.clave AS BINARY) = CAST(@inPassword AS BINARY);
+					 AND CAST(u.clave AS BINARY) = CAST(@inPassword AS BINARY);
 
 		IF @Numero = 0
         BEGIN
@@ -111,7 +105,7 @@ BEGIN
 		
         -- Si llega ac�, ya pasaron las validaciones
         -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
+        
         SET @LogDescription = 'Se Elimina en la tabla [dbo].[Usuario]: '
             + '{Username = "' + @inDbUsername + '", '
             + 'Password = "' + @inPassword + '"'
@@ -121,12 +115,14 @@ BEGIN
             -- Empieza la transacci�n
 
 			--se elimina la relacion propiedaUsuario
-			DELETE udp FROM UsuarioDePropiedad udp
+			DELETE udp 
+			FROM UsuarioDePropiedad udp
 			INNER JOIN Usuario u ON udp.idUsuario = u.id 
 			WHERE CAST(u.clave AS BINARY) = CAST(@inPassword AS BINARY)
 
 			-- Se Elimina al Usuario
-			DELETE u FROM Usuario u
+			DELETE u 
+			FROM Usuario u
 			WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
             
 			

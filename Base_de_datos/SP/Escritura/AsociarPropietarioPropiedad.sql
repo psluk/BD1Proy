@@ -10,9 +10,9 @@
     50000: Ocurrió un error desconocido
     50001: Ocurrió un error desconocido en una transacción
     50002: Credenciales incorrectas
-    50003: No existe la persona
-    50004: No existe la propiedad
-    50005: Ya existe la asociación
+	50003: Numero de finca invalido
+    50009: No existe la persona/Usuario indicado
+    50014: Ya existe la asociación
 */
 
 ALTER PROCEDURE [dbo].[AsociarPropietarioPropiedad]
@@ -27,6 +27,11 @@ AS
 BEGIN
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+	DECLARE @idUser INT;            -- Para guardar el ID del usuario
+	DECLARE @idPersona INT;         -- Para guardar el ID de la persona
+    DECLARE @idPropiedad INT;       -- Para guardar el ID de la propiedad
+	DECLARE @fechaActual DATETIME;
+	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -34,20 +39,21 @@ BEGIN
         -- Empiezan las validaciones
 
         -- 1. ¿Existe el usuario como administrador?
-        DECLARE @idUser INT;            -- Para guardar el ID del usuario
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Usuario] U
-            INNER JOIN [dbo].[TipoUsuario] T
-            ON U.idTipoUsuario = T.id
-            WHERE U.nombreDeUsuario = @inUsername
-                AND T.nombre = 'Administrador'
-            )
+        
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Usuario] U
+				   INNER JOIN [dbo].[TipoUsuario] T
+				   ON U.idTipoUsuario = T.id
+				   WHERE U.nombreDeUsuario = @inUsername
+				   AND T.nombre = 'Administrador'
+				 )
         BEGIN
-            SET @idUser = (SELECT U.id FROM [dbo].[Usuario] U
-                INNER JOIN [dbo].[TipoUsuario] T
-                ON U.idTipoUsuario = T.id
-                WHERE U.nombreDeUsuario = @inUsername
-                    AND T.nombre = 'Administrador');
+            SET @idUser = ( SELECT U.id 
+							FROM [dbo].[Usuario] U
+							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
+							WHERE U.nombreDeUsuario = @inUsername
+							AND T.nombre = 'Administrador'
+						  );
         END
         ELSE
         BEGIN
@@ -58,54 +64,54 @@ BEGIN
         END;
 
         -- 2. ¿Existe la persona?
-        DECLARE @idPersona INT;         -- Para guardar el ID de la persona
+        
         IF EXISTS(
             SELECT 1 FROM [dbo].[Persona] P
             WHERE P.valorDocumentoId = @inValorDocumentoId
             )
         BEGIN
-            SET @idPersona = (
-                SELECT P.id FROM [dbo].[Persona] P
-                WHERE P.valorDocumentoId = @inValorDocumentoId
-                );
+            SET @idPersona = ( SELECT P.id 
+							   FROM [dbo].[Persona] P
+							   WHERE P.valorDocumentoId = @inValorDocumentoId
+							 );
         END
         ELSE
         BEGIN
-            SET @outResultCode = 50003; -- No existe
+            SET @outResultCode = 50009; -- No existe la persona indicada
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
         -- 3. ¿Existe la propiedad?
-        DECLARE @idPropiedad INT;       -- Para guardar el ID de la propiedad
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[Propiedad] P
-            WHERE P.numeroFinca = @inNumeroFinca
-            )
+
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[Propiedad] P
+				   WHERE P.numeroFinca = @inNumeroFinca
+				 )
         BEGIN
-            SET @idPropiedad = (
-                SELECT P.id FROM [dbo].[Propiedad] P
-                WHERE P.numeroFinca = @inNumeroFinca
-                );
+            SET @idPropiedad = ( SELECT P.id 
+								 FROM [dbo].[Propiedad] P
+								 WHERE P.numeroFinca = @inNumeroFinca
+							   );
         END
         ELSE
         BEGIN
-            SET @outResultCode = 50004; -- No existe la propiedad
+            SET @outResultCode = 50003; -- No existe la propiedad
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
         -- 4. ¿Ya existe la asociación?
-        IF EXISTS(
-            SELECT 1 FROM [dbo].[PropietarioDePropiedad] PdP
-            WHERE PdP.idPersona = @idPersona
-                AND PdP.idPropiedad = @idPropiedad
-                AND fechaFin IS NULL    -- NULL = Sigue activa
-        )
+        IF EXISTS( SELECT 1 
+				   FROM [dbo].[PropietarioDePropiedad] PdP
+				   WHERE PdP.idPersona = @idPersona
+				   AND PdP.idPropiedad = @idPropiedad
+				   AND fechaFin IS NULL    -- NULL = Sigue activa
+				 )
         BEGIN
-            SET @outResultCode = 50005; -- Ya existe la relación
+            SET @outResultCode = 50014; -- Ya existe la asociacion
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -113,10 +119,10 @@ BEGIN
 
         -- Si llega acá, ya pasaron las validaciones
         -- Se crea el mensaje para la bitácora
-        DECLARE @fechaActual DATETIME;
+        
         SET @fechaActual = GETDATE();
-
-        DECLARE @LogDescription VARCHAR(512);
+		
+        
         SET @LogDescription = 'Se inserta en la tabla [dbo].[PropietarioDePropiedad]: '
             + '{idPropiedad = "' + CONVERT(VARCHAR, @idPropiedad) + '", '
             + 'idPersona = "' + CONVERT(VARCHAR, @idPersona) + '", '
