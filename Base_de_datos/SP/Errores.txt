@@ -1,3 +1,5 @@
+Errores utilizados
+
 50000: Ocurrio un error desconocido
 50001: Ocurrio un error desconocido en una transacci�n
 50002: Credenciales incorrectas
