@@ -56,24 +56,3 @@ DBCC CHECKIDENT (Usuario, RESEED, 0);
 DBCC CHECKIDENT (TipoUsuario, RESEED, 0);
 DBCC CHECKIDENT (Propiedad, RESEED, 0);
 DBCC CHECKIDENT (Persona, RESEED, 0);
-
-
---cargamos los catalogos y por lo tanto 
---ejecutamos el script: LeerCatalogo.sql
-
-
-DECLARE @SQL varchar(MAX)
-SELECT @SQL = BulkColumn
-FROM OPENROWSET
-    (   BULK 'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Scripts\LeerCatalogo.sql'
-    ,   SINGLE_BLOB ) AS MYTABLE
-	
---PRINT @sql
-EXEC (@sql)
-
-
---Si lo de arriba no genera los resultados deseados
--- pegar el codigo de LeerCatalogo.sql debajo de este
--- comentario
-
-
