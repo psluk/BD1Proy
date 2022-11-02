@@ -187,6 +187,7 @@ CREATE TABLE dbo.Factura
     id INT NOT NULL IDENTITY(1,1),
     idPropiedad INT NOT NULL,
     idEstadoFactura INT NOT NULL,
+    idPago INT NULL,
 
     -- Otras columnas
     fechaGeneracion DATE NOT NULL,
@@ -202,6 +203,7 @@ CREATE TABLE dbo.Factura
     REFERENCES dbo.Propiedad (id),
     CONSTRAINT FK_Factura_EstadoFactura FOREIGN KEY (idEstadoFactura)
     REFERENCES dbo.EstadoFactura (id)
+    -- La referencia al pago se añade luego
 );
 
 -- CATEGORÍA: Pagos
@@ -221,21 +223,24 @@ CREATE TABLE dbo.TipoMedioPago
 CREATE TABLE dbo.Pago
 (
 	-- Llaves
-    id INT NOT NULL,
+    id INT NOT NULL IDENTITY(1,1),
 	idTipoMedioPago INT NOT NULL,
 
     -- Otras columnas
+    numeroReferencia BIGINT NOT NULL,
     fechaPago DATE NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_Pago PRIMARY KEY CLUSTERED (id),
 
 	-- Se asocian las llaves externas
-	CONSTRAINT FK_Pago_Factura FOREIGN KEY (id)
-	REFERENCES dbo.Factura (id),
 	CONSTRAINT FK_Pago_TipoMedioPago FOREIGN KEY (idTipoMedioPago) 
 	REFERENCES dbo.TipoMedioPago (id)
 );
+
+ALTER TABLE dbo.Factura
+    ADD CONSTRAINT FK_Factura_Pago FOREIGN KEY (idPago) 
+	REFERENCES dbo.Pago (id);
 
 -- CATEGORÍA: Conceptos de cobro
 
@@ -523,6 +528,7 @@ CREATE TABLE dbo.OrdenCorta
     id INT NOT NULL IDENTITY(1,1),
     idFactura INT NOT NULL UNIQUE,
     idPropiedad INT NOT NULL,
+    idPago INT NULL,
     
     -- Otras columnas
     numeroMedidor INT NOT NULL,
@@ -594,22 +600,39 @@ CREATE TABLE dbo.ParametroSistema
 
 -- CATEGORÍA: Registro de actividades y errores
 
+CREATE TABLE [dbo].[EntityType]
+(
+    -- Llaves
+    id INT NOT NULL IDENTITY(1,1),
+
+    -- Otras columnas
+    nombre VARCHAR(32) NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_EntityType PRIMARY KEY CLUSTERED (id)
+);
+
 CREATE TABLE [dbo].[EventLog]
 (
 	-- Llaves
 	id INT NOT NULL IDENTITY(1,1),
-
+    idEntityType INT NOT NULL,
+    
 	-- Otras columnas
-	LogDescription VARCHAR(512) NOT NULL,
-	PostTime DATETIME NOT NULL,
-	PostByUserId INT NOT NULL,
-	PostInIp VARCHAR(64) NOT NULL,
+    entityId INT NOT NULL,
+	jsonAntes VARCHAR(512) NULL,
+    jsonDespues VARCHAR(512) NULL,
+    insertedAt DATETIME NOT NULL,
+    insertedByUser INT NULL,        -- Nulo porque se asigna justo después de insertar
+    insertedInIp VARCHAR(64) NULL,  -- Nulo porque se asigna justo después de insertar
 
 	-- Se establece la llave primaria
     CONSTRAINT PK_EventLog PRIMARY KEY CLUSTERED (id),
 
 	-- Se asocian las llaves externas
-	CONSTRAINT [FK_EventLog_Usuario] FOREIGN KEY ([PostByUserId])
+    CONSTRAINT [FK_EventLog_EntityType] FOREIGN KEY (idEntityType)
+    REFERENCES dbo.EntityType (id),
+	CONSTRAINT [FK_EventLog_Usuario] FOREIGN KEY (insertedByUser)
 	REFERENCES dbo.Usuario (id)
 );
 
@@ -636,6 +659,12 @@ CREATE TABLE [dbo].[Errors]
 INSERT INTO [dbo].[TipoUsuario] (nombre)
 	VALUES ('Administrador'), ('Propietario');
 
-INSERT INTO [dbo].[EstadoFactura] (descripcion)
-    VALUES ('Pendiente'), ('Pagado normalmente'),
-        ('Pagado con arreglo de pago'), ('Anulado')
+INSERT INTO [dbo].[EntityType] (nombre)
+    VALUES  ('Propiedad'),
+            ('Propietario'),
+            ('Usuario'),
+            ('PropietarioDePropiedad'),
+            ('UsuarioDePropiedad'),
+            ('PropietarioJuridico'),
+            ('ConceptoDeCobro'),
+            ('Persona');

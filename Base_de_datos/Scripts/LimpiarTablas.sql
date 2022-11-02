@@ -3,6 +3,7 @@ USE [proyecto]
 --borrado de la informacion de todas las tablas
 DELETE dbo.Errors;
 DELETE dbo.EventLog;
+DELETE dbo.EntityType;
 DELETE dbo.ParametroSistema;
 DELETE dbo.TipoParametroSistema;
 DELETE dbo.ConceptoCobroReconexionAgua;
@@ -23,10 +24,10 @@ DELETE dbo.ConceptoCobroDePropiedad;
 DELETE dbo.ConceptoCobro;
 DELETE dbo.TipoMontoConceptoCobro;
 DELETE dbo.TipoPeriodoConceptoCobro;
-DELETE dbo.Pago;
-DELETE dbo.TipoMedioPago;
 DELETE dbo.Factura;
 DELETE dbo.EstadoFactura;
+DELETE dbo.Pago;
+DELETE dbo.TipoMedioPago;
 DELETE dbo.UsuarioDePropiedad;
 DELETE dbo.PropietarioDePropiedad;
 DELETE dbo.Usuario;
@@ -41,6 +42,7 @@ DELETE dbo.TipoDocumentoId;
 -- reiniciamos el PK de las tablas
 DBCC CHECKIDENT (Errors, RESEED, 0);
 DBCC CHECKIDENT (EventLog, RESEED, 0);
+DBCC CHECKIDENT (EntityType, RESEED, 0);
 DBCC CHECKIDENT (OrdenReconexion, RESEED, 0);
 DBCC CHECKIDENT (OrdenCorta, RESEED, 0);
 DBCC CHECKIDENT (MovimientoConsumo, RESEED, 0);
