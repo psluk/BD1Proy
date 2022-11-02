@@ -167,16 +167,6 @@ BEGIN
         END
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
-        SET @LogDescription = 'Se actualiza en la tabla [dbo].[Usuario]: '
-            + '{Username = "' + @inDbUsername + '", '
-			+ 'Password = "' + @inPassword + '"'
-			+ 'New Username = "' + @inNuevoPassword + '"'
-            + 'New Password = "' + @inNuevoPassword + '"'
-			+ 'New idTipoUsuario = "' + @inNuevoPassword + '"'
-            + 'New @inNuevoValorDocumentoIdentidad = "' + @inNuevoPassword + '"'
-            + '}';
 
         BEGIN TRANSACTION tupdateUsuario
             -- Empieza la transacci�n
@@ -188,22 +178,6 @@ BEGIN
 		        [nombreDeUsuario] = @inNuevoDbUsername, 
 		        [clave] = @inNuevoPassword
 			WHERE [dbo].[Usuario].nombreDeUsuario = @inDbUsername
-            
-            
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
 
         COMMIT TRANSACTION tupdateUsuario;
 

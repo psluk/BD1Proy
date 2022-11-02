@@ -1,39 +1,38 @@
 /*
-    Procedimiento que borra una propiedad según su número de finca
+    Procedimiento que borra una propiedad segï¿½n su nï¿½mero de finca
 */
 
-/* Resumen de los códigos de salida de este procedimiento
--- Éxito --
-        0: Eliminación realizada correctamente
+/* Resumen de los cï¿½digos de salida de este procedimiento
+-- ï¿½xito --
+        0: Eliminaciï¿½n realizada correctamente
 
 -- Error --
-    50000: Ocurrió un error desconocido
-    50001: Ocurrió un error desconocido en una transacción
+    50000: Ocurriï¿½ un error desconocido
+    50001: Ocurriï¿½ un error desconocido en una transacciï¿½n
     50002: Credenciales incorrectas
-    50003: No existe el número de finca
+    50003: No existe el nï¿½mero de finca
 */
 
 ALTER PROCEDURE [dbo].[EliminarPropiedad]
     -- Se definen las variables de entrada
     @inNumeroFinca INT,
 
-    -- Para determinar quién está haciendo la transacción
+    -- Para determinar quiï¿½n estï¿½ haciendo la transacciï¿½n
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el código de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+    -- Se define la variable donde se guarda el cï¿½digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (ï¿½xito)
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
-	DECLARE @idPropiedad INT;       -- Donde se guardará el ID de la propiedad
-	DECLARE @LogDescription AS VARCHAR(512);
+	DECLARE @idPropiedad INT;       -- Donde se guardarï¿½ el ID de la propiedad
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
     BEGIN TRY
         -- Empiezan las validaciones
 
-        -- 1. ¿Existe el usuario como administrador?
+        -- 1. ï¿½Existe el usuario como administrador?
 
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[Usuario] U
@@ -57,14 +56,14 @@ BEGIN
             RETURN;
         END;
 
-        -- 2. ¿Número de finca válido?
+        -- 2. ï¿½Nï¿½mero de finca vï¿½lido?
 
         IF EXISTS ( SELECT 1 
 					FROM [dbo].[Propiedad] P
 					WHERE P.numeroFinca = @inNumeroFinca
 				  )
         BEGIN
-            -- Sí existe
+            -- Sï¿½ existe
             SET @idPropiedad = ( SELECT P.id 
 								 FROM [dbo].[Propiedad] P
 								 WHERE P.numeroFinca = @inNumeroFinca
@@ -72,23 +71,17 @@ BEGIN
         END
         ELSE
         BEGIN
-            -- Número de finca inexistente
+            -- Nï¿½mero de finca inexistente
             SET @outResultCode = 50003;
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
-        -- Si llega acá, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitácora
-        
-        SET @LogDescription = 'Se elimina de la tabla [dbo].[Propiedad]: '
-            + '{id = "' + CONVERT(VARCHAR, @idPropiedad) + '", '
-            + 'numeroFinca = "' + CONVERT(VARCHAR, @inNumeroFinca) + '"'
-            + '}';
+        -- Si llega acï¿½, ya pasaron las validaciones
 
         BEGIN TRANSACTION tBorrarPropiedad
-            -- Empieza la transacción
+            -- Empieza la transacciï¿½n
 
             -- Se eliminan las filas de otras tablas que dependen de esta
             DELETE UdP
@@ -142,32 +135,18 @@ BEGIN
             DELETE FROM [dbo].[Propiedad]
             WHERE [id] = @idPropiedad;
 
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
-
         COMMIT TRANSACTION tBorrarPropiedad;
 
     END TRY
     BEGIN CATCH
-        -- Si llega acá, hubo algún error
+        -- Si llega acï¿½, hubo algï¿½n error
 
         SET @outResultCode = 50000;     -- Error desconocido
 
-        IF @@TRANCOUNT > 0              -- ¿Fue dentro de una transacción?
+        IF @@TRANCOUNT > 0              -- ï¿½Fue dentro de una transacciï¿½n?
         BEGIN
             ROLLBACK TRANSACTION tBorrarPropiedad;
-            SET @outResultCode = 50001; -- Error desconocido dentro de la transacción
+            SET @outResultCode = 50001; -- Error desconocido dentro de la transacciï¿½n
         END;
         
         -- Registra el error

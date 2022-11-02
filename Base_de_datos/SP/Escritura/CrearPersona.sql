@@ -34,7 +34,6 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoDocumentoId AS INT = -1; -- por defecto (negativo)
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -102,16 +101,6 @@ BEGIN
         END;
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        
-        SET @LogDescription = 'Se inserta en la tabla [dbo].[Persona]: '
-            + '{ValorDocumentoId = "' + @inNuevoValorDocumentoId + '", '
-			+ 'TipoDocumentoId = "' + CAST(@idTipoDocumentoId AS VARCHAR(32)) + '"'
-			+ 'Nombre  = "' + @inNuevoNombre + '"'
-            + 'Telefono1 = "' + CAST(@inNuevoTelefono1 AS VARCHAR(32)) + '"'
-			+ 'Telefono2 = "' + CAST(@inNuevoTelefono2 AS VARCHAR(32)) + '"'
-            + 'Email = "' + @inNuevoEmail + '"'
-            + '}';
 
         BEGIN TRANSACTION tCrearPersona
             -- Empieza la transacci�n
@@ -132,20 +121,6 @@ BEGIN
 			@inNuevoTelefono1,
 			@inNuevoTelefono2,
 			@inNuevoEmail
-            );
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-				[LogDescription],
-				[PostTime],
-				[PostByUserId],
-				[PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
             );
 
         COMMIT TRANSACTION tCrearPersona;

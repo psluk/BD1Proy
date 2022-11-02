@@ -34,7 +34,6 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoUsuario AS INT = -1; -- por defecto (negativo)
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -139,12 +138,6 @@ BEGIN
         END
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        
-        SET @LogDescription = 'Se inserta en la tabla [dbo].[Usuario]: '
-            + '{Username = "' + @inDbUsername + '", '
-            + 'Password = "' + @inPassword + '"'
-            + '}';
 
         BEGIN TRANSACTION tCrearUsuario
             -- Empieza la transacci�n
@@ -162,21 +155,7 @@ BEGIN
                 @inDbUsername,
                 @inPassword
             );
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
-
+        
         COMMIT TRANSACTION tCrearUsuario;
 
     END TRY

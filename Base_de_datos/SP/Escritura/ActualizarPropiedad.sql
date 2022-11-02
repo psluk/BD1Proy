@@ -33,7 +33,7 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (�xito)
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @idTipoZona INT;            -- Para el ID del tipo de zona
-	DECLARE @LogDescription VARCHAR(512);
+    DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -90,7 +90,6 @@ BEGIN
         END;
 
         -- 4. Existe el tipo de zona?
-        
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[TipoZona] TZ
 				   WHERE TZ.nombre = @inNombreTipoZonaPropiedad
@@ -111,7 +110,6 @@ BEGIN
         END;
 
         -- 5. �Existe el tipo de uso de la propiedad?
-        DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[TipoUsoPropiedad] TU
 				   WHERE TU.nombre = @inNombreTipoUsoPropiedad
@@ -131,17 +129,6 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega aca, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitacora
-        
-        SET @LogDescription = 'Se actualiza en la tabla [dbo].[Propiedad]: '
-            + '{idTipoZona = "' + CONVERT(VARCHAR, @idTipoZona) + '", '
-            + 'tipoUsoPropiedad = "' + CONVERT(VARCHAR, @idTipoUso) + '", '
-            + 'numeroFinca = "' + CONVERT(VARCHAR, @inNumeroFinca) + '", '
-            + 'valorFiscal = "' + CONVERT(VARCHAR, @inValorFiscal) + '", '
-            + 'area = "' + CONVERT(VARCHAR, @inArea) + '"'
-            + '}';
-
         BEGIN TRANSACTION tCrearPropiedad
             -- Empieza la transacci�n
 
@@ -152,20 +139,6 @@ BEGIN
                 [area] = @inArea,
                 [valorFiscal] = @inValorFiscal
             WHERE [numeroFinca] = @inNumeroFinca;
-
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
 
         COMMIT TRANSACTION tCrearPropiedad;
 

@@ -31,7 +31,6 @@ BEGIN
 	DECLARE @idPropiedad INT;       -- Para guardar el ID de la propiedad
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @fechaActual DATETIME;
-    DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -86,7 +85,6 @@ BEGIN
 
 
         -- 3. ¿Existe la propiedad?
-        
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[Propiedad] P
 				   WHERE P.numeroFinca = @inNumeroFinca
@@ -109,7 +107,6 @@ BEGIN
 
 
 		-- 4. ¿Existe la asociacion?
-        
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[UsuarioDePropiedad] udp
 				   INNER JOIN Usuario u ON u.id = udp.idUsuario
@@ -127,15 +124,8 @@ BEGIN
         END;
 
         -- Si llega acá, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitácora
         
         SET @fechaActual = GETDATE();
-		
-        SET @LogDescription = 'Se inserta en la tabla [dbo].[UsuarioDePropiedad]: '
-            + '{idUsuario = "' + CONVERT(VARCHAR, @Numero) + '", '
-            + 'idPropiedad = "' + CONVERT(VARCHAR, @idPropiedad) + '", '
-            + 'fechaInicio = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'
-            + '}';
 
         BEGIN TRANSACTION tAsociarUsuarioPropiedad
             -- Empieza la transacción
@@ -150,20 +140,6 @@ BEGIN
                 @Numero,
                 @idPropiedad,
                 @fechaActual
-            );
-
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                @fechaActual,
-                @idUser,
-                @inUserIp
             );
 
         COMMIT TRANSACTION tAsociarUsuarioPropiedad;

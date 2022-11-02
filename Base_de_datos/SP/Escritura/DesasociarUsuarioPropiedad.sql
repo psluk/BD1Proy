@@ -27,7 +27,6 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
 	DECLARE @idUsuarioPropiedad INT = 0;    -- Para guardar el ID de la asociación
 	DECLARE @fechaActual DATETIME;
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -79,15 +78,8 @@ BEGIN
         END;
 
         -- Si llega acá, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitácora
         
         SET @fechaActual = GETDATE();
-
-        
-        SET @LogDescription = 'Se modifica la tabla [dbo].[UsuarioDePropiedad]: '
-            + '{id = "' + CONVERT(VARCHAR, @idUsuarioPropiedad) + '", '
-            + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'
-            + '}';
 
         BEGIN TRANSACTION tAsociarPropietarioPropiedad
             -- Empieza la transacción
@@ -96,20 +88,6 @@ BEGIN
             UPDATE [dbo].[UsuarioDePropiedad]
             SET [fechaFin] = @fechaActual
             WHERE [id] = @idUsuarioPropiedad;
-
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                @fechaActual,
-                @idUser,
-                @inUserIp
-            );
 
         COMMIT TRANSACTION tAsociarPropietarioPropiedad;
 

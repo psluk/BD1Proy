@@ -38,7 +38,6 @@ BEGIN
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @idTipoZona INT;            -- Para el ID del tipo de zona
 	DECLARE @idTipoUso INT;            -- Para el ID del tipo de zona
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -90,7 +89,6 @@ BEGIN
         END;
 
         -- 4. �Existe el tipo de zona?
-        
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[TipoZona] TZ
 				   WHERE TZ.nombre = @inNombreTipoZonaPropiedad
@@ -168,15 +166,6 @@ BEGIN
         END;
 
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        
-        SET @LogDescription = 'Se inserta en la tabla [dbo].[Propiedad]: '
-            + '{idTipoZona = "' + CONVERT(VARCHAR, @idTipoZona) + '", '
-            + 'tipoUsoPropiedad = "' + CONVERT(VARCHAR, @idTipoUso) + '", '
-            + 'numeroFinca = "' + CONVERT(VARCHAR, @inNumeroFinca) + '", '
-            + 'valorFiscal = "' + CONVERT(VARCHAR, @inValorFiscal) + '", '
-            + 'area = "' + CONVERT(VARCHAR, @inArea) + '"'
-            + '} y el medidor {nnumeroMedidor = "' + CONVERT(VARCHAR, @inNumeroMedidor) + '"}';
 
         BEGIN TRANSACTION tCrearPropiedad
             -- Empieza la transacci�n
@@ -212,21 +201,7 @@ BEGIN
             INNER JOIN [dbo].[Propiedad] P ON CCdP.idPropiedad = P.id
             WHERE CCdP.idConceptoCobro = 1          -- 1 = agua
             AND P.numeroFinca = @inNumeroFinca;
-
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
-
+        
         COMMIT TRANSACTION tCrearPropiedad;
 
     END TRY

@@ -34,7 +34,6 @@ BEGIN
 	DECLARE @Telefono1 BIGINT;
 	DECLARE @Telefono2 BIGINT;
 	DECLARE @Email VARCHAR(128);
-	DECLARE @LogDescription VARCHAR(512);
 	
 
     SET NOCOUNT ON;         -- Para evitar interferencias
@@ -96,16 +95,6 @@ BEGIN
 	
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        
-        SET @LogDescription = 'Se Elimina en la tabla [dbo].[Persona]: '
-            + '{ValorDocumentoId = "' + @inValorDocumentoId + '", '
-			+ 'TipoDocumentoId = "' + CAST(@idTipoDocumentoId AS VARCHAR(32)) + '"'
-			+ 'Nombre  = "' + @Nombre + '"'
-            + 'Telefono1 = "' + CAST(@Telefono1 AS VARCHAR(32)) + '"'
-			+ 'Telefono2 = "' + CAST(@Telefono2 AS VARCHAR(32)) + '"'
-            + 'Email = "' + @Email + '"'
-            + '}';
 
         BEGIN TRANSACTION tEliminarPersona
             -- Empieza la transacci�n
@@ -118,21 +107,6 @@ BEGIN
 			-- Se Elimina la Persona
 			DELETE FROM Persona 
 			WHERE Persona.valorDocumentoId = @inValorDocumentoId
-
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
 
         COMMIT TRANSACTION tEliminarPersona;
 

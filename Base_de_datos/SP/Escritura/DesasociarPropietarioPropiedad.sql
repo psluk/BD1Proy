@@ -2,15 +2,15 @@
     Procedimiento que desasocia una persona y una propiedad
 */
 
-/* Resumen de los códigos de salida de este procedimiento
--- Éxito --
-        0: Inserción realizada correctamente
+/* Resumen de los cï¿½digos de salida de este procedimiento
+-- ï¿½xito --
+        0: Inserciï¿½n realizada correctamente
 
 -- Error --
-    50000: Ocurrió un error desconocido
-    50001: Ocurrió un error desconocido en una transacción
+    50000: Ocurriï¿½ un error desconocido
+    50001: Ocurriï¿½ un error desconocido en una transacciï¿½n
     50002: Credenciales incorrectas
-    50003: No existe la asociación
+    50003: No existe la asociaciï¿½n
 */
 
 ALTER PROCEDURE [dbo].[DesasociarPropietarioPropiedad]
@@ -18,23 +18,22 @@ ALTER PROCEDURE [dbo].[DesasociarPropietarioPropiedad]
     @inValorDocumentoId VARCHAR(32),
     @inNumeroFinca INT,
 
-    -- Para determinar quién está haciendo la transacción
+    -- Para determinar quiï¿½n estï¿½ haciendo la transacciï¿½n
     @inUsername VARCHAR(32),
     @inUserIp VARCHAR(64)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el código de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+    -- Se define la variable donde se guarda el cï¿½digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (ï¿½xito)
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @fechaActual DATETIME;
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
     BEGIN TRY
         -- Empiezan las validaciones
 
-        -- 1. ¿Existe el usuario como administrador?
+        -- 1. ï¿½Existe el usuario como administrador?
         
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[Usuario] U
@@ -59,15 +58,15 @@ BEGIN
             RETURN;
         END;
 
-        -- 2. ¿Existe la asociación?
-        DECLARE @idPropietarioPropiedad INT;    -- Para guardar el ID de la asociación
+        -- 2. ï¿½Existe la asociaciï¿½n?
+        DECLARE @idPropietarioPropiedad INT;    -- Para guardar el ID de la asociaciï¿½n
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[PropietarioDePropiedad] PdP
 				   INNER JOIN [dbo].[Propiedad] Pro ON Pro.id = PdP.idPropiedad
 				   INNER JOIN [dbo].[Persona] Per ON Per.id = PdP.idPersona
 				   WHERE Per.valorDocumentoId = @inValorDocumentoId
 				   AND Pro.numeroFinca = @inNumeroFinca 
-				   AND PdP.fechaFin IS NULL  -- La relación debe estar activa (fechaFin = NULL)
+				   AND PdP.fechaFin IS NULL  -- La relaciï¿½n debe estar activa (fechaFin = NULL)
             )
         BEGIN
             SET @idPropietarioPropiedad = (
@@ -88,51 +87,30 @@ BEGIN
         END;
 
 
-        -- Si llega acá, ya pasaron las validaciones
-        -- Se crea el mensaje para la bitácora
+        -- Si llega acï¿½, ya pasaron las validaciones
         
         SET @fechaActual = GETDATE();
 
-        
-        SET @LogDescription = 'Se modifica la tabla [dbo].[PropietarioDePropiedad]: '
-            + '{id = "' + CONVERT(VARCHAR, @idPropietarioPropiedad) + '", '
-            + 'fechaFin = "' + CONVERT(VARCHAR, @fechaActual, 21) + '"'
-            + '}';
-
         BEGIN TRANSACTION tAsociarPropietarioPropiedad
-            -- Empieza la transacción
+            -- Empieza la transacciï¿½n
 
             -- Se actualiza
             UPDATE [dbo].[PropietarioDePropiedad]
             SET [fechaFin] = @fechaActual
             WHERE [id] = @idPropietarioPropiedad;
 
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                @fechaActual,
-                @idUser,
-                @inUserIp
-            );
-
         COMMIT TRANSACTION tAsociarPropietarioPropiedad;
 
     END TRY
     BEGIN CATCH
-        -- Si llega acá, hubo algún error
+        -- Si llega acï¿½, hubo algï¿½n error
 
         SET @outResultCode = 50000;     -- Error desconocido
 
-        IF @@TRANCOUNT > 0              -- ¿Fue dentro de una transacción?
+        IF @@TRANCOUNT > 0              -- ï¿½Fue dentro de una transacciï¿½n?
         BEGIN
             ROLLBACK TRANSACTION tAsociarPropietarioPropiedad;
-            SET @outResultCode = 50001; -- Error desconocido dentro de la transacción
+            SET @outResultCode = 50001; -- Error desconocido dentro de la transacciï¿½n
         END;
         
         -- Registra el error

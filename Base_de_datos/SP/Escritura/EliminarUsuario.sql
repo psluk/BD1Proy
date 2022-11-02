@@ -29,7 +29,6 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoUsuario AS INT = -1; -- por defecto (negativo)
-	DECLARE @LogDescription VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -104,41 +103,20 @@ BEGIN
 
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        
-        SET @LogDescription = 'Se Elimina en la tabla [dbo].[Usuario]: '
-            + '{Username = "' + @inDbUsername + '", '
-            + 'Password = "' + @inPassword + '"'
-            + '}';
 
         BEGIN TRANSACTION tEliminarUsuario
             -- Empieza la transacci�n
 
-			--se elimina la relacion propiedaUsuario
+			-- Se elimina la relación UsuarioDePropiedad
 			DELETE udp 
 			FROM UsuarioDePropiedad udp
 			INNER JOIN Usuario u ON udp.idUsuario = u.id 
 			WHERE CAST(u.clave AS BINARY) = CAST(@inPassword AS BINARY)
 
-			-- Se Elimina al Usuario
+			-- Se elimina al usuario
 			DELETE u 
 			FROM Usuario u
-			WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
-            
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
+			WHERE u.nombreDeUsuario = @inDbUsername
 
         COMMIT TRANSACTION tEliminarUsuario;
 

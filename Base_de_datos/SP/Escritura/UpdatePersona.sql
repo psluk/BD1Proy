@@ -91,8 +91,7 @@ BEGIN
             RETURN;
         END;
 
-        -- 3.existe el documento identida nuevo?
-
+        -- 3. ¿Existe el documento identidad nuevo?
         IF EXISTS(SELECT 1 
 				  FROM Persona p 
 				  WHERE p.valorDocumentoId= @inNuevoValorDocumentoId) AND (@inNuevoValorDocumentoId != @inValorDocumentoId)
@@ -108,16 +107,6 @@ BEGIN
 
 		
         -- Si llega ac�, ya pasaron las validaciones
-        -- Se crea el mensaje para la bit�cora
-        DECLARE @LogDescription VARCHAR(512);
-        SET @LogDescription = 'Se actualiza en la tabla [dbo].[Persona]: '
-            + '{ValorDocumentoId = "' + @inNuevoValorDocumentoId + '", '
-			+ 'TipoDocumentoId = "' + CAST(@TipoDocumentoId AS VARCHAR(32)) + '"'
-			+ 'Nombre  = "' + @inNuevoNombre + '"'
-            + 'Telefono1 = "' + CAST(@inNuevoTelefono1 AS VARCHAR(32)) + '"'
-			+ 'Telefono2 = "' + CAST(@inNuevoTelefono2 AS VARCHAR(32)) + '"'
-            + 'Email = "' + @inNuevoEmail + '"'
-            + '}';
 
         BEGIN TRANSACTION tupdatePersona
             -- Empieza la transacci�n
@@ -131,22 +120,6 @@ BEGIN
 				[telefono2] = @inNuevoTelefono2, 
 				[email] = @inNuevoEmail
 			WHERE [dbo].[Persona].id = @Numero
-            
-            
-			
-            -- Se inserta el evento
-            INSERT INTO [dbo].[EventLog] (
-                 [LogDescription],
-                 [PostTime],
-                 [PostByUserId],
-                 [PostInIp]
-            )
-            VALUES (
-                @LogDescription,
-                GETDATE(),
-                @idUser,
-                @inUserIp
-            );
 
         COMMIT TRANSACTION tupdatePersona;
 
