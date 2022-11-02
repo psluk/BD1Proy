@@ -12,6 +12,7 @@ DROP TABLE dbo.ConceptoCobroPatente;
 DROP TABLE dbo.ConceptoCobroAgua;
 DROP TABLE dbo.OrdenReconexion;
 DROP TABLE dbo.OrdenCorta;
+DROP TABLE dbo.EstadoOrdenCorta;
 DROP TABLE dbo.DetalleConceptoCobroAgua;
 DROP TABLE dbo.MovimientoConsumo;
 DROP TABLE dbo.TipoMovimientoConsumo;

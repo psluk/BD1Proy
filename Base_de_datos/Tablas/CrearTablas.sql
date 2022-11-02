@@ -172,7 +172,7 @@ CREATE TABLE dbo.UsuarioDePropiedad
 CREATE TABLE dbo.EstadoFactura
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL,
 
     -- Otras columnas
     descripcion VARCHAR(32) NOT NULL,
@@ -522,18 +522,31 @@ CREATE TABLE dbo.DetalleConceptoCobroAgua
     REFERENCES dbo.MovimientoConsumo (id)
 );
 
+CREATE TABLE dbo.EstadoOrdenCorta
+(
+    -- Llaves
+    id INT NOT NULL,
+
+    -- Otras columnas
+    nombre VARCHAR(32) NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_EstadoOrdenCorta PRIMARY KEY CLUSTERED
+        (id)
+);
+
 CREATE TABLE dbo.OrdenCorta
 (
     -- Llaves
     id INT NOT NULL IDENTITY(1,1),
     idFactura INT NOT NULL UNIQUE,
     idPropiedad INT NOT NULL,
+    idEstadoPago INT NOT NULL,
     idPago INT NULL,
     
     -- Otras columnas
     numeroMedidor INT NOT NULL,
     fechaOperacion DATE NOT NULL,
-    estadoPago INT NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_OrdenCorta PRIMARY KEY CLUSTERED (id),
@@ -542,7 +555,9 @@ CREATE TABLE dbo.OrdenCorta
     CONSTRAINT FK_OrdenCorta_Factura FOREIGN KEY (idFactura)
     REFERENCES dbo.Factura (id),
     CONSTRAINT FK_OrdenCorta_Propiedad FOREIGN KEY (idPropiedad)
-    REFERENCES dbo.Propiedad (id)
+    REFERENCES dbo.Propiedad (id),
+    CONSTRAINT FK_OrdenCorta_EstadoOrdenCorta FOREIGN KEY (idEstadoPago)
+    REFERENCES dbo.EstadoOrdenCorta (id)
 );
 
 CREATE TABLE dbo.OrdenReconexion
