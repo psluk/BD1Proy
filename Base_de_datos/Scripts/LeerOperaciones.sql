@@ -9,7 +9,6 @@ DECLARE @FechaOperacion DATE; -- transporte de fecha a los SP
 DECLARE @contador INT; -- Permite pasar por cada nodo del XML principal
 DECLARE @maximo INT; -- indica el numero de repeticiones
 
-
 --Declaracion de tablas temporales
 
 DECLARE @tabInformacionXML TABLE --Tabla relacionando nodo XML y Fecha
@@ -50,7 +49,7 @@ SELECT CAST(MY_XML AS xml) AS hola
 
 SELECT @VarPrincipalXML = t.xmlData -- Insertamos el XMl principal en la varible
 FROM @TabPrincipalXML t
-EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos; -- abrimos el xml
+EXEC sp_xml_preparedocument @hdoc OUTPUT, @VarPrincipalXML; -- abrimos el xml
 
 INSERT INTO @tabFechasXML(Fecha) --insertamos la fechas en la tabla de fechas
 (
@@ -101,7 +100,7 @@ BEGIN
 	WHERE t.id = @contador
 
     -- Se carga el XML de la operacion en memoria
-    EXEC sp_xml_preparedocument @hdoc OUTPUT, @inDatos;
+    EXEC sp_xml_preparedocument @hdoc OUTPUT, @VarPrincipalXML;
 
 	EXEC dbo.InsertarPersonasXml @hdoc
 	EXEC [dbo].[InsertarPropiedadesXml] @hdoc, @FechaOperacion
