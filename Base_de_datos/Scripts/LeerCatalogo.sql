@@ -290,11 +290,41 @@ INSERT INTO [dbo].[TipoMedioPago] (
 			id, 
 			descripcion)
 SELECT id, 
-	   Nombre
-FROM OPENXML(@hdoc, '/Catalogo/TipoMedioPagos/TipoMedioPago', 1)
+	   tipoPago
+FROM OPENXML(@hdoc, '/Catalogo/TipoDePagos/TipoDePago', 1)
 WITH (
 	id INT,
-	Nombre VARCHAR(64)
+	tipoPago VARCHAR(64)
+	);
+
+-- CATEGORÍA: Facturas
+
+-- AQUÍ SE CARGA: Estados de facturas
+
+INSERT INTO [dbo].[EstadoFactura] (
+			id, 
+			descripcion)
+SELECT id, 
+	   EstadoFactura
+FROM OPENXML(@hdoc, '/Catalogo/EstadoDeFacturas/EstadoFactura', 1)
+WITH (
+	id INT,
+	EstadoFactura VARCHAR(32)
+	);
+
+-- CATEGORÍA: Órdenes de corta
+
+-- AQUÍ SE CARGA: Estado de órdenes de corta
+
+INSERT INTO [dbo].[EstadoOrdenCorta] (
+			id, 
+			nombre)
+SELECT id, 
+	   EstadoOrdenes
+FROM OPENXML(@hdoc, '/Catalogo/EstadoOrdenesDeCorta/EstadoOrdenes', 1)
+WITH (
+	id INT,
+	EstadoOrdenes VARCHAR(32)
 	);
 
 -- CATEGORÍA: Parámetros del sistema
