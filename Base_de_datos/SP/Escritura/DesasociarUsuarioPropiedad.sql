@@ -43,7 +43,7 @@ BEGIN
 				   AND T.nombre = 'Administrador'
 				 )
         BEGIN
-            SET @idUser = ( SELECT U.id \
+            SET @idUser = ( SELECT U.id
 						    FROM [dbo].[Usuario] U
 							INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
 							WHERE U.nombreDeUsuario = @inUsername
