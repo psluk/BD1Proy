@@ -112,6 +112,8 @@ CREATE TABLE dbo.Propiedad
     area INT NOT NULL,
     valorFiscal BIGINT NOT NULL,
     fechaRegistro DATE NOT NULL,
+    consumoAcumulado MONEY NOT NULL,
+    acumuladoUltimaFactura MONEY NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_Propiedad PRIMARY KEY CLUSTERED (id),

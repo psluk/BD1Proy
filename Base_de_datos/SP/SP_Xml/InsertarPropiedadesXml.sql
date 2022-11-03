@@ -24,6 +24,8 @@ BEGIN
 		tipoZonaPropiedad varchar(32) NOT NULL,
 		NumeroMedidor int NOT NULL,
 		ValorFiscal BIGINT NOT NULL,
+        consumoAcumulado MONEY NOT NULL,
+        acumuladoUltimaFactura MONEY NOT NULL,
 		FechaOperacion DATE
 	);
 	
@@ -33,14 +35,18 @@ BEGIN
 				tipoUsoPropiedad, 
 				tipoZonaPropiedad, 
 				NumeroMedidor, 
-				ValorFiscal, 
+				ValorFiscal,
+                consumoAcumulado,
+                acumuladoUltimaFactura,
 				FechaOperacion)
 	SELECT NumeroFinca, 
 		   MetrosCuadrados, 
 		   tipoUsoPropiedad, 
 		   tipoZonaPropiedad, 
 		   NumeroMedidor, 
-		   ValorFiscal, 
+		   ValorFiscal,
+           M3AcumuladoAgua,
+           M3AcumuladosUltimoFactura,
 		   @inFechaOperacion
 	FROM OPENXML(@hdoc, 'Operacion/Propiedades/Propiedad', 1)
 	WITH 
@@ -50,7 +56,9 @@ BEGIN
 		tipoUsoPropiedad varchar(32),
 		tipoZonaPropiedad varchar(32),
 		NumeroMedidor int,
-		ValorFiscal BIGINT
+		ValorFiscal BIGINT,
+        M3AcumuladoAgua MONEY,
+        M3AcumuladosUltimoFactura MONEY
 	);
 
 	-- realizamos la insercion de las propiedades del xml
@@ -59,13 +67,17 @@ BEGIN
 				[idTipoZona], 
 				[numeroFinca], 
 				[area], 
-				[valorFiscal], 
+				[valorFiscal],
+                [consumoAcumulado],
+                [acumuladoUltimaFactura],
 				[fechaRegistro])
 	SELECT tup.id, 
 		   tz.id, 
 		   NumeroFinca, 
 		   MetrosCuadrados, 
-		   ValorFiscal, 
+		   ValorFiscal,
+           consumoAcumulado,
+           acumuladoUltimaFactura,
 		   FechaOperacion
 	FROM @temp_Propiedad AS tp
 	INNER JOIN [dbo].[TipoUsoPropiedad] AS tup ON tp.tipoUsoPropiedad = tup.nombre
