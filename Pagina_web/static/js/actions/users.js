@@ -7,6 +7,7 @@ const actions = { /* Las acciones con "%admin%" solo las ven administradores */
         'Propiedades%admin%': './user_properties.html?user='
     },
     'Administrar%admin%': {
+        'Propiedades asociadas': './link_user.html?user='
     }
 };
 const categorias = Object.keys(actions);

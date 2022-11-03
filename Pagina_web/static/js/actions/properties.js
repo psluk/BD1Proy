@@ -12,7 +12,8 @@ const actions = { /* Las acciones con "%admin%" solo las ven administradores */
     },
     'Administrar%admin%': {
         'Eliminar propiedad': './delete_property.html?finca=',
-        'Actualizar propiedad': './update_property.html?finca='
+        'Actualizar propiedad': './update_property.html?finca=',
+        'Usuarios asociados': './link_user.html?finca='
     }
 };
 const categorias = Object.keys(actions);

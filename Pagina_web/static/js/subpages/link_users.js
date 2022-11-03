@@ -14,6 +14,11 @@ const usuario = 'userBox';
 const formId = 'form';
 const buttonId = 'updateButton';
 
+// Parámetros dentro del URL
+const parametrosUrl = new URLSearchParams(window.location.search);
+const propiedadUrl = parametrosUrl.get('finca');
+const usuarioUrl = parametrosUrl.get('user');
+
 function esperarRespuesta(solicitudOperacion) {
     // Función que espera hasta que el servidor retorna la información
     if (solicitudOperacion.readyState < 4) {
@@ -99,5 +104,15 @@ window.addEventListener('load', function () {
 
             esperarRespuesta(solicitudOperacion);
         };
+    }
+
+    if (propiedadUrl) {
+        document.getElementById(finca).value = propiedadUrl;
+        document.getElementById(finca).disabled = true;
+    }
+
+    if (usuarioUrl) {
+        document.getElementById(usuario).value = usuarioUrl;
+        document.getElementById(usuario).disabled = true;
     }
 })
