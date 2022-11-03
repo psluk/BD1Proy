@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/actions/people.js') }}"></script>
     <script>
         // Formato de fechas
         const fechaIdioma = 'es-CR';
@@ -30,7 +31,10 @@
         const propiedadBuscada = parametrosUrl.get('finca');
 
         // Enlaces
-        const propiedadesApi = './get/owners_of_property'
+        const propiedadesApi = './get/owners_of_property';
+
+        // Acciones
+        const listaDeAcciones = 'actionList';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -108,6 +112,9 @@
                             nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = i + 1;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             nuevaFila.lastElementChild.innerText = resultados[i].nombre;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
@@ -121,12 +128,10 @@
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
 
-                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Propiedades";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./owner_properties.html?id=" + resultados[i].id);
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('select'));
+                            nuevoEnlace.setAttribute('class', listaDeAcciones);
                         }
+                        agregarAcciones();
                     }
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
@@ -166,9 +171,10 @@
 
     <h1 id="moduleTitle">Propietarios de la finca n.º</h1>
 
-    <table id="propertyOwnerTable">
+    <table id="propertyOwnerTable" class="numberedTable">
         <thead>
             <tr>
+                <th>N.º</th>
                 <th>Nombre</th>
                 <th>Identificación</th>
                 <th>Dueño desde</th>
@@ -177,7 +183,7 @@
         </thead>
         <tbody>
             <tr>
-                <td class="bigCell" colspan="4">Cargando...</td>
+                <td class="bigCell" colspan="5">Cargando...</td>
             </tr>
         </tbody>
     </table>

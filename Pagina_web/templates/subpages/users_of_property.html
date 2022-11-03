@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/actions/users.js') }}"></script>
     <script>
         // Formato de fechas
         const fechaIdioma = 'es-CR';
@@ -31,6 +32,9 @@
 
         // Enlaces
         const propiedadesApi = './get/users_of_property'
+
+        // Acciones
+        const listaDeAcciones = 'actionList';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -107,6 +111,9 @@
                             nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = i + 1;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             nuevaFila.lastElementChild.innerText = resultados[i].nombreUsuario;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
@@ -117,12 +124,10 @@
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
 
-                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Propiedades";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./user_properties.html?user=" + resultados[i].nombreUsuario);
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('select'));
+                            nuevoEnlace.setAttribute('class', listaDeAcciones);
                         }
+                        agregarAcciones();
                     }
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
@@ -162,9 +167,10 @@
 
     <h1 id="moduleTitle">Usuarios de la finca n.º</h1>
 
-    <table id="associatedUserTable">
+    <table id="associatedUserTable" class="numberedTable">
         <thead>
             <tr>
+                <th>N.º</th>
                 <th>Nombre de usuario</th>
                 <th>Asociado desde</th>
                 <th>Acciones</th>
@@ -172,7 +178,7 @@
         </thead>
         <tbody>
             <tr>
-                <td class="bigCell" colspan="3">Cargando...</td>
+                <td class="bigCell" colspan="4">Cargando...</td>
             </tr>
         </tbody>
     </table>

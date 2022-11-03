@@ -43,6 +43,7 @@ tr:nth-child(2n+1) {
 }
 
 .bigCell {
+    font-family: 'Roboto Slab';
     font-weight: bold;
     font-size: large;
     text-align: center;
@@ -51,4 +52,13 @@ tr:nth-child(2n+1) {
 
 .adminOnly {
     display: none;
+}
+
+.numberedTable > tbody > tr > td:first-child {
+    font-weight: bold;
+}
+
+.numberedTable > tbody > tr > td:first-child,
+.numberedTable > thead > tr > th:first-child {
+    width: 1%;
 }

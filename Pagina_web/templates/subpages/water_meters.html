@@ -105,6 +105,9 @@
                     if (resultados.length > 0) {
                         for (let i = 0; i < resultados.length; i++) {
                             nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
+                            
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = i + 1;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             nuevaFila.lastElementChild.innerText = resultados[i].numeroMedidor;
@@ -152,16 +155,17 @@
 
     <h1 id="moduleTitle">Medidores de agua de la finca n.º</h1>
 
-    <table id="waterMeterTable">
+    <table id="waterMeterTable" class="numberedTable">
         <thead>
             <tr>
+                <th>N.º</th>
                 <th>Número de medidor</th>
                 <th>Consumo acumulado</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="bigCell" colspan="2">Cargando...</td>
+                <td class="bigCell" colspan="3">Cargando...</td>
             </tr>
         </tbody>
     </table>

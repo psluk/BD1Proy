@@ -7,11 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
-    <style>
-        td:nth-child(1) {
-            font-weight: bold;
-        }
-    </style>
+    <script src="{{ url_for('static', filename='js/actions/users.js') }}"></script>
     <script>
         // Formato de fechas
         const fechaIdioma = 'es-CR';
@@ -31,7 +27,10 @@
         const correccion = correccion_temp;
 
         // Enlaces
-        const usuariosApi = './get/all_users'
+        const usuariosApi = './get/all_users';
+
+        // Acciones
+        const listaDeAcciones = 'actionList';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -120,12 +119,10 @@
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
 
-                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Propiedades";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./user_properties.html?user=" + resultados[i].nombreUsuario);
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('select'));
+                            nuevoEnlace.setAttribute('class', listaDeAcciones);
                         }
+                        agregarAcciones();
                     }
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
@@ -156,7 +153,7 @@
 
     <h1 id="moduleTitle">Usuarios</h1>
 
-    <table id="associatedUserTable">
+    <table id="associatedUserTable" class="numberedTable">
         <thead>
             <tr>
                 <th>N.º</th>

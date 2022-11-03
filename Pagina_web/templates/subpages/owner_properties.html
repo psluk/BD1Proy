@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/actions/properties.js') }}"></script>
     <script>
         // Formato de fechas
         const fechaIdioma = 'es-CR';
@@ -30,7 +31,10 @@
         const personaBuscada = parametrosUrl.get('id');
 
         // Enlaces
-        const propiedadesApi = './get/owner_properties'
+        const propiedadesApi = './get/owner_properties';
+
+        // Acciones
+        const listaDeAcciones = 'actionList';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -105,6 +109,9 @@
                     if (resultados.length > 0) {
                         for (let i = 0; i < resultados.length; i++) {
                             nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
+                            
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = i + 1;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             nuevaFila.lastElementChild.innerText = resultados[i].numeroFinca;
@@ -135,56 +142,10 @@
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             
-                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Historial de agua";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./water_history.html?finca=" + resultados[i].numeroFinca);
-                            
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-                            
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Propietarios";
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./owners_of_property.html?finca=" + resultados[i].numeroFinca);
-                            
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-                            
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Medidores";
-                            nuevoEnlace.setAttribute("class", "adminOnly");
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./water_meters.html?finca=" + resultados[i].numeroFinca);
-
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Usuarios asociados";
-                            nuevoEnlace.setAttribute("class", "adminOnly");
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./users_of_property.html?finca=" + resultados[i].numeroFinca);
-
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Ver conceptos de cobro";
-                            nuevoEnlace.setAttribute("class", "adminOnly");
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./criteria_of_property.html?finca=" + resultados[i].numeroFinca);
-
-                            nuevaFila.lastElementChild.appendChild(document.createElement('br'));
-
-                            nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                            nuevoEnlace.innerText = "Eliminar propiedad";
-                            nuevoEnlace.setAttribute("class", "adminOnly");
-                            nuevoEnlace.setAttribute(
-                                "href",
-                                "./delete_property.html?finca=" + resultados[i].numeroFinca);
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('select'));
+                            nuevoEnlace.setAttribute('class', listaDeAcciones);
                         }
+                        agregarAcciones();
                     }
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga que no
@@ -224,9 +185,10 @@
 
     <h1 id="moduleTitle">Propiedades de</h1>
 
-    <table id="ownerPropertiesTable">
+    <table id="ownerPropertiesTable" class="numberedTable">
         <thead>
             <tr>
+                <th>N.º</th>
                 <th>Número de finca</th>
                 <th>Uso</th>
                 <th>Tipo de zona</th>
@@ -239,7 +201,7 @@
         </thead>
         <tbody>
             <tr>
-                <td class="bigCell" colspan="8">Cargando...</td>
+                <td class="bigCell" colspan="9">Cargando...</td>
             </tr>
         </tbody>
     </table>
