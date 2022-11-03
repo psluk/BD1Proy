@@ -669,17 +669,3 @@ CREATE TABLE [dbo].[Errors]
 	-- Se establece la llave primaria
     CONSTRAINT PK_DBErrors PRIMARY KEY CLUSTERED ([ErrorID])
 );
-
--- VALORES FIJOS NO INCLUIDOS EN LOS XML
-INSERT INTO [dbo].[TipoUsuario] (nombre)
-	VALUES ('Administrador'), ('Propietario');
-
-INSERT INTO [dbo].[EntityType] (nombre)
-    VALUES  ('Propiedad'),
-            ('Propietario'),
-            ('Usuario'),
-            ('PropietarioDePropiedad'),
-            ('UsuarioDePropiedad'),
-            ('PropietarioJuridico'),
-            ('ConceptoDeCobro'),
-            ('Persona');
