@@ -177,6 +177,8 @@ BEGIN
                 [numeroFinca],
                 [area],
                 [valorFiscal],
+                [consumoAcumulado],
+                [acumuladoUltimaFactura],
                 [fechaRegistro]
             )
             VALUES (
@@ -185,6 +187,8 @@ BEGIN
                 @inNumeroFinca,
                 @inArea,
                 @inValorFiscal,
+                0,
+                0,
                 GETDATE()
             );
 
