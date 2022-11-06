@@ -38,6 +38,7 @@ DELETE dbo.TipoUsoPropiedad;
 DELETE dbo.TipoZona;
 DELETE dbo.Persona;
 DELETE dbo.TipoDocumentoId;
+--DELETE dbo.socorro;
 
 
 -- reiniciamos el PK de las tablas
@@ -56,3 +57,12 @@ DBCC CHECKIDENT (Usuario, RESEED, 0);
 DBCC CHECKIDENT (TipoUsuario, RESEED, 0);
 DBCC CHECKIDENT (Propiedad, RESEED, 0);
 DBCC CHECKIDENT (Persona, RESEED, 0);
+--DBCC CHECKIDENT (socorro, RESEED, 0);
+
+DECLARE @SQL VARCHAR(MAX)
+SELECT @SQL = BulkColumn
+FROM OPENROWSET
+	( BULK 'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Scripts\LeerCatalogo.sql'
+	, SINGLE_BLOB ) AS MYTABLE
+
+EXEC(@SQL)

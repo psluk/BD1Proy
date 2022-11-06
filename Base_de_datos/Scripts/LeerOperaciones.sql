@@ -8,6 +8,8 @@ DECLARE @hdoc int -- handler del xml leeido
 DECLARE @FechaOperacion DATE; -- transporte de fecha a los SP
 DECLARE @contador INT; -- Permite pasar por cada nodo del XML principal
 DECLARE @maximo INT; -- indica el numero de repeticiones
+DECLARE @fechaInicio AS DATE; -- indica el dia en el que se comineza
+DECLARE @fechaFinal AS DATE; -- indica el ultimo dia
 
 --Declaracion de tablas temporales
 
@@ -83,34 +85,55 @@ INSERT INTO @tabInformacionXML( --unificamos las fechas y sus nodos en una misma
 )
 
 
-
 -- la tabla @tabInformacionXML tiene la fecha y el nodo xml al cual se debe referir para sacar el resto de la informacion
 
 
 SET @contador = 1; -- inicializamo el contador en la primera entrada
 SELECT @maximo = COUNT(0) FROM @tabInformacionXML; --el valor de la ultima entrada
+SELECT @fechaInicio = tab.Fecha FROM @tabInformacionXML tab WHERE tab.id = 1; 
+SELECT @fechaFinal = tab.Fecha FROM @tabInformacionXML tab WHERE tab.id = @maximo;
+
 
 -- iteramos a trav�s de todos los nodos del xml
 WHILE (@contador <= @maximo)
 BEGIN
+	
+	--validamos que los dias sean seguidos
+
 	--seleccionamos un nodo para procesar y su fecha
 	SELECT @VarPrincipalXML = t.xmlData, 
 		   @FechaOperacion = t.Fecha
 	FROM @tabInformacionXML AS t
 	WHERE t.id = @contador
 
-    -- Se carga el XML de la operacion en memoria
-    EXEC sp_xml_preparedocument @hdoc OUTPUT, @VarPrincipalXML;
+	IF @fechaInicio = @FechaOperacion -- se realizan las operaciones del dia
+	BEGIN
+	
+		-- Se carga el XML de la operacion en memoria
+		EXEC sp_xml_preparedocument @hdoc OUTPUT, @VarPrincipalXML;
 
-	EXEC dbo.InsertarPersonasXml @hdoc
-	EXEC [dbo].[InsertarPropiedadesXml] @hdoc, @FechaOperacion
-	EXEC [dbo].[AsociacionPersonaPropiedadXml] @hdoc, @FechaOperacion
-	EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
-	EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
-	EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
+		EXEC dbo.InsertarPersonasXml @hdoc
+		EXEC [dbo].[InsertarPropiedadesXml] @hdoc, @FechaOperacion
+		EXEC [dbo].[AsociacionPersonaPropiedadXml] @hdoc, @FechaOperacion
+		EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
+		EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
+		EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
+		--Pagos
+		
 
-    -- Se libera de la memoria
-    EXEC sp_xml_removedocument @hdoc;
+		-- Se libera de la memoria
+		EXEC sp_xml_removedocument @hdoc;
 
-	SET @contador = @contador +1
+		SET @contador = @contador +1 --aumentamos el contador
+
+	END
+
+	--realizamos las operaciones de todos los dia
+	
+	--Cortes
+	--Reconexiones
+	--Morosidad
+	
+	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
+
 END;
