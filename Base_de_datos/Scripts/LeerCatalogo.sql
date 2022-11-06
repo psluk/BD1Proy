@@ -399,3 +399,20 @@ INSERT INTO [dbo].[EntityType] (nombre)
             ('PropietarioJuridico'),
             ('ConceptoDeCobro'),
             ('Persona');
+
+INSERT INTO [dbo].[ErroresDefinidos] ([NumeroError],[TipoError])
+VALUES (50000, 'Ocurrio un error desconocido'),
+	   (50001, 'Ocurrio un error desconocido en una transaccion'),
+	   (50002, 'Credenciales incorrectas'),
+	   (50003, 'Numero de finca invalido'),
+	   (50004, 'Valor de area invalido'),
+	   (50005, 'No existe el tipo de zona'),
+	   (50006, 'No existe el tipo de uso de la propiedad'),
+	   (50007, 'Ya hay una propiedad con ese numero de finca'),
+	   (50008, 'Ya hay un Usuario con ese nombre'),
+	   (50009, 'No existe la persona/Usuario indicado'),
+	   (50010, 'Ya hay una Persona con ese documento identidad'),
+	   (50011, 'No existe la relación'),
+	   (50012, 'El tipo documento no existe'),
+	   (50013, 'Ya existe una propiedad con ese medidor'),
+	   (50014, 'Ya existe la asociacion')

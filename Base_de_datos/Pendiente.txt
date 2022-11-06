@@ -10,7 +10,9 @@ DesasociarUsuarioPropiedadXml (listo)
 
 
 
-SP de:		LeerFactura
+SP de:		
+		crear factura -- PagoDeImpuesto
+		LeerFactura
 		LeerFacturas
 		CrearCorte
 		Reconexion (solo cambia estado) -trigger-

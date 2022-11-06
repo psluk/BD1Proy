@@ -671,3 +671,14 @@ CREATE TABLE [dbo].[Errors]
 	-- Se establece la llave primaria
     CONSTRAINT PK_DBErrors PRIMARY KEY CLUSTERED ([ErrorID])
 );
+
+CREATE TABLE [dbo].[ErroresDefinidos]
+(
+	-- Llaves
+	[ID] INT NOT NULL IDENTITY(1,1),
+
+	-- Otras columnas
+	[NumeroError] VARCHAR(100) NOT NULL,
+	[TipoError] VARCHAR(128) NOT NULL,
+
+);

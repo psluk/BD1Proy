@@ -39,6 +39,7 @@ DELETE dbo.TipoZona;
 DELETE dbo.Persona;
 DELETE dbo.TipoDocumentoId;
 --DELETE dbo.socorro;
+DELETE dbo.ErroresDefinidos;
 
 
 -- reiniciamos el PK de las tablas
@@ -58,6 +59,7 @@ DBCC CHECKIDENT (TipoUsuario, RESEED, 0);
 DBCC CHECKIDENT (Propiedad, RESEED, 0);
 DBCC CHECKIDENT (Persona, RESEED, 0);
 --DBCC CHECKIDENT (socorro, RESEED, 0);
+DBCC CHECKIDENT (ErroresDefinidos, RESEED, 0);
 
 DECLARE @SQL VARCHAR(MAX)
 SELECT @SQL = BulkColumn

@@ -27,8 +27,20 @@
 	--FechaOperacion DATE
 	--)
 
-
-SELECT * FROM socorro s JOIN socorro ss ON 1=1
+--aproximado de todas las desasociaciones posibles
+SELECT * FROM socorro s 
+JOIN socorro ss ON 1=1
 WHERE s.TipoAsociacion = 'Agregar' AND ss.TipoAsociacion = 'Eliminar'
 AND s.ValorDocumentoIdentidad = ss.ValorDocumentoIdentidad
+AND s.idPropiedad = ss.idPropiedad
+AND s.idUsuario = ss.idUsuario
 AND s.FechaOperacion <= ss.FechaOperacion
+
+--desasociaciones realizadas
+SELECT * FROM UsuarioDePropiedad udp WHERE udp.fechaFin IS NOT NULL
+
+
+SELECT * FROM socorro s  LEFT JOIN UsuarioDePropiedad udp ON 1=1 
+WHERE s.idPropiedad = udp.idPropiedad
+	  AND s.idUsuario = udp.idUsuario
+	  AND udp.fechaFin = s.FechaOperacion

@@ -118,7 +118,7 @@ BEGIN
 		EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
-		--Pagos
+		--EXEC [dbo].[PagoDeImpuestos] @hdoc, @FechaOperacionPagos
 		
 
 		-- Se libera de la memoria
@@ -130,9 +130,9 @@ BEGIN
 
 	--realizamos las operaciones de todos los dia
 	
-	--Cortes
-	--Reconexiones
-	--Morosidad
+	--Cortes @fechaInicio
+	--Reconexiones @fechaInicio
+	--Morosidad @fechaInicio
 	
 	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
 

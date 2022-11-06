@@ -35,3 +35,4 @@ DROP TABLE dbo.TipoUsoPropiedad;
 DROP TABLE dbo.TipoZona;
 DROP TABLE dbo.Persona;
 DROP TABLE dbo.TipoDocumentoId;
+DROP TABLE dbo.ErroresDefinidos;
