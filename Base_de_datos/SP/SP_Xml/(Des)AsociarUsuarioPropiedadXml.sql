@@ -72,14 +72,14 @@ BEGIN
 	--)
 
 	--insercion en tabla de control para poder verificar el orden de insercion de las asociaciones y verificar si existen desasociaciones correctas
-	--INSERT INTO [dbo].[socorro] ([idUsuario], [idPersona], [ValorDocumentoIdentidad], [idPropiedad], [NumeroFinca], [TipoAsociacion], [FechaOperacion])
-	--SELECT u.id, per.id, per.valorDocumentoId, pro.id, pro.numeroFinca, tup.TipoAsociacion, @inFechaOperacion
-	--FROM @temp_UsuariosyPropiedades AS tup
-	--INNER JOIN [dbo].[Persona] AS per ON tup.ValorDocumentoIdentidad = per.valorDocumentoId --se obtiene el id del documento identidad
-	--INNER JOIN [dbo].[Usuario] AS u ON u.idPersona = per.id -- se obtiene el id del usuario usando el id de la persona
-	--INNER JOIN [dbo].[Propiedad] AS pro ON tup.NumeroFinca = pro.numeroFinca -- se obtiene el id de la propiedad usando el numero de finca
-	--INNER JOIN  [dbo].[UsuarioDePropiedad] AS udp ON udp.idUsuario = u.id -- contine las relaciones de usuarios y propiedades
-	--WHERE   udp.idPropiedad = pro.id
+	INSERT INTO [dbo].[socorro] ([idUsuario], [idPersona], [ValorDocumentoIdentidad], [idPropiedad], [NumeroFinca], [TipoAsociacion], [FechaOperacion])
+	SELECT u.id, per.id, per.valorDocumentoId, pro.id, pro.numeroFinca, tup.TipoAsociacion, @inFechaOperacion
+	FROM @temp_UsuariosyPropiedades AS tup
+	INNER JOIN [dbo].[Persona] AS per ON tup.ValorDocumentoIdentidad = per.valorDocumentoId --se obtiene el id del documento identidad
+	INNER JOIN [dbo].[Usuario] AS u ON u.idPersona = per.id -- se obtiene el id del usuario usando el id de la persona
+	INNER JOIN [dbo].[Propiedad] AS pro ON tup.NumeroFinca = pro.numeroFinca -- se obtiene el id de la propiedad usando el numero de finca
+	INNER JOIN  [dbo].[UsuarioDePropiedad] AS udp ON udp.idUsuario = u.id -- contine las relaciones de usuarios y propiedades
+	WHERE   udp.idPropiedad = pro.id
 
 
 
