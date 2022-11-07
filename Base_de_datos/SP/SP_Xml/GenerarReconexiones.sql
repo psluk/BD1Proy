@@ -1,4 +1,4 @@
-/* Procedimiento que genera las órdenes de reconexión para las propiedades
+/* Procedimiento que genera las Ã³rdenes de reconexiÃ³n para las propiedades
    cuyas facturas fueron pagadas */
 
 CREATE PROCEDURE [dbo].[GenerarReconexiones]
@@ -40,7 +40,7 @@ BEGIN
                         SELECT  COUNT(R.[id])
                         FROM    [dbo].[OrdenReconexion] R
                         WHERE   R.[idFactura] = OC.[idFactura]
-                    ) = 0;      -- No debe haber ninguna orden de reconexión
+                    ) = 0;      -- No debe haber ninguna orden de reconexiÃ³n
                                 -- para la misma factura
 
         COMMIT TRANSACTION tGenerarReconexiones;
@@ -50,7 +50,7 @@ BEGIN
         
         IF @@TRANCOUNT > 0
         BEGIN
-            -- Entra aquí si el error fue en la transacción
+            -- Entra aquÃ­ si el error fue en la transacciÃ³n
             ROLLBACK TRANSACTION tGenerarReconexiones;
         END;
 
