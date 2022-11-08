@@ -12,14 +12,13 @@ BEGIN
 	DECLARE @costoPatentes AS INT;
 	DECLARE @costoParques AS INT;
 	DECLARE @procesando AS INT = -1;
-	DECLARE @error AS INT = -2;
+	DECLARE @error AS INT = 0;
 
 	DECLARE @sumatoriaConceptos TABLE --donde almacenaremos la sumatoria de los conceptos
 	(
 	    -- Llaves
 	    id INT  PRIMARY KEY IDENTITY(1,1),
 	    idFactura INT NOT NULL,
-		idPropieda INT NOT NULL,
 		Monto INT NOT NULL
 	)
 

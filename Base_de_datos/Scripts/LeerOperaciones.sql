@@ -130,7 +130,7 @@ BEGIN
 
 	--realizamos las operaciones de todos los dia
 	
-	--generar facturas
+	EXEC [dbo].[GenerarFacturaXML] @fechaInicio
 	--Cortes @fechaInicio
 	--Reconexiones @fechaInicio
 	--Morosidad @fechaInicio
