@@ -60,7 +60,7 @@ BEGIN
 		INNER JOIN ConceptoCobroInteresesMoratorios ccim ON ccim.id = cc.id --precio de morosidad (limitante a solo morosidad)
 
 	
-	BEGIN TRANSACTION
+	BEGIN TRANSACTION GenerarMorosidad
 
 		UPDATE dcc
 		SET dcc.monto = cm.MontoCalculado
@@ -96,7 +96,7 @@ BEGIN
 
         IF @@TRANCOUNT > 0              -- Fue dentro de una transaccion?
         BEGIN
-            ROLLBACK TRANSACTION tBorrarPropiedad;
+            ROLLBACK TRANSACTION GenerarMorosidad;
             --SET @outResultCode = 50001; -- Error desconocido dentro de la transaccion
         END;
         

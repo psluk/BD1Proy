@@ -118,7 +118,7 @@ BEGIN
 		EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
-		--EXEC [dbo].[PagoDeImpuestos] @hdoc, @FechaOperacionPagos
+		EXEC [dbo].[GenerarPagosXML] @hdoc, @FechaOperacion
 		
 
 		-- Se libera de la memoria
