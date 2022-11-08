@@ -130,10 +130,13 @@ BEGIN
 
 	--realizamos las operaciones de todos los dia
 	
+	--generar facturas
 	--Cortes @fechaInicio
 	--Reconexiones @fechaInicio
 	--Morosidad @fechaInicio
 	
 	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
+
+
 
 END;

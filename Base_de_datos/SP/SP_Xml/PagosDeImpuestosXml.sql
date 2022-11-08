@@ -1,8 +1,8 @@
 USE proyecto
 GO
--- SP que inserta lectura medidor
+-- SP_XML que realiza los pagos de facturas2
 
-ALTER PROCEDURE [dbo].[PagoDeImpuestos]
+ALTER PROCEDURE [dbo].[PagoDeImpuestosXML]
 						@hdoc INT,
 						@inFechaOperacion DATE
 AS
