@@ -100,10 +100,19 @@ BEGIN
 	WHERE totalOriginal = @procesando
 	GROUP BY dcc.idFactura
 	
+
+	--antes de terminar las facturas actualizamos el valor del agua consumida en propiedad
+
+	UPDATE p
+	SET p.acumuladoUltimaFactura = p.consumoAcumulado
+	FROM Propiedad p
+	INNER JOIN Factura f ON f.idPropiedad = p.id
+	WHERE f.totalOriginal = @procesando -- sobrando, pero lo dejamos por seguridad
+
 	--recordemos que:
 	-- para encontrar la factura, indicamos el idPropiedad y totalOriginal = @procesando
 	-- pero como ya tenemos el id de la factura entonces con eso basta
-	Update f
+	UPDATE f
 	SET f.totalOriginal = sc.Monto,
 		f.totalActual = sc.Monto
 	FROM Factura f

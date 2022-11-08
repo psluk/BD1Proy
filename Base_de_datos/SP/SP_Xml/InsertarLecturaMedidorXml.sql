@@ -92,13 +92,21 @@ BEGIN
 	WHERE tl.ConsumoAcumulado IS NOT NULL
 
 
-	--ahora actualizamos el ConsumoAcumulado en [dbo].[AguaDePropiedad]
+	--ahora actualizamos el ConsumoAcumulado en [dbo].[AguaDePropiedad] y en [dbo].[Propiedad]
 
 	UPDATE adp
 	SET adp.consumoAcumulado = tl.ConsumoAcumulado
 	FROM [dbo].[AguaDePropiedad] AS adp
 	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor
 	WHERE tl.ConsumoAcumulado IS NOT NULL
+
+	UPDATE p
+	SET p.consumoAcumulado = adp.consumoAcumulado
+	FROM Propiedad p
+	INNER JOIN ConceptoCobroDePropiedad ccdp ON ccdp.idPropiedad = p.id --otenemos los conceptos de cobro de la propiedad
+	INNER JOIN AguaDePropiedad adp ON adp.id = ccdp.id -- obtenemos el numero medidor de la propiedad
+	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor -- solo los medidores modificados
+	WHERE tl.ConsumoAcumulado IS NOT NULL -- no afecta, por seguridad esta
 
 	SET NOCOUNT OFF;
 END
