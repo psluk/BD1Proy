@@ -39,10 +39,10 @@ BEGIN
                  SELECT  MIN(F2.[id])        -- ID de la factura más vieja de esa propiedad
                  FROM    [dbo].[Factura] F2
                  WHERE   F2.[idPropiedad] = F.[idPropiedad]
-                 AND F.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
+                 AND F2.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
                  AND (SELECT COUNT(F2.[id])  -- Mismas condiciones que abajo
                       FROM [dbo].[Factura] F2
-                      WHERE F.idEstadoFactura = @ID_FACTURA_PENDIENTE
+                      WHERE F2.idEstadoFactura = @ID_FACTURA_PENDIENTE
                       AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
                       AND F2.[idPropiedad] = F.[idPropiedad]
 				 	 ) >= 2
@@ -59,7 +59,7 @@ BEGIN
         WHERE   F.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
         AND (SELECT COUNT(F2.[id])          -- Número de facturas pendientes de la propiedad
              FROM    [dbo].[Factura] F2
-             WHERE   F.idEstadoFactura = @ID_FACTURA_PENDIENTE
+             WHERE   F2.idEstadoFactura = @ID_FACTURA_PENDIENTE
              AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
              AND F2.[idPropiedad] = F.[idPropiedad]
             ) >= 2                          -- Debe ser mayor o igual que dos
@@ -70,28 +70,34 @@ BEGIN
             ) = 0;                          -- No inserta una orden de corta si ya hay una
 
         -- Se añade el detalle de la reconexión
-        INSERT INTO [dbo].[DetalleConceptoCobro]
-            (
-                [idFactura],
-                [idConceptoCobro],
-                [monto]
-            )
-        SELECT  OC.[idFactura],
-                @ID_CC_RECONEXION,
-                (CCRA.[monto] / TP.[cantidadMeses])
-        FROM    [dbo].[OrdenCorta] OC
-        INNER JOIN [dbo].[ConceptoCobro] CC ON  CC.[id] = @ID_CC_RECONEXION
-        INNER JOIN [dbo].[TipoPeriodoConceptoCobro] TP ON  TP.[id] = CC.[idTipoPeriodoConceptoCobro]
-        INNER JOIN [dbo].[ConceptoCobroReconexionAgua] CCRA ON  CCRA.[id] = CC.[id]
-        WHERE OC.[idPago] IS NULL
-        AND OC.[fechaOperacion] = @inFechaOperacion;
+        UPDATE DCC
+        SET [monto] = (CCRA.[monto] / TP.[cantidadMeses])
+        FROM [dbo].[DetalleConceptoCobro] DCC
+        INNER JOIN [dbo].[Factura] F
+            ON F.[id] = DCC.[idFactura]
+        INNER JOIN [dbo].[OrdenCorta] OC
+            ON OC.[idFactura] = F.[id]
+        INNER JOIN [dbo].[ConceptoCobro] CC
+            ON  CC.[id] = @ID_CC_RECONEXION
+        INNER JOIN [dbo].[TipoPeriodoConceptoCobro] TP
+            ON  TP.[id] = CC.[idTipoPeriodoConceptoCobro]
+        INNER JOIN [dbo].[ConceptoCobroReconexionAgua] CCRA
+            ON  CCRA.[id] = CC.[id]
+        WHERE   OC.[idPago] IS NULL
+            AND OC.[fechaOperacion] = @inFechaOperacion
+            AND DCC.[idConceptoCobro] = @ID_CC_RECONEXION;
 
         -- Se actualiza el totalActual de las facturas correspondientes
         UPDATE  F
-        SET     F.[totalActual] = F.[totalActual] + DCC.[monto]
+        SET     F.[totalActual] = (
+                                    SELECT SUM(DCC.[monto])
+                                    FROM [dbo].[DetalleConceptoCobro] DCC
+                                    WHERE DCC.[idFactura] = F.[id]
+                                  )
         FROM    [dbo].[Factura] F
-        INNER JOIN [dbo].[DetalleConceptoCobro] DCC
-            ON  DCC.[idFactura] = F.[id];
+        INNER JOIN [dbo].[OrdenCorta] OC
+            ON  OC.[idFactura] = F.[id]
+        WHERE   OC.[fechaOperacion] = @inFechaOperacion;
 
         COMMIT TRANSACTION tGenerarCortas;
 
