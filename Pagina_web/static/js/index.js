@@ -52,6 +52,12 @@ const categories = [
                         url: './sub/water_history.html?finca=',
                         parametersNeeded: true,
                         adminOnly: true
+                    },
+                    {
+                        name: 'Facturas de una propiedad',
+                        url: './sub/property_receipts.html?finca=',
+                        parametersNeeded: true,
+                        adminOnly: true
                     }
                 ]
             },

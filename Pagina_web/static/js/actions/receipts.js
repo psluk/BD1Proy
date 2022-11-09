@@ -1,24 +1,17 @@
-/* Programa que añade la lista de acciones de cada propiedad */
+/* Programa que añade la lista de facturas de cada propiedad */
 
 const listClass = 'actionList';
 const defaultText = 'Acción...';
 const actions = { /* Las acciones con "%admin%" solo las ven administradores */
     'Consultar': {
-        'Historial de agua': './water_history.html?finca=',
-        'Facturas': './property_receipts.html?finca=',
-        'Propietarios%admin%': './owners_of_property.html?finca=',
-        'Medidores%admin%': './water_meters.html?finca=',
-        'Usuarios asociados%admin%': './users_of_property.html?finca=',
-        'Conceptos de cobro%admin%': './criteria_of_property.html?finca='
-    },
-    'Administrar%admin%': {
-        'Eliminar propiedad': './delete_property.html?finca=',
-        'Actualizar propiedad': './update_property.html?finca=',
-        'Usuarios asociados': './link_user.html?finca='
+        'Detalles': './receipt_details.html?finca=fecha=',
+        'Comprobante': './payment_details?ref='
     }
 };
 const categorias = Object.keys(actions);
 const soloAdmin = "adminOnly";
+
+const tituloId = 'moduleTitle';
 
 let acciones = [];
 for (let i = 0; i < categorias.length; i++) {
@@ -26,7 +19,7 @@ for (let i = 0; i < categorias.length; i++) {
 }
 
 function agregarAcciones() {
-    /* Función que agrega la lista de acciones de cada propiedad */
+    /* Función que agrega la lista de facturas de cada propiedad */
     let elementosPorCambiar = document.getElementsByClassName(listClass);
 
     let listaActual;
@@ -72,13 +65,19 @@ function redirigir(evento) {
         return;
     }
 
-    let id = evento.target.parentElement.parentElement.children[1].innerText;
     let action = evento.target.value.split(".");
     action[0] = parseInt(action[0]);
     action[1] = parseInt(action[1]);
 
-    let url = actions[categorias[action[0]]][acciones[action[0]][action[1]]];
-    url += id;
+    let link = actions[categorias[action[0]]][acciones[action[0]][action[1]]];
+    link = link.replace('finca=', 'finca=' + document.getElementById(tituloId).innerText.split(" ").at(-1));
+    link = link.replace('fecha=', 'fecha=' + evento.target.parentElement.parentElement.children[1].lastChild.innerText);
+    link = link.replace('ref=', 'ref=' + evento.target.parentElement.parentElement.children[6].innerText);
 
-    window.location = url;
+    if (!evento.target.parentElement.parentElement.children[6].innerText && link.indexOf('ref=' > -1)) {
+        alert('No hay pagos asociados a esta factura');
+        return;
+    }
+
+    window.location = link;
 }

@@ -156,7 +156,7 @@ def propiedadesDePersona(identificacion: str = '', consultante: str = ''):
 
 def lecturasDePropiedad(finca: str = '', consultante: str = ''):
     """
-    Función que retorna las propiedades que le pertenecen a una persona dada
+    Función que retorna el historial de agua de una propiedad dada
     consultante = usuario que está haciendo la consulta
     """
 
@@ -825,6 +825,49 @@ def usuarioEsAdmin(consultante: str = ''):
             resultado = True
     except:
         resultado = False
+
+    cursor.close()
+    return resultado
+
+def facturasDePropiedad(finca: str = '', consultante: str = ''):
+    """
+    Función que retorna las facturas de una propiedad dada
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerFacturasDePropiedad] ?,?"
+
+    salida = cursor.execute(query, finca, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "fechaEmitida": fila[0],
+                    "fechaVencida": fila[1],
+                    "totalOriginal": str(fila[2]),
+                    "totalAcumulado": str(fila[3]),
+                    "estado": fila[4],
+                    "referenciaPago": fila[5]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
 
     cursor.close()
     return resultado

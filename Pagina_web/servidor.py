@@ -385,3 +385,12 @@ def tipo_de_usuario2():
         return "1"
     else:
         return "0"
+
+# Facturas de una propiedad
+
+@app.route("/sub/get/property_receipts/<finca>")
+def facturas_de_propiedad(finca: str = ''):
+    return json.dumps(logica.facturasDePropiedad(
+        finca=finca,
+        consultante=session['username']
+    ))
