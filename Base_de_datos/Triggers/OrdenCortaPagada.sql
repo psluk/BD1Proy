@@ -11,8 +11,8 @@ BEGIN
     DECLARE @ID_FACTURA_PENDIENTE INT = 1;
 
     UPDATE  OC
-    SET [idPago] = I.[idPago],
-        [idEstadoPago] = @ID_PAGO_CORTA_HECHO
+    SET OC.[idPago] = I.[idPago],
+        OC.[idEstadoPago] = @ID_PAGO_CORTA_HECHO
     FROM    [dbo].[OrdenCorta] OC
     INNER JOIN inserted I
         ON  I.[id] = OC.[idFactura]

@@ -1,7 +1,7 @@
 ﻿
 USE proyecto
 GO
--- SP que inserta crea la factura de la propiedad
+-- SP que inserta crea la morosida de una factura
 -- no incluye en el cobro  
 
 ALTER PROCEDURE [dbo].[GenerarMorosidadXML]
@@ -38,29 +38,39 @@ BEGIN
 	
 	BEGIN TRY
 
+	BEGIN TRANSACTION GenerarMorosidad 
+
 		--encontramos a cuales facturas hay que aplicarles morosidad
 		INSERT INTO @FacturaMororas(idFactura,
 								 idPropiedad,
 								 mesesMorosos,
 								 total)
-		SELECT f.id, f.idPropiedad, (1+ MONTH(@inFechaOperacion) - MONTH(f.fechaVencimiento)) ,f.totalOriginal
+		SELECT f.id, 
+			   f.idPropiedad, 
+			   (1+ MONTH(@inFechaOperacion) - MONTH(f.fechaVencimiento)),
+			   f.totalOriginal
 		FROM Factura f
 		WHERE f.fechaVencimiento <= @inFechaOperacion -- solo si fecha actual es mayor que la de vencimiento
 		AND f.idEstadoFactura = 1 -- si el estado es 'pendiente pago' 
-		AND DAY(DATEADD(MONTH,(MONTH(@inFechaOperacion)- MONTH(f.fechaVencimiento)),f.fechaVencimiento)) = DAY(@inFechaOperacion) -- dia mas cernano del siguiente mes
+		-- dia mas cernano del siguiente mes
+		AND DAY(DATEADD(MONTH,
+					   (MONTH(@inFechaOperacion)- MONTH(f.fechaVencimiento)),
+					   f.fechaVencimiento)
+			   ) = DAY(@inFechaOperacion) 
 
 
 	--ya tenemos una lista de a cuales facturas aplicarle morosidad
 
-		INSERT INTO @CalculoMorosidad (idFactura,MontoCalculado)
-		SELECT fm.idFactura, ((fm.total * fm.mesesMorosos) * ccim.valorPorcentual)
+		INSERT INTO @CalculoMorosidad (idFactura,
+									   MontoCalculado)
+		SELECT fm.idFactura,
+			   ((fm.total * fm.mesesMorosos) * ccim.valorPorcentual)
 		FROM @FacturaMororas fm
 		INNER JOIN DetalleConceptoCobro dcc ON fm.idFactura = dcc.idFactura
-		INNER JOIN ConceptoCobro cc ON cc.id = dcc.idConceptoCobro -- vinculo para obtener precios de los impuestos
-		INNER JOIN ConceptoCobroInteresesMoratorios ccim ON ccim.id = cc.id --precio de morosidad (limitante a solo morosidad)
-
-	
-	BEGIN TRANSACTION GenerarMorosidad
+		 -- vinculo para obtener precios de los impuestos
+		INNER JOIN ConceptoCobro cc ON cc.id = dcc.idConceptoCobro
+		--precio de morosidad (limitante a solo morosidad)
+		INNER JOIN ConceptoCobroInteresesMoratorios ccim ON ccim.id = cc.id 
 
 		UPDATE dcc
 		SET dcc.monto = cm.MontoCalculado
@@ -70,12 +80,12 @@ BEGIN
 		INNER JOIN ConceptoCobroInteresesMoratorios ccim ON 1=1 --(limitante a solo morosidad)
 		WHERE cm.idFactura = dcc.idFactura AND cc.id = dcc.idConceptoCobro AND ccim.id = cc.id
 
-		-- para poder realizar la nueva sumatoria de los montos utilizamos la tabla temporal @sumatoriaConceptos
+		--calculamos el monto totalActual para cada factura siendo afectada
 
 		INSERT INTO @sumatoriaConceptos(idFactura,Monto)
 		SELECT dcc.idFactura, SUM(dcc.monto)
 		FROM DetalleConceptoCobro dcc
-		INNER JOIN @FacturaMororas fm ON dcc.idFactura = fm.id
+		INNER JOIN @FacturaMororas fm ON dcc.idFactura = fm.idFactura
 		GROUP BY dcc.idFactura
 
 		--recordemos que:
@@ -85,8 +95,8 @@ BEGIN
 		SET f.totalActual = sc.Monto
 		FROM Factura f
 		INNER JOIN @sumatoriaConceptos sc ON sc.idFactura = f.id
-	
-	COMMIT TRANSACTION
+
+	COMMIT TRANSACTION GenerarMorosidad 
 	
 	END TRY
 	BEGIN CATCH
