@@ -43,6 +43,7 @@ DELETE dbo.ErroresDefinidos;
 
 
 -- reiniciamos el PK de las tablas
+DBCC CHECKIDENT (Pago, RESEED, 0);
 DBCC CHECKIDENT (Errors, RESEED, 0);
 DBCC CHECKIDENT (EventLog, RESEED, 0);
 DBCC CHECKIDENT (EntityType, RESEED, 0);
