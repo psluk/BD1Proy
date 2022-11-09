@@ -36,37 +36,37 @@ BEGIN
             -- Se genera una fila por factura para cada propiedad
             -- El DISTINCT se encarga de meter una sola de esas filas
                 (
-                SELECT  MIN(F2.[id])        -- ID de la factura más vieja de esa propiedad
-                FROM    [dbo].[Factura] F2
-                WHERE   F2.[idPropiedad] = F.[idPropiedad]
-                AND F.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
-                AND (SELECT COUNT(F2.[id])  -- Mismas condiciones que abajo
-                    FROM    [dbo].[Factura] F2
-                    WHERE   F.idEstadoFactura = @ID_FACTURA_PENDIENTE
-                    AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
-                    AND F2.[idPropiedad] = F.[idPropiedad]) >= 2
-                    ) AS 'idFactura',
+                 SELECT  MIN(F2.[id])        -- ID de la factura más vieja de esa propiedad
+                 FROM    [dbo].[Factura] F2
+                 WHERE   F2.[idPropiedad] = F.[idPropiedad]
+                 AND F.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
+                 AND (SELECT COUNT(F2.[id])  -- Mismas condiciones que abajo
+                      FROM [dbo].[Factura] F2
+                      WHERE F.idEstadoFactura = @ID_FACTURA_PENDIENTE
+                      AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
+                      AND F2.[idPropiedad] = F.[idPropiedad]
+				 	 ) >= 2
+				 
+                ) AS 'idFactura',
                 F.[idPropiedad] AS 'idPropiedad',
                 @ID_PAGO_CORTA_PENDIENTE AS 'idEstadoCorta',
                 NULL AS 'idPago',
                 AdP.[numeroMedidor] AS 'numeroMedidor',
                 @inFechaOperacion AS 'fechaOperacion'
         FROM    [dbo].[Factura] F
-        INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
-            ON  CCdP.[idPropiedad] = F.[idPropiedad]
-        INNER JOIN [dbo].[AguaDePropiedad] AdP
-            ON  CCdP.[id] = AdP.[id]
+        INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP ON  CCdP.[idPropiedad] = F.[idPropiedad]
+        INNER JOIN [dbo].[AguaDePropiedad] AdP ON  CCdP.[id] = AdP.[id]
         WHERE   F.[idEstadoFactura] = @ID_FACTURA_PENDIENTE
         AND (SELECT COUNT(F2.[id])          -- Número de facturas pendientes de la propiedad
-            FROM    [dbo].[Factura] F2
-            WHERE   F.idEstadoFactura = @ID_FACTURA_PENDIENTE
-            AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
-            AND F2.[idPropiedad] = F.[idPropiedad]
+             FROM    [dbo].[Factura] F2
+             WHERE   F.idEstadoFactura = @ID_FACTURA_PENDIENTE
+             AND DATEDIFF(DAY, F2.[fechaVencimiento], @inFechaOperacion) > 0
+             AND F2.[idPropiedad] = F.[idPropiedad]
             ) >= 2                          -- Debe ser mayor o igual que dos
         AND (SELECT COUNT(OC.[id])
-            FROM    [dbo].[OrdenCorta] OC
-            WHERE   OC.[idPropiedad] = F.[idPropiedad]
-            AND     idPago IS NULL
+             FROM    [dbo].[OrdenCorta] OC
+             WHERE   OC.[idPropiedad] = F.[idPropiedad]
+             AND     idPago IS NULL
             ) = 0;                          -- No inserta una orden de corta si ya hay una
 
         -- Se añade el detalle de la reconexión
@@ -78,16 +78,13 @@ BEGIN
             )
         SELECT  OC.[idFactura],
                 @ID_CC_RECONEXION,
-                CCRA.[monto] / TP.[cantidadMeses]
+                (CCRA.[monto] / TP.[cantidadMeses])
         FROM    [dbo].[OrdenCorta] OC
-        INNER JOIN [dbo].[ConceptoCobro] CC
-            ON  CC.[id] = @ID_CC_RECONEXION
-        INNER JOIN [dbo].[TipoPeriodoConceptoCobro] TP
-            ON  TP.[id] = CC.[idTipoPeriodoConceptoCobro]
-        INNER JOIN [dbo].[ConceptoCobroReconexionAgua] CCRA
-            ON  CCRA.[id] = CC.[id]
-        WHERE   OC.[idPago] IS NULL
-            AND OC.[fechaOperacion] = @inFechaOperacion;
+        INNER JOIN [dbo].[ConceptoCobro] CC ON  CC.[id] = @ID_CC_RECONEXION
+        INNER JOIN [dbo].[TipoPeriodoConceptoCobro] TP ON  TP.[id] = CC.[idTipoPeriodoConceptoCobro]
+        INNER JOIN [dbo].[ConceptoCobroReconexionAgua] CCRA ON  CCRA.[id] = CC.[id]
+        WHERE OC.[idPago] IS NULL
+        AND OC.[fechaOperacion] = @inFechaOperacion;
 
         -- Se actualiza el totalActual de las facturas correspondientes
         UPDATE  F

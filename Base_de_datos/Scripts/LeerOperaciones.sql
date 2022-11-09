@@ -118,9 +118,9 @@ BEGIN
 		EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
-		EXEC [dbo].[GenerarPagosXML] @hdoc, @FechaOperacion
+		EXEC [dbo].[GenerarPagosXML] @hdoc, @FechaOperacion -- nuevo
+		EXEC [dbo].[CambiarPropiedadXML] @hdoc, @FechaOperacion -- nuevo
 		
-
 		-- Se libera de la memoria
 		EXEC sp_xml_removedocument @hdoc;
 
@@ -130,10 +130,10 @@ BEGIN
 
 	--realizamos las operaciones de todos los dia
 	
-	EXEC [dbo].[GenerarFacturaXML] @fechaInicio
-	EXEC [dbo].[GenerarMorosidadXML] @fechaInicio
-	--Cortes @fechaInicio
-	--Reconexiones @fechaInicio
+	EXEC [dbo].[GenerarFacturaXML] @fechaInicio -- nuevo
+	EXEC [dbo].[GenerarMorosidadXML] @fechaInicio -- nuevo
+	EXEC [dbo].[GenerarCortas] @fechaInicio -- nuevo
+	EXEC [dbo].[GenerarReconexiones] @fechaInicio -- nuevo
 	
 	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
 

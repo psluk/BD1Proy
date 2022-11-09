@@ -1,7 +1,7 @@
 /* Procedimiento que genera las órdenes de reconexión para las propiedades
    cuyas facturas fueron pagadas */
 
-CREATE PROCEDURE [dbo].[GenerarReconexiones]
+ALTER PROCEDURE [dbo].[GenerarReconexiones]
     -- Se definen las variables de entrada
     @inFechaOperacion DATE
 AS
