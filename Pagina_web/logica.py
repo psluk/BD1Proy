@@ -925,3 +925,97 @@ def detallesDeFactura(finca: str = '', fecha: str = '', consultante: str = ''):
 
     cursor.close()
     return resultado
+
+def todosLosPagos(consultante: str = ''):
+    """
+    Función que retorna la lista completa de pagos
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerPagos] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "fecha": fila[0],
+                    "medio": fila[1],
+                    "numeroReferencia": fila[2],
+                    "totalPagado": str(fila[3])
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
+
+def detallesDePago(referencia: str = '', consultante: str = ''):
+    """
+    Función que retorna un comprobante de pago
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerPago] ?,?"
+
+    salida = cursor.execute(query, referencia, consultante)
+
+    resultado = {
+        "status": 0,
+        "receipt": [],
+        "properties": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["receipt"].append({
+                    "fecha": fila[0],
+                    "medio": fila[1],
+                    "numeroReferencia": fila[2],
+                    "total": str(fila[3])
+                })
+        # Retorna el estado general de la factura en la segunda tabla
+        salida.nextset()
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["properties"].append({
+                    "finca": fila[0],
+                    "fechaEmitida": fila[1],
+                    "fechaVencida": fila[2],
+                    "total": str(fila[3])
+                })
+        # Avanza a la tercera tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "receipt": [],
+            "properties": []
+        }
+
+    cursor.close()
+    return resultado

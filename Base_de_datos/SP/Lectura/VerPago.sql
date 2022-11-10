@@ -42,6 +42,7 @@ BEGIN
                     NULL AS 'numeroReferencia',
                     NULL AS 'total';
             SELECT  NULL AS 'Finca',
+                    NULL AS 'fechaGenerada',
                     NULL AS 'fechaVencimiento',
                     NULL AS 'total';
             SELECT @outResultCode AS 'resultCode';
@@ -71,6 +72,7 @@ BEGIN
                     NULL AS 'numeroReferencia',
                     NULL AS 'total';
             SELECT  NULL AS 'Finca',
+                    NULL AS 'fechaGenerada',
                     NULL AS 'fechaVencimiento',
                     NULL AS 'total';
             SELECT @outResultCode AS 'resultCode';
@@ -94,6 +96,7 @@ BEGIN
 
         -- Se buscan las facturas pagadas con ese pago
         SELECT  P.[numeroFinca] AS 'Finca',
+                F.[fechaGeneracion] AS 'fechaGenerada',
                 F.[fechaVencimiento] AS 'fechaVencimiento',
                 F.[totalActual] AS 'total'
         FROM    [dbo].[Factura] F
@@ -117,6 +120,7 @@ BEGIN
                 NULL AS 'numeroReferencia',
                 NULL AS 'total';
         SELECT  NULL AS 'Finca',
+                NULL AS 'fechaGenerada',
                 NULL AS 'fechaVencimiento',
                 NULL AS 'total';
         SELECT @outResultCode AS 'resultCode';

@@ -405,3 +405,20 @@ def detalles_de_factura(argumentos: str = ''):
         fecha=argumentos_separados[1],
         consultante=session['username']
     ))
+
+# Todos los pagos
+
+@app.route("/sub/get/all_payments")
+def todos_los_pagos():
+    return json.dumps(logica.todosLosPagos(
+        consultante=session['username']
+    ))
+
+# Comprobante de pago
+
+@app.route("/sub/get/payment_details/<referencia>")
+def detalles_de_pago(referencia: str = ''):
+    return json.dumps(logica.detallesDePago(
+        referencia=referencia,
+        consultante=session['username']
+    ))

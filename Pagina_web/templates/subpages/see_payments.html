@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pagos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
+    <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
+    <script>
+        // Formato de fechas
+        const fechaIdioma = 'es-CR';
+        const fechaFormato = { year: "numeric", month: "long", day: "numeric" };
+
+        let correccion_temp;
+
+        if (new Date().getTimezoneOffset() > 0) {
+            // Atrás de UTC (como Costa Rica)
+            correccion_temp = 24;
+        }
+        else {
+            // Delante de UTC
+            correccion_temp = 0;
+        }
+
+        const correccion = correccion_temp;
+
+        // Enlaces
+        const pagosApi = './get/all_payments';
+        const verPago = './payment_details?ref=';
+
+        // Acciones
+        const listaDeAcciones = 'actionList';
+
+        function filaUnicaTexto(textoInterno) {
+            // Función que deja una sola fila en la tabla con un texto dado
+            let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+            if (cuerpoTabla) {
+                // Hay un <tbody>
+                cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                let nuevaFila;              // Fila que se está agregando
+
+                nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));
+
+                nuevaFila.appendChild(document.createElement('td'));
+                nuevaFila.lastElementChild.setAttribute(
+                    'colspan', document.getElementsByTagName("th").length);
+                nuevaFila.lastElementChild.setAttribute('class', 'bigCell');
+                nuevaFila.lastElementChild.innerText = textoInterno;
+            }
+        }
+
+
+        function esperarPagos(solicitudPagos) {
+            // Función que espera hasta que el servidor retorna la respuesta
+            if (solicitudPagos.readyState < 4) {
+                // 4 = listo
+                setTimeout(function () { esperarPagos(solicitudPagos); }, 100);
+                // 100 = revisa cada 100 milisegundos
+            }
+            else {
+                let datos = JSON.parse(solicitudPagos.response);
+
+                if (datos.status != undefined) {
+                    // El código de salida debería ser 0
+                    if (datos.status != 0) {
+                        // (Los códigos de error vienen documentados en el script del SP)
+                        let textoError;
+                        switch (datos.status) {
+                            case 50000:
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
+                                break;
+
+                            case 50001:
+                                textoError = "No tiene permiso para ver la lista de pagos";
+                                break;
+
+                            default:
+                                textoError = "Ocurrió un error\n\nInténtelo nuevamente";
+                                break;
+                        }
+                        filaUnicaTexto(textoError);
+                        alert(textoError);
+                        return;
+                    }
+                }
+                else {
+                    // No hay código de salida, así que lo recibido no es válido
+                    let textoError = "Ocurrió un error\n\nInténtelo nuevamente";
+                    filaUnicaTexto(textoError);
+                    alert(textoError);
+                    return;
+                }
+
+                let resultados = datos.results;
+                let cuerpoTabla = document.getElementsByTagName("tbody")[0];
+                if (cuerpoTabla) {
+                    // Hay un <tbody>
+                    cuerpoTabla.innerHTML = ''; // Elimina lo que contenga la tabla
+                    let nuevaFila;              // Fila que se está agregando
+
+                    if (resultados.length > 0) {
+                        for (let i = 0; i < resultados.length; i++) {
+                            nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = i + 1;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let fechaPorConvertir = new Date(resultados[i].fecha);
+                            fechaPorConvertir.setHours(correccion);
+                            nuevaFila.lastElementChild.innerText = fechaPorConvertir.toLocaleDateString(
+                                fechaIdioma, fechaFormato);
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].medio;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = resultados[i].numeroReferencia;
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = (
+                                parseFloat(resultados[i].totalPagado).toLocaleString(fechaIdioma));
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
+                            nuevoEnlace.href = verPago + resultados[i].numeroReferencia;
+                            nuevoEnlace.innerText = 'Ver comprobante';
+                        }
+                    }
+                    else {
+                        // Si no se retornaron resultados, se agrega una fila que diga eso
+                        filaUnicaTexto('No hay pagos para visualizar');
+                    }
+                }
+            }
+        }
+
+        function obtenerPagos() {
+            let urlRequest = pagosApi;
+
+            let solicitudPagos = new XMLHttpRequest();
+            solicitudPagos.open('GET', urlRequest, true); // true = asincrónico
+            solicitudPagos.send();
+            esperarPagos(solicitudPagos);
+        }
+
+        window.addEventListener('load', function () {
+            // Esto se ejecuta hasta después de que se cargue la página
+            obtenerPagos();
+        })
+    </script>
+</head>
+
+<body>
+
+    <h1 id="moduleTitle">Pagos</h1>
+
+    <table id="paymentAllTable" class="numberedTable">
+        <thead>
+            <tr>
+                <th>N.º</th>
+                <th>Fecha</th>
+                <th>Medio</th>
+                <th>Número de referencia</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="bigCell" colspan="6">Cargando...</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

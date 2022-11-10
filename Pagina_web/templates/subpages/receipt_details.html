@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Propietarios de una propiedad</title>
+    <title>Detalles de factura</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
     <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
@@ -32,10 +32,7 @@
 
         // Enlaces
         const facturasApi = './get/receipt_details/';
-        const verPago = './payment_details?ref=';
-
-        // Acciones
-        const listaDeAcciones = 'actionList';
+        const verPago = './payment_details.html?ref=';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -128,7 +125,7 @@
                         filaUnicaTexto('No hay rubros para visualizar');
                     }
                 }
-                console.log(datos.receipt)
+                
                 resultados = datos.receipt;
                 cuerpoTabla = document.getElementsByTagName("tbody")[1];
                 if (cuerpoTabla) {
