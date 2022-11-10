@@ -11,7 +11,7 @@
     50001: Credenciales inválidas
 */
 
-CREATE PROCEDURE [dbo].[VerPagos]
+ALTER PROCEDURE [dbo].[VerPagos]
     -- Para determinar quién está haciendo la consulta
     @inUsername VARCHAR(32)
 AS
