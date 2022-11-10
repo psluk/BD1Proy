@@ -7,7 +7,8 @@ ALTER PROCEDURE [dbo].[PagarFacturas]
     @inNumeroFinca INT,
 
     -- Para determinar quién está haciendo la consulta
-    @inUsername VARCHAR(32)
+    @inUsername VARCHAR(32),
+    @inUserIp VARCHAR(64)
 AS
 BEGIN
     -- Se define la variable donde se guarda el código de salida
