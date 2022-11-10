@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/list.css') }}">
+    <script>
+        // Parámetros dentro del URL
+        const parametrosUrl = new URLSearchParams(window.location.search);
+        const propiedad = parametrosUrl.get('finca');
+        const fecha = parametrosUrl.get('fecha');
+
+        // Enlaces
+        const pagarApi = './post/payment';
+        const verPago = './payment_details.html?ref=';
+
+        let datosPropiedad = {
+            'fechaInicial': fecha,
+            'fechaFinal': fecha,
+            'finca': propiedad
+        }
+
+        let solicitudPagar = new XMLHttpRequest();
+        solicitudPagar.open("POST", pagarApi, false);
+        solicitudPagar.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+        solicitudPagar.send(JSON.stringify(datosPropiedad));
+        
+        try {
+            window.location = verPago + JSON.parse(solicitudPagar.response).receipt;
+        } catch {
+            alert("Ocurrió un error");
+            history.back();
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Procesando pago...</h1>
+</body>
+
+</html>

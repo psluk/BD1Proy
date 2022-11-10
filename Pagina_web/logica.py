@@ -1019,3 +1019,60 @@ def detallesDePago(referencia: str = '', consultante: str = ''):
 
     cursor.close()
     return resultado
+
+def hacerPago(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta crear una propiedad
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[PagarFacturas] ?, ?, ?, ?, ?"
+
+    datos = []
+    for i in ['fechaInicial', 'fechaFinal', 'finca']:
+        datos.append(str(informacion[i]))
+
+    print(query,
+        datos[0],
+        datos[1],
+        int(datos[2]),
+        consultante,
+        consultante_ip)
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        datos[1],
+        int(datos[2]),
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0,
+        "receipt": None
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["receipt"] = fila[0]
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "receipt": None
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado

@@ -157,6 +157,24 @@ const categories = [
                 ]
             }
         ]
+    },
+    {
+        name: 'Otros',
+        adminOnly: true,
+        groups: [
+            {
+                name: 'Consultar',
+                adminOnly: true,
+                items: [
+                    {
+                        name: 'Lista de todos los pagos',
+                        url: './sub/see_payments.html',
+                        parametersNeeded: false,
+                        adminOnly: true
+                    }
+                ]
+            }
+        ]
     }
 ];
 

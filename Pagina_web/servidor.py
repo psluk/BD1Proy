@@ -422,3 +422,18 @@ def detalles_de_pago(referencia: str = ''):
         referencia=referencia,
         consultante=session['username']
     ))
+
+# Pagos
+
+@app.route("/sub/post/payment", methods=['POST'])
+def hacer_pago():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    return logica.hacerPago(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    )
