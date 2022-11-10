@@ -4,7 +4,7 @@ const listClass = 'actionList';
 const defaultText = 'Acción...';
 const actions = { /* Las acciones con "%admin%" solo las ven administradores */
     'Consultar': {
-        'Detalles': './receipt_details.html?finca=fecha=',
+        'Detalles': './receipt_details.html?finca=&fecha=',
         'Comprobante': './payment_details?ref='
     }
 };
@@ -74,7 +74,7 @@ function redirigir(evento) {
     link = link.replace('fecha=', 'fecha=' + evento.target.parentElement.parentElement.children[1].lastChild.innerText);
     link = link.replace('ref=', 'ref=' + evento.target.parentElement.parentElement.children[6].innerText);
 
-    if (!evento.target.parentElement.parentElement.children[6].innerText && link.indexOf('ref=' > -1)) {
+    if (!evento.target.parentElement.parentElement.children[6].innerText && link.indexOf('ref=') > -1) {
         alert('No hay pagos asociados a esta factura');
         return;
     }

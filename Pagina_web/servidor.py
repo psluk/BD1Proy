@@ -394,3 +394,14 @@ def facturas_de_propiedad(finca: str = ''):
         finca=finca,
         consultante=session['username']
     ))
+
+# Detalles de una factura
+
+@app.route("/sub/get/receipt_details/<argumentos>")
+def detalles_de_factura(argumentos: str = ''):
+    argumentos_separados = argumentos.split('&')
+    return json.dumps(logica.detallesDeFactura(
+        finca=argumentos_separados[0],
+        fecha=argumentos_separados[1],
+        consultante=session['username']
+    ))

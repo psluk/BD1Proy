@@ -871,3 +871,57 @@ def facturasDePropiedad(finca: str = '', consultante: str = ''):
 
     cursor.close()
     return resultado
+
+def detallesDeFactura(finca: str = '', fecha: str = '', consultante: str = ''):
+    """
+    Función que retorna los detalles de una factura dada
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerFactura] ?,?,?"
+
+    salida = cursor.execute(query, finca, fecha, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": [],
+        "receipt": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "rubro": fila[0],
+                    "monto": str(fila[1])
+                })
+        # Retorna el estado general de la factura en la segunda tabla
+        salida.nextset()
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["receipt"].append({
+                    "fechaEmitida": fila[0],
+                    "fechaVencida": fila[1],
+                    "totalOriginal": str(fila[2]),
+                    "totalAcumulado": str(fila[3]),
+                    "estado": fila[4],
+                    "referenciaPago": fila[5]
+                })
+        # Avanza a la tercera tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": [],
+            "receipt": []
+        }
+
+    cursor.close()
+    return resultado
