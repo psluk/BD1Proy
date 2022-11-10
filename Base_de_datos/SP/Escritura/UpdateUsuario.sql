@@ -177,7 +177,7 @@ BEGIN
 				[idTipoUsuario] = @idTipoUsuario, 
 		        [nombreDeUsuario] = @inNuevoDbUsername, 
 		        [clave] = @inNuevoPassword
-			WHERE [dbo].[Usuario].nombreDeUsuario = @inDbUsername
+			WHERE [dbo].[Usuario].nombreDeUsuario = @inDbUsername;
 
         COMMIT TRANSACTION tupdateUsuario;
 

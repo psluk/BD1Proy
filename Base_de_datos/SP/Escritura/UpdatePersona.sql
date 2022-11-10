@@ -111,6 +111,39 @@ BEGIN
         BEGIN TRANSACTION tupdatePersona
             -- Empieza la transacci�n
 
+			INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 2, 
+				   p.id, 
+				   (SELECT [idTipoDocumentoId], 
+						   [nombre], 
+						   [valorDocumentoId], 
+						   [telefono1], 
+						   [telefono2], 
+						   [email]
+						   FROM Persona per
+						   WHERE per.id = @Numero
+						   FOR JSON AUTO),
+				  (SELECT  @TipoDocumentoId AS 'idTipoDocumentoId', 
+						   @inNuevoNombre AS 'nombre', 
+						   @inNuevoValorDocumentoId AS 'valorDocumentoId', 
+						   @inNuevoTelefono1 AS 'telefono1', 
+						   @inNuevoTelefono2 AS 'telefono2', 
+						   @inNuevoEmail AS 'email'
+						   FROM Persona per
+						   WHERE per.id = @Numero
+						   FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM Persona p
+			WHERE p.id = @Numero
+
             -- Se inserta la propiedad
             UPDATE [dbo].[Persona]
 		    SET [idTipoDocumentoId] = @TipoDocumentoId, 

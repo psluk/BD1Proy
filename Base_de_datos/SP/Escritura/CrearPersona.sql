@@ -123,6 +123,31 @@ BEGIN
 			@inNuevoEmail
             );
 
+			INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 2, 
+				   p.id, 
+				   NULL,
+				  (SELECT  @idTipoDocumentoId AS 'idTipoDocumentoId', 
+						   @inNuevoNombre AS 'nombre', 
+						   @inNuevoValorDocumentoId AS 'valorDocumentoId', 
+						   @inNuevoTelefono1 AS 'telefono1', 
+						   @inNuevoTelefono2 AS 'telefono2', 
+						   @inNuevoEmail AS 'email'
+						   FROM Persona per
+						   WHERE per.valorDocumentoId = @inNuevoValorDocumentoId
+						   FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM Persona p
+			WHERE p.valorDocumentoId = @inNuevoValorDocumentoId
+
         COMMIT TRANSACTION tCrearPersona;
 
     END TRY

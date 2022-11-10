@@ -99,6 +99,31 @@ BEGIN
         BEGIN TRANSACTION tEliminarPersona
             -- Empieza la transacci�n
 
+			INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 2, 
+				   p.id, 
+				   (SELECT [idTipoDocumentoId], 
+						   [nombre], 
+						   [valorDocumentoId], 
+						   [telefono1], 
+						   [telefono2], 
+						   [email]
+						   FROM Persona per
+						   WHERE per.valorDocumentoId = @inValorDocumentoId
+						   FOR JSON AUTO),
+				  NULL,
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM Persona p
+			WHERE p.valorDocumentoId = @inValorDocumentoId
+
 			--se elimina la relacion propiedaPropietario
 			DELETE pdp FROM PropietarioDePropiedad pdp
 			INNER JOIN Persona p ON pdp.idPersona = p.id 

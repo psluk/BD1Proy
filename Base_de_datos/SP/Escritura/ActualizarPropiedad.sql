@@ -132,6 +132,43 @@ BEGIN
         BEGIN TRANSACTION tCrearPropiedad
             -- Empieza la transacci�n
 
+			INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 1, 
+				   p.id, 
+				   (SELECT [idTipoUsoPropiedad], 
+						   [idTipoZona], 
+						   [numeroFinca], 
+						   [area], 
+						   [valorFiscal], 
+						   [fechaRegistro], 
+						   [consumoAcumulado], 
+						   [acumuladoUltimaFactura]
+						   FROM Propiedad pro
+						   WHERE pro.[numeroFinca] = @inNumeroFinca
+						   FOR JSON AUTO),
+				  (SELECT @idTipoUso AS 'idTipoUsoPropiedad', 
+						  @idTipoZona AS 'idTipoZona', 
+						  [NumeroFinca], 
+						  @inArea AS 'area', 
+						  @inValorFiscal AS 'valorFiscal', 
+						  [fechaRegistro], 
+						  [consumoAcumulado], 
+						  [acumuladoUltimaFactura]
+						  FROM Propiedad pro
+						  WHERE pro.[numeroFinca] = @inNumeroFinca
+						  FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM Propiedad p
+			WHERE [numeroFinca] = @inNumeroFinca;
+
             -- Se inserta la propiedad
             UPDATE [dbo].[Propiedad]
             SET [idTipoUsoPropiedad] = @idTipoUso,
