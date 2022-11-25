@@ -62,7 +62,7 @@
     <TipoParametro id = "14" Nombre = "time" />
     <TipoParametro id = "15" Nombre = "char" />
     <TipoParametro id = "16" Nombre = "text" />
-    <TipoParametro id = "17" Nombre = "varchar" />
+    <TipoParametro id = "17" Nombre = "varchar" /> 
     <TipoParametro id = "18" Nombre = "nchar" />
     <TipoParametro id = "19" Nombre = "ntext" />
     <TipoParametro id = "20" Nombre = "nvarchar" />
@@ -81,6 +81,7 @@
     <CC id="5" Nombre="Reconexion" TipoMontoCC ="1" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="" ValorFijo="30000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
     <CC id="6" Nombre="Intereses Moratorios" TipoMontoCC ="3" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="30000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
     <CC id="7" Nombre="MantenimientoParques" TipoMontoCC ="1" PeriodoMontoCC ="4" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="0.02" ValorFijo="2000" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
+    <CC id="8" Nombre="Arreglo de pago" TipoMontoCC ="1" PeriodoMontoCC ="1" ValorMinimo="" ValorMinimoM3="" Valorm3="" ValorPorcentual="" ValorFijo="" ValorM2Minimo="" ValorTractosM2="" ValorFijoM3Adicional=""/>
   </CCs>
   <TipoDePagos>
     <TipoDePago id="1" tipoPago="Efectivo"/>
@@ -98,4 +99,14 @@
     <EstadoOrdenes id="1" EstadoOrdenes="Pendiente de pago"/>
     <EstadoOrdenes id="2" EstadoOrdenes="Pago de reconexión realizado"/>
   </EstadoOrdenesDeCorta>
+  <TiposMovimientosArregloPago>
+    <MovimientosArregloPago id="1" Nombre = "Credito" />
+    <MovimientosArregloPago id="2" Nombre = "Debito" />
+  </TiposMovimientosArregloPago>
+  <InteresesArregloDePago>
+    <Interes id="1" PlazoEnMeses="3" TasaDeInteresAnual = "0.10"/>
+    <Interes id="2" PlazoEnMeses="4" TasaDeInteresAnual = "0.11"/>
+    <Interes id="3" PlazoEnMeses="5" TasaDeInteresAnual = "0.12"/>
+    <Interes id="4" PlazoEnMeses="6" TasaDeInteresAnual = "0.13"/>
+  </InteresesArregloDePago>
 </Catalogo>
