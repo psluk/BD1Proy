@@ -1,4 +1,10 @@
 DROP TABLE dbo.Errors;
+DROP TABLE dbo.FacturaConArreglo;
+DROP TABLE dbo.DetalleConceptoCobroArreglo;
+DROP TABLE dbo.MovimientoArreglo;
+DROP TABLE dbo.TipoMovimientoArreglo;
+DROP TABLE dbo.ArregloDePago;
+DROP TABLE dbo.TasaInteresArreglo;
 DROP TABLE dbo.EventLog;
 DROP TABLE dbo.EntityType;
 DROP TABLE dbo.ParametroSistema;

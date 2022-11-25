@@ -2,6 +2,12 @@ USE [proyecto]
 
 --borrado de la informacion de todas las tablas
 DELETE dbo.Errors;
+DELETE dbo.FacturaConArreglo;
+DELETE dbo.DetalleConceptoCobroArreglo;
+DELETE dbo.MovimientoArreglo;
+DELETE dbo.TipoMovimientoArreglo;
+DELETE dbo.ArregloDePago;
+DELETE dbo.TasaInteresArreglo;
 DELETE dbo.EventLog;
 DELETE dbo.EntityType;
 DELETE dbo.ParametroSistema;
@@ -38,11 +44,13 @@ DELETE dbo.TipoUsoPropiedad;
 DELETE dbo.TipoZona;
 DELETE dbo.Persona;
 DELETE dbo.TipoDocumentoId;
---DELETE dbo.socorro;
 DELETE dbo.ErroresDefinidos;
 
 
--- reiniciamos el PK de las tablas
+-- Reiniciamos el PK de las tablas
+DBCC CHECKIDENT (FacturaConArreglo, RESEED, 0);
+DBCC CHECKIDENT (MovimientoArreglo, RESEED, 0);
+DBCC CHECKIDENT (ArregloDePago, RESEED, 0);
 DBCC CHECKIDENT (Pago, RESEED, 0);
 DBCC CHECKIDENT (Errors, RESEED, 0);
 DBCC CHECKIDENT (EventLog, RESEED, 0);
@@ -59,7 +67,6 @@ DBCC CHECKIDENT (Usuario, RESEED, 0);
 DBCC CHECKIDENT (TipoUsuario, RESEED, 0);
 DBCC CHECKIDENT (Propiedad, RESEED, 0);
 DBCC CHECKIDENT (Persona, RESEED, 0);
---DBCC CHECKIDENT (socorro, RESEED, 0);
 DBCC CHECKIDENT (ErroresDefinidos, RESEED, 0);
 
 DECLARE @SQL VARCHAR(MAX)

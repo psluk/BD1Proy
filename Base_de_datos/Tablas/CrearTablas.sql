@@ -583,6 +583,112 @@ CREATE TABLE dbo.OrdenReconexion
     REFERENCES dbo.OrdenCorta (id)
 );
 
+-- CATEGORÍA: Arreglos de pago
+
+CREATE TABLE dbo.TasaInteresArreglo
+(
+    -- Llaves
+    id INT NOT NULL,
+    
+    -- Otras columnas
+    plazoMeses INT NOT NULL,
+    tasaInteresAnual MONEY NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_TasaInteresArreglo PRIMARY KEY CLUSTERED (id)
+);
+
+CREATE TABLE dbo.ArregloDePago
+(
+    -- Llaves
+    id INT NOT NULL IDENTITY(1,1),
+    idTasaInteres INT NOT NULL,
+    idPropiedad INT NOT NULL,
+    
+    -- Otras columnas
+    montoOriginal MONEY NOT NULL,
+    saldo MONEY NOT NULL,
+    acumuladoAmortizado MONEY NOT NULL,
+    acumuladoPagado MONEY NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_ArregloDePago PRIMARY KEY CLUSTERED (id),
+
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_ArregloDePago_TasaInteresArreglo FOREIGN KEY (idTasaInteres)
+    REFERENCES dbo.TasaInteresArreglo (id),
+    CONSTRAINT FK_ArregloDePago_Propiedad FOREIGN KEY (idPropiedad)
+    REFERENCES dbo.Propiedad (id)
+);
+
+CREATE TABLE dbo.TipoMovimientoArreglo
+(
+    -- Llaves
+    id INT NOT NULL, 
+
+    -- Otras columnas
+    descripcion VARCHAR(32) NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_TipoMovimientoArreglo PRIMARY KEY CLUSTERED (id)
+);
+
+CREATE TABLE dbo.MovimientoArreglo
+(
+    -- Llaves
+    id INT NOT NULL IDENTITY(1,1), 
+    idTipoMovimiento INT NOT NULL,
+    idArregloPago INT NOT NULL,
+
+    -- Otras columnas
+    fecha DATE NOT NULL,
+    montoCuota MONEY NOT NULL,
+    amortizado MONEY NOT NULL,
+    intereses MONEY NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_MovimientoArreglo PRIMARY KEY CLUSTERED (id),
+
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_MovimientoArreglo_TipoMovimientoArreglo FOREIGN KEY (idTipoMovimiento)
+    REFERENCES dbo.TipoMovimientoArreglo (id),
+    CONSTRAINT FK_MovimientoArreglo_ArregloDePago FOREIGN KEY (idArregloPago)
+    REFERENCES dbo.ArregloDePago (id)
+);
+
+CREATE TABLE dbo.DetalleConceptoCobroArreglo
+(
+    -- Llaves
+    id INT NOT NULL,
+    idMovimiento INT NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_DetalleConceptoCobroArreglo PRIMARY KEY CLUSTERED
+        (id),
+
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_DetalleConceptoCobroArreglo_DetalleConceptoCobro FOREIGN KEY (id)
+    REFERENCES dbo.DetalleConceptoCobro (id),
+    CONSTRAINT FK_DetalleConceptoCobroArreglo_MovimientoArreglo FOREIGN KEY (idMovimiento)
+    REFERENCES dbo.MovimientoArreglo (id)
+);
+
+CREATE TABLE dbo.FacturaConArreglo
+(
+    -- Llaves
+    id INT NOT NULL,
+    idArregloPago INT NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_FacturaConArreglo PRIMARY KEY CLUSTERED (id),
+
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_FacturaConArreglo_Factura FOREIGN KEY (id)
+    REFERENCES dbo.Factura (id),
+    CONSTRAINT FK_FacturaConArreglo_ArregloDePago FOREIGN KEY (idArregloPago)
+    REFERENCES dbo.ArregloDePago (id)
+);
+
 -- CATEGORÍA: Parámetros del sistema
 
 CREATE TABLE dbo.TipoParametroSistema
@@ -675,10 +781,12 @@ CREATE TABLE [dbo].[Errors]
 CREATE TABLE [dbo].[ErroresDefinidos]
 (
 	-- Llaves
-	[ID] INT NOT NULL IDENTITY(1,1),
+	id INT NOT NULL IDENTITY(1,1),
 
 	-- Otras columnas
-	[NumeroError] VARCHAR(100) NOT NULL,
-	[TipoError] VARCHAR(128) NOT NULL,
+	[numeroError] VARCHAR(100) NOT NULL,
+	[tipoError] VARCHAR(128) NOT NULL,
 
+    -- Se establece la llave primaria
+    CONSTRAINT PK_ErroresDefinidos PRIMARY KEY CLUSTERED ([id])
 );
