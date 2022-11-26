@@ -35,16 +35,6 @@ WITH (
 	Mascara VARCHAR(32)
 	);
 
--- AQUÍ SE CARGA: Tipos de asociaciones
-
---INSERT INTO [dbo].[TipoAsociacion] (id, descripcion)
---SELECT id, Nombre
---FROM OPENXML(@hdoc, '/Catalogo/TipoAsociaciones/TipoAsociacion', 1)
---WITH (
---	id INT,
---	Nombre VARCHAR(32)
---	);
-
 -- CATEGORÍA: Propiedades
 
 -- AQUÍ SE CARGA: Tipos de uso de propiedad
@@ -325,6 +315,43 @@ FROM OPENXML(@hdoc, '/Catalogo/EstadoOrdenesDeCorta/EstadoOrdenes', 1)
 WITH (
 	id INT,
 	EstadoOrdenes VARCHAR(32)
+	);
+
+-- CATEGORÍA: Arreglos de pago
+
+-- AQUÍ SE CARGA: Tipos de movimientos para los arreglos de pago
+
+INSERT INTO [dbo].[TipoMovimientoArreglo] (
+			id, 
+			descripcion)
+SELECT id, 
+	   Nombre
+FROM OPENXML(
+	@hdoc,
+	'/Catalogo/TiposMovimientosArregloPago/MovimientosArregloPago',
+	1)
+WITH (
+	id INT,
+	Nombre VARCHAR(32)
+	);
+
+-- AQUÍ SE CARGA: Tasas de interés para los arreglos de pago
+
+INSERT INTO [dbo].[TasaInteresArreglo] (
+			id, 
+			plazoMeses,
+            tasaInteresAnual)
+SELECT id, 
+	   PlazoEnMeses,
+       TasaDeInteresAnual
+FROM OPENXML(
+	@hdoc,
+	'/Catalogo/InteresesArregloDePago/Interes',
+	1)
+WITH (
+	id INT,
+	PlazoEnMeses INT,
+    TasaDeInteresAnual MONEY
 	);
 
 -- CATEGORÍA: Parámetros del sistema
