@@ -598,12 +598,25 @@ CREATE TABLE dbo.TasaInteresArreglo
     CONSTRAINT PK_TasaInteresArreglo PRIMARY KEY CLUSTERED (id)
 );
 
+CREATE TABLE dbo.EstadoDeArreglo
+(
+    -- Llaves
+    id INT NOT NULL,
+
+    -- Otras columnas
+    descripcion VARCHAR(16) NOT NULL,
+
+    -- Se establece la llave primaria
+    CONSTRAINT PK_EstadoDeArreglo PRIMARY KEY CLUSTERED (id)
+);
+
 CREATE TABLE dbo.ArregloDePago
 (
     -- Llaves
     id INT NOT NULL IDENTITY(1,1),
     idTasaInteres INT NOT NULL,
     idPropiedad INT NOT NULL,
+    idEstado INT NOT NULL,
     
     -- Otras columnas
     montoOriginal MONEY NOT NULL,
@@ -618,7 +631,9 @@ CREATE TABLE dbo.ArregloDePago
     CONSTRAINT FK_ArregloDePago_TasaInteresArreglo FOREIGN KEY (idTasaInteres)
     REFERENCES dbo.TasaInteresArreglo (id),
     CONSTRAINT FK_ArregloDePago_Propiedad FOREIGN KEY (idPropiedad)
-    REFERENCES dbo.Propiedad (id)
+    REFERENCES dbo.Propiedad (id),
+    CONSTRAINT FK_ArregloDePago_EstadoDeArreglo FOREIGN KEY (idEstado)
+    REFERENCES dbo.EstadoDeArreglo (id)
 );
 
 CREATE TABLE dbo.TipoMovimientoArreglo

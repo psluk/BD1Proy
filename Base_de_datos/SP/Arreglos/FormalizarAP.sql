@@ -28,6 +28,7 @@ BEGIN
     DECLARE @ID_FACTURA_PAGADA_CON_AP INT = 3;
     DECLARE @MIN_FACTURAS_PENDIENTES INT = 2;
     DECLARE @ID_MOVIMIENTO_DEBITO INT = 2;
+    DECLARE @ID_ARREGLO_ACTIVO INT = 1;
 
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
@@ -144,6 +145,7 @@ BEGIN
                 (
                     idTasaInteres,
                     idPropiedad,
+                    idEstado,
                     montoOriginal,
                     saldo,
                     acumuladoAmortizado,
@@ -151,6 +153,7 @@ BEGIN
                 )
             SELECT  @idTasaInteres,
                     @idPropiedad,
+                    @ID_ARREGLO_ACTIVO,
                     @montoPendiente,
                     @montoPendiente,
                     0,

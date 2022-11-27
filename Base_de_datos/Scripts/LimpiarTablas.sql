@@ -7,6 +7,7 @@ DELETE dbo.DetalleConceptoCobroArreglo;
 DELETE dbo.MovimientoArreglo;
 DELETE dbo.TipoMovimientoArreglo;
 DELETE dbo.ArregloDePago;
+DELETE dbo.EstadoDeArreglo;
 DELETE dbo.TasaInteresArreglo;
 DELETE dbo.EventLog;
 DELETE dbo.EntityType;

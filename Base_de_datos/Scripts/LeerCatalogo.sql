@@ -417,6 +417,13 @@ EXEC sp_xml_removedocument @hdoc; -- Libera la memoria utilizada para la estruct
 INSERT INTO [dbo].[TipoUsuario] (nombre)
 	VALUES ('Administrador'), ('Propietario');
 
+INSERT INTO [dbo].[EstadoDeArreglo]
+(
+    [id],
+    [descripcion]
+)
+VALUES (0, 'Cancelado'), (1, 'Activo');
+
 INSERT INTO [dbo].[EntityType] (nombre)
     VALUES  ('Propiedad'),
             ('Propietario'),

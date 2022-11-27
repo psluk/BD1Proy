@@ -4,6 +4,7 @@ DROP TABLE dbo.DetalleConceptoCobroArreglo;
 DROP TABLE dbo.MovimientoArreglo;
 DROP TABLE dbo.TipoMovimientoArreglo;
 DROP TABLE dbo.ArregloDePago;
+DROP TABLE dbo.EstadoDeArreglo;
 DROP TABLE dbo.TasaInteresArreglo;
 DROP TABLE dbo.EventLog;
 DROP TABLE dbo.EntityType;
