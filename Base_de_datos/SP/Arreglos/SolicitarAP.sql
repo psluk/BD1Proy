@@ -48,10 +48,9 @@ BEGIN
             -- Si llega acá, el usuario no es administrador
             -- Entonces no retornamos nada
             SET @outResultCode = 50001;     -- Credenciales inválidas
-            SELECT NULL AS 'Usuario', 
-				    NULL AS 'Tipo', 
-				    NULL AS 'Nombre', 
-				    NULL AS 'Identificacion';
+            SELECT  NULL AS 'Plazo', 
+			        NULL AS 'Tasa anual', 
+			        NULL AS 'Cuota';
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -74,9 +73,9 @@ BEGIN
             -- No existe
             -- Entonces no retornamos nada
             SET @outResultCode = 50002;     -- Propiedad inexistente
-            SELECT NULL AS 'Nombre', 
-				   NULL AS 'ID', 
-				   NULL AS 'Inicio';
+            SELECT  NULL AS 'Plazo', 
+			        NULL AS 'Tasa anual', 
+			        NULL AS 'Cuota';
 
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
@@ -96,10 +95,9 @@ BEGIN
         BEGIN
             -- Si llega acá, entonces no hay facturas pendientes suficientes
             SET @outResultCode = 50003;     -- Sin facturas pendientes
-            SELECT NULL AS 'Usuario', 
-				    NULL AS 'Tipo', 
-				    NULL AS 'Nombre', 
-				    NULL AS 'Identificacion';
+            SELECT  NULL AS 'Plazo', 
+			        NULL AS 'Tasa anual', 
+			        NULL AS 'Cuota';
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -122,9 +120,9 @@ BEGIN
     BEGIN CATCH
         -- Ocurrió un error desconocido
         SET @outResultCode = 50000;     -- Error
-        SELECT NULL AS 'Nombre', 
-			   NULL AS 'ID', 
-			   NULL AS 'Inicio';
+        SELECT NULL AS 'Plazo', 
+			   NULL AS 'Tasa anual', 
+			   NULL AS 'Cuota';
 
         SELECT @outResultCode AS 'resultCode';
     END CATCH;
