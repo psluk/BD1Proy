@@ -2,13 +2,13 @@
     Procedimiento que permite formalizar el arreglo de pago
 */
 
-/* Resumen de los cÛdigos de salida de este procedimiento
--- …xito --
+/* Resumen de los c√≥digos de salida de este procedimiento
+-- √âxito --
         0: Correcto
 
 -- Error --
-    50000: OcurriÛ un error desconocido
-    50001: Credenciales inv·lidas
+    50000: Ocurri√≥ un error desconocido
+    50001: Credenciales inv√°lidas
     50002: La propiedad no existe
     50003: No hay facturas pendientes
     50004: No existe ese plazo
@@ -19,24 +19,27 @@ ALTER PROCEDURE [dbo].[FormalizarAP]
     @inNumeroFinca VARCHAR(32),
     @inPlazoMeses INT,
 
-    -- Para determinar quiÈn est· haciendo la consulta
+    -- Para determinar qui√©n est√° haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
     -- CONSTANTES
     DECLARE @ID_FACTURA_ESTADO_PENDIENTE INT = 1;
+    DECLARE @ID_FACTURA_PAGADA_CON_AP INT = 3;
     DECLARE @MIN_FACTURAS_PENDIENTES INT = 2;
     DECLARE @ID_MOVIMIENTO_DEBITO INT = 2;
 
-    -- Se define la variable donde se guarda el cÛdigo de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Èxito)
+    -- Se define la variable donde se guarda el c√≥digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (√©xito)
     DECLARE @idPropiedad AS INT;
     DECLARE @facturasPendientes TABLE (
-        numeroFacturas INT,             -- N˙mero de facturas pendientes
-        montoPendiente MONEY            -- Total
+        idFactura INT,                  -- ID de la factura
+        montoPendiente MONEY            -- Pendiente para esa factura
     );
+    DECLARE @montoPendiente INT;
     DECLARE @idTasaInteres AS INT;
     DECLARE @montoCuota AS INT;
+    DECLARE @idArregloPago INT;
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -49,9 +52,9 @@ BEGIN
 					    AND T.nombre = 'Administrador'
 					    )
         BEGIN
-            -- Si llega ac·, el usuario no es administrador
+            -- Si llega ac√°, el usuario no es administrador
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inv·lidas
+            SET @outResultCode = 50001;     -- Credenciales inv√°lidas
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -63,7 +66,7 @@ BEGIN
 				    WHERE P.numeroFinca = @inNumeroFinca
 				  )
         BEGIN
-            -- SÌ existe
+            -- S√≠ existe
             SET @idPropiedad = ( SELECT P.id 
 								 FROM [dbo].[Propiedad] P
 								 WHERE P.numeroFinca = @inNumeroFinca
@@ -82,28 +85,32 @@ BEGIN
 
         -- Se insertan las facturas pendientes a la tabla
         INSERT INTO @facturasPendientes
-        SELECT  COUNT(F.[id]),
-                SUM(F.[totalActual])
+        SELECT  F.[id],
+                F.[totalActual]
         FROM    [dbo].[Factura] F
         WHERE   F.[idPropiedad] = @idPropiedad
             AND F.[idEstadoFactura] = @ID_FACTURA_ESTADO_PENDIENTE
 
-        IF  (SELECT  F.[numeroFacturas]
+        IF  (SELECT  COUNT(F.[idFactura])
             FROM    @facturasPendientes F) < @MIN_FACTURAS_PENDIENTES
         BEGIN
-            -- Si llega ac·, entonces no hay facturas pendientes suficientes
+            -- Si llega ac√°, entonces no hay facturas pendientes suficientes
             SET @outResultCode = 50003;     -- Sin facturas pendientes
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
         END;
 
-        -- Se obtiene el ID de la tasa de interÈs
+        -- Se obtiene el total pendiente
+        SET @montoPendiente =  (SELECT  SUM([montoPendiente])
+                                FROM    @facturasPendientes);
+
+        -- Se obtiene el ID de la tasa de inter√©s
         IF  EXISTS (SELECT  1
                     FROM    [dbo].[TasaInteresArreglo]
                     WHERE   [plazoMeses] = @inPlazoMeses)
         BEGIN
-            -- SÌ existe
+            -- S√≠ existe
             SET @idTasaInteres =   (SELECT  [id]
                                     FROM    [dbo].[TasaInteresArreglo]
                                     WHERE   [plazoMeses] = @inPlazoMeses);
@@ -125,7 +132,7 @@ BEGIN
                          + ((TI.[tasaInteresAnual] / 12)
                             / (POWER((1 + (TI.[tasaInteresAnual] / 12)), TI.[plazoMeses]) - 1)
                            )
-                        ) * (SELECT [montoPendiente] FROM @facturasPendientes)
+                        ) * (@montoPendiente)
                     )
             FROM    [dbo].[TasaInteresArreglo] TI
             WHERE   TI.[id] = @idTasaInteres);
@@ -144,13 +151,16 @@ BEGIN
                 )
             SELECT  @idTasaInteres,
                     @idPropiedad,
-                    F.[montoPendiente],
-                    F.[montoPendiente],
+                    @montoPendiente,
+                    @montoPendiente,
                     0,
-                    0
-            FROM    @facturasPendientes F;
+                    0;
 
-            -- Se crea el movimiento de tipo dÈbito
+            SET @idArregloPago =   (SELECT  MAX(A.[id])             -- ID del arreglo reci√©n creado
+                                    FROM    [dbo].[ArregloDePago] A
+                                    WHERE   A.[idPropiedad] = @idPropiedad);
+
+            -- Se crea el movimiento de tipo d√©bito
             INSERT INTO [dbo].[MovimientoArreglo]
                 (
                     idTipoMovimiento,
@@ -160,15 +170,29 @@ BEGIN
                     amortizado,
                     intereses
                 )
-            SELECT  @ID_MOVIMIENTO_DEBITO,                      -- Movimiento de dÈbito
-                   (SELECT  MAX(A.[id])                         -- ID del arreglo reciÈn creado
-                    FROM    [dbo].[ArregloDePago] A
-                    WHERE   A.[idPropiedad] = @idPropiedad),
+            SELECT  @ID_MOVIMIENTO_DEBITO,                      -- Movimiento de d√©bito
+                    @idArregloPago,
                     GETDATE(),                                  -- Fecha
                     @montoCuota,                                -- Cuota
-                    F.[montoPendiente],                         -- Monto total por amortizar
-                    (@montoCuota * @inPlazoMeses - F.montoPendiente) -- Interes totales
-            FROM    @facturasPendientes F;
+                    @montoPendiente,                            -- Monto total por amortizar
+                    (@montoCuota * @inPlazoMeses - @montoPendiente); -- Interes totales
+
+            -- Se actualiza el estado de las facturas incluidas en el arreglo de pago
+            UPDATE  F
+            SET     [idEstadoFactura] = @ID_FACTURA_PAGADA_CON_AP
+            FROM    [dbo].[Factura] F
+            INNER JOIN  @facturasPendientes FP
+                ON FP.[idFactura] = F.[id];
+
+            -- Se asocian las facturas con el arreglo de pago
+            INSERT INTO [dbo].[FacturaConArreglo]
+            (
+                [id],
+                [idArregloPago]
+            )
+            SELECT  FP.[idFactura],
+                    @idArregloPago
+            FROM    @facturasPendientes FP;
 
         COMMIT TRANSACTION  tArregloDePago
 
@@ -176,7 +200,7 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- OcurriÛ un error desconocido
+        -- Ocurri√≥ un error desconocido
         IF  @@TRANCOUNT > 0
         BEGIN
             ROLLBACK TRANSACTION tArregloDePago;
