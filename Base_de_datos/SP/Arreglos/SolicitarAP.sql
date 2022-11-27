@@ -119,6 +119,19 @@ BEGIN
     END TRY
     BEGIN CATCH
         -- Ocurrió un error desconocido
+        -- Registra el error
+        INSERT INTO [dbo].[Errors]
+        VALUES (
+            SUSER_NAME(),
+            ERROR_NUMBER(),
+            ERROR_STATE(),
+            ERROR_SEVERITY(),
+            ERROR_LINE(),
+            ERROR_PROCEDURE(),
+            ERROR_MESSAGE(),
+            GETDATE()
+        );
+
         SET @outResultCode = 50000;     -- Error
         SELECT NULL AS 'Plazo', 
 			   NULL AS 'Tasa anual', 
