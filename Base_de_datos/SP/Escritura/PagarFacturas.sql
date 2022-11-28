@@ -55,6 +55,19 @@ BEGIN
             RETURN;
         END;
 
+        -- Verificamos si el pago existe
+        IF EXISTS ( SELECT  1
+                    FROM    [dbo].[Pago] P
+                    WHERE   P.[numeroReferencia] = @NUMERO_DE_REFERENCIA
+                  )
+        BEGIN
+            -- Sí, entonces solo retornamos el número de referencia y nos salimos
+            SELECT @NUMERO_DE_REFERENCIA AS 'numeroReferencia';
+            SELECT @outResultCode AS 'resultCode';
+            SET NOCOUNT OFF;
+            RETURN;
+        END;
+
         -- Verificamos que exista la propiedad y obtenemos el ID
         IF EXISTS ( SELECT 1 
 					FROM [dbo].[Propiedad] P
