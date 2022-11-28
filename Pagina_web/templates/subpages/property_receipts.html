@@ -26,6 +26,9 @@
 
         const correccion = correccion_temp;
 
+        // Información
+        let resultados = {};
+
         // Parámetros dentro del URL
         const parametrosUrl = new URLSearchParams(window.location.search);
         const propiedadBuscada = parametrosUrl.get('finca');
@@ -36,6 +39,12 @@
 
         // Acciones
         const listaDeAcciones = 'actionList';
+        let factura1 = -1, factura2 = -1;
+        const celdasDePago = 'columnaPago';
+        const colorSeleccion = 'lightseagreen';
+        const idBoton = 'payButton';
+        const textoBoton = 'Pagar facturas seleccionadas:<br>%n% factura(s)';
+        const enlacePago = './pay.html?finca=&fechaInicio=&fechaFin=';
 
         function filaUnicaTexto(textoInterno) {
             // Función que deja una sola fila en la tabla con un texto dado
@@ -54,7 +63,6 @@
                 nuevaFila.lastElementChild.innerText = textoInterno;
             }
         }
-
 
         function esperarPropietarios(solicitudFacturas) {
             // Función que espera hasta que el servidor retorna la respuesta
@@ -101,7 +109,7 @@
                     return;
                 }
 
-                let resultados = datos.results;
+                resultados = datos.results;
                 let cuerpoTabla = document.getElementsByTagName("tbody")[0];
                 if (cuerpoTabla) {
                     // Hay un <tbody>
@@ -151,6 +159,24 @@
                                 nuevoEnlace.href = verPago + resultados[i].referenciaPago;
                                 nuevoEnlace.innerText = "Ver";
                             }
+                            else {
+                                nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('input'));
+                                nuevoEnlace.setAttribute('type', 'radio');
+                                nuevoEnlace.setAttribute('name', 'grupo1');
+                                nuevoEnlace.setAttribute('value', i);
+                                nuevoEnlace.checked = true;
+                                nuevoEnlace.onclick = function() {factura1 = i; seleccionCambiada()};
+                                factura1 = i;
+                                
+                                nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('input'));
+                                nuevoEnlace.setAttribute('type', 'radio');
+                                nuevoEnlace.setAttribute('name', 'grupo2');
+                                nuevoEnlace.setAttribute('value', i);
+                                nuevoEnlace.checked = true;
+                                nuevoEnlace.onclick = function() {factura2 = i; seleccionCambiada()};
+                                factura2 = i;
+                                nuevaFila.lastElementChild.setAttribute('class', celdasDePago);
+                            }
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
 
@@ -158,6 +184,12 @@
                             nuevoEnlace.setAttribute('class', listaDeAcciones);
                         }
                         agregarAcciones();
+                        seleccionCambiada();
+
+                        if (factura1 > -1 || factura2 > -1) {
+                            // Si hay al menos una factura pendiente, se muestra la opción de pagar
+                            document.getElementById(idBoton).style.display = 'initial';
+                        }
                     }
                     else {
                         // Si no se retornaron resultados, se agrega una fila que diga eso
@@ -165,6 +197,57 @@
                     }
                 }
             }
+        }
+
+        function seleccionCambiada() {
+            let celdas = document.getElementsByClassName(celdasDePago);
+            let facturaMenor, facturaMayor;
+            let cuenta = 0;
+
+            if (factura1 > factura2) {
+                facturaMayor = factura1;
+                facturaMenor = factura2;
+            } else {
+                facturaMayor = factura2;
+                facturaMenor = factura1;
+            }
+
+            for (let i = 0; i < celdas.length; i++) {
+                if (facturaMenor <= i && i <= facturaMayor) {
+                    celdas[i].style['background-color'] = colorSeleccion;
+                    cuenta++;
+                } else {
+                    celdas[i].style['background-color'] = '';
+                }
+            }
+
+            let boton = document.getElementById(idBoton);
+            boton.innerHTML = textoBoton.replace('%n%', cuenta);
+        }
+
+        function pagar() {
+            let link = enlacePago.replace('finca=', 'finca=' + propiedadBuscada);
+            let facturaMenor, facturaMayor;
+
+            if (factura1 > factura2) {
+                facturaMayor = factura1;
+                facturaMenor = factura2;
+            } else {
+                facturaMayor = factura2;
+                facturaMenor = factura1;
+            }
+
+            for (let i = 0; i < resultados.length; i++) {
+                if (i == facturaMenor) {
+                    link = link.replace('fechaFin=', 'fechaFin=' + resultados[i].fechaEmitida);
+                }
+                if (i == facturaMayor) {
+                    link = link.replace('fechaInicio=', 'fechaInicio=' + resultados[i].fechaEmitida);
+                    break;
+                }
+            }
+
+            window.location = link;
         }
 
         function obtenerFacturas() {
@@ -188,11 +271,25 @@
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerFacturas();
             document.getElementById("moduleTitle").innerText += " " + propiedadBuscada;
+            document.getElementById(idBoton).onclick = function() {pagar();};
         })
     </script>
+    <style>
+        #payButton {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: lightseagreen;
+            font-size: large;
+            display: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
+
+    <button type="button" id="payButton"></button>
 
     <h1 id="moduleTitle">Facturas de la finca n.º</h1>
 

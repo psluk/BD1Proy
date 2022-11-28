@@ -203,9 +203,7 @@
                                 nuevoEnlace.href = verPago + resultados[i].referenciaPago;
                                 nuevoEnlace.innerText = "Ver comprobante";
                             } else {
-                                nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
-                                nuevoEnlace.href = './pay.html?finca=' + propiedadBuscada + '&fecha=' + resultados[i].fechaEmitida;
-                                nuevoEnlace.innerText = "Pagar";
+                                nuevoEnlace.innerText = "Aún no se ha pagado";
                             }
                         }
 

@@ -10,15 +10,16 @@
         // Parámetros dentro del URL
         const parametrosUrl = new URLSearchParams(window.location.search);
         const propiedad = parametrosUrl.get('finca');
-        const fecha = parametrosUrl.get('fecha');
+        const fechaInicio = parametrosUrl.get('fechaInicio');
+        const fechaFin = parametrosUrl.get('fechaFin');
 
         // Enlaces
         const pagarApi = './post/payment';
         const verPago = './payment_details.html?ref=';
 
         let datosPropiedad = {
-            'fechaInicial': fecha,
-            'fechaFinal': fecha,
+            'fechaInicial': fechaInicio,
+            'fechaFinal': fechaFin,
             'finca': propiedad
         }
 

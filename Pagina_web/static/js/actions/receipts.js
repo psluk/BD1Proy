@@ -5,8 +5,7 @@ const defaultText = 'Acción...';
 const actions = { /* Las acciones con "%admin%" solo las ven administradores */
     'Consultar': {
         'Detalles': './receipt_details.html?finca=&fecha=',
-        'Comprobante': './payment_details.html?ref=',
-        'Pagar': './pay.html?finca=&fecha='
+        'Comprobante': './payment_details.html?ref='
     }
 };
 const categorias = Object.keys(actions);
