@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Datos>
-  <Operacion Fecha="2021-09-01">
+  <Operacion Fecha="2022-09-01">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -10,7 +10,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-12">
+  <Operacion Fecha="2022-09-12">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -20,7 +20,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-13">
+  <Operacion Fecha="2022-09-13">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -30,7 +30,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-14">
+  <Operacion Fecha="2022-09-14">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -40,7 +40,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-15">
+  <Operacion Fecha="2022-09-15">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -50,7 +50,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-16">
+  <Operacion Fecha="2022-09-16">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -60,7 +60,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-17">
+  <Operacion Fecha="2022-09-17">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -70,7 +70,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-18">
+  <Operacion Fecha="2022-09-18">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -80,7 +80,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-19">
+  <Operacion Fecha="2022-09-19">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -90,7 +90,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-20">
+  <Operacion Fecha="2022-09-20">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -100,7 +100,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-21">
+  <Operacion Fecha="2022-09-21">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -110,7 +110,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-22">
+  <Operacion Fecha="2022-09-22">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -120,7 +120,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-23">
+  <Operacion Fecha="2022-09-23">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -130,7 +130,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-24">
+  <Operacion Fecha="2022-09-24">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -140,7 +140,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-25">
+  <Operacion Fecha="2022-09-25">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -150,7 +150,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-26">
+  <Operacion Fecha="2022-09-26">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -160,7 +160,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-27">
+  <Operacion Fecha="2022-09-27">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -170,7 +170,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-28">
+  <Operacion Fecha="2022-09-28">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -180,168 +180,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-09-29">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
-      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
-      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
-      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="32324" />
-      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="93075" />
-      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="99035" />
-      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="60132" />
-      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
-      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
-      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-09-30">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-01">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-02">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-03">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-04">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-05">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-06">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-07">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-08">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-10">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-11">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-12">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-13">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-14">
-    <Personas />
-    <Propiedades />
-    <PersonasyPropiedades />
-    <Usuario />
-    <PropiedadesyUsuarios />
-    <Lecturas />
-    <Pago />
-    <PropiedadCambio />
-  </Operacion>
-  <Operacion Fecha="2021-10-29">
+  <Operacion Fecha="2022-09-29">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -362,7 +201,7 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-10-30">
+  <Operacion Fecha="2022-09-30">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
@@ -372,7 +211,168 @@
     <Pago />
     <PropiedadCambio />
   </Operacion>
-  <Operacion Fecha="2021-10-31">
+  <Operacion Fecha="2022-10-01">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-02">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-03">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-04">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-05">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-06">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-07">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-08">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-10">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-11">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-12">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-13">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-14">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-29">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
+      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
+      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
+      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="32324" />
+      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="93075" />
+      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="99035" />
+      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="60132" />
+      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
+      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
+      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-30">
+    <Personas />
+    <Propiedades />
+    <PersonasyPropiedades />
+    <Usuario />
+    <PropiedadesyUsuarios />
+    <Lecturas />
+    <Pago />
+    <PropiedadCambio />
+  </Operacion>
+  <Operacion Fecha="2022-10-31">
     <Personas />
     <Propiedades />
     <PersonasyPropiedades />
