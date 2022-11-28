@@ -117,8 +117,6 @@ BEGIN
                 AND F.[idPropiedad] = @idPropiedad
                 AND F.[idPago] IS NULL;
 
-            EXEC [dbo].[GenerarReconexiones] @FECHA_ACTUAL;
-
         COMMIT TRANSACTION tPagarFacturas
 
         SELECT  @NUMERO_DE_REFERENCIA AS 'numeroReferencia';

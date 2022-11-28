@@ -67,6 +67,8 @@ BEGIN
         GROUP BY f.idPropiedad
         ORDER BY f.idPropiedad;
 
+        BEGIN TRANSACTION PagoFactura
+
             INSERT INTO Pago
             (   [idTipoMedioPago], 
                 [numeroReferencia], 

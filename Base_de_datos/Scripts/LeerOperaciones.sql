@@ -133,7 +133,6 @@ BEGIN
 	EXEC [dbo].[GenerarFacturaXML] @fechaInicio -- nuevo
 	EXEC [dbo].[GenerarMorosidadXML] @fechaInicio -- nuevo
 	EXEC [dbo].[GenerarCortas] @fechaInicio -- nuevo
-	EXEC [dbo].[GenerarReconexiones] @fechaInicio -- nuevo
 	
 	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
 
