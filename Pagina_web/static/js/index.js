@@ -194,8 +194,9 @@ window.addEventListener('load', function () {
         nuevoElemento = nuevaLista.appendChild(document.createElement('option'));
         nuevoElemento.innerText = categories[i].name;
         nuevoElemento.value = '0';
-
+        
         if (categories[i].adminOnly) {
+            nuevaLista.setAttribute('class', soloAdmin);
             nuevoElemento.setAttribute('class', soloAdmin);
         }
 
