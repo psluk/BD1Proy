@@ -23,6 +23,18 @@ BEGIN
 	    idFactura INT NOT NULL,
 		Monto INT NOT NULL
 	)
+	DECLARE @tempMovimientoArreglo TABLE --donde almacenaremos los movimientos recien hechos
+	(
+		id INT  PRIMARY KEY IDENTITY(1,1),
+	    idTipoMovimiento INT NOT NULL,
+		idArregloPago INT NOT NULL,
+		fecha DATE NOT NULL,
+		montoCuota MONEY NOT NULL,
+		amortizado MONEY NOT NULL,
+		intereses MONEY NOT NULL
+	)
+
+
 
 	BEGIN TRY
 
@@ -138,31 +150,24 @@ BEGIN
 			AND dcc.monto = @procesando --solo arreglos de pago siendo procesados
 			AND adp.idEstado = 1 --activo
 
-            IF DATEPART(DAY, @inFechaOperacion) = 29 AND DATEPART(MONTH, @inFechaOperacion) > 8
-            BEGIN
-              
-              select *
-              FROM MovimientoArreglo;
-
-
-            SELECT dcc.id, ma.id
+			SELECT dcc.monto, 
+				   MAX(ma.fecha)
 			FROM MovimientoArreglo ma
-			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
-			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
-			WHERE dcc.monto = -1--@procesando
+			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad 
+			INNER JOIN Factura f ON (f.idPropiedad = adp.idPropiedad AND f.totalOriginal = @procesando) --obtenemos el idfactura
+			INNER JOIN DetalleConceptoCobro dcc ON (dcc.idConceptoCobro = 8 AND dcc.idFactura = f.id) --optenemos el id de DetalleConceptoCobro
+			WHERE dcc.monto = @procesando
 			AND adp.idEstado = 1 --activo
-            AND ma.id = (SELECT MAX(ma2.[id])
-                         FROM   [dbo].[MovimientoArreglo] ma2
-                         WHERE  ma.idArregloPago = ma2.idArregloPago);
-            END;
+			GROUP BY adp.idPropiedad
 
 			--insertamos la conexion con el id detalleconceptoCobro
 			INSERT INTO DetalleConceptoCobroArreglo(id,idMovimiento)
 			SELECT dcc.id, ma.id
 			FROM MovimientoArreglo ma
+			INNER JOIN @tempMovimientoArreglo tma ON 
 			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
 			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
-			WHERE dcc.monto = -1--@procesando
+			WHERE dcc.monto = @procesando
 			AND adp.idEstado = 1 --activo
             AND ma.id = (SELECT MAX(ma2.[id])
                          FROM   [dbo].[MovimientoArreglo] ma2
