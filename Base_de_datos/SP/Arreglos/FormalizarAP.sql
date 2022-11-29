@@ -29,6 +29,7 @@ BEGIN
     DECLARE @MIN_FACTURAS_PENDIENTES INT = 2;
     DECLARE @ID_MOVIMIENTO_DEBITO INT = 2;
     DECLARE @ID_ARREGLO_ACTIVO INT = 1;
+    DECLARE @ID_CC_ARREGLO INT = 8;
 
     -- Se define la variable donde se guarda el código de salida
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
@@ -196,6 +197,27 @@ BEGIN
             SELECT  FP.[idFactura],
                     @idArregloPago
             FROM    @facturasPendientes FP;
+
+            -- Agrega el arreglo de pago como concepto de la propiedad, en caso de que no lo tenga
+            IF NOT EXISTS(  SELECT  1
+                            FROM    [dbo].[ConceptoCobroDePropiedad] CCdP
+                            INNER JOIN [dbo].[ArregloDePago] AP
+                                ON  [AP].[idPropiedad] = CCdP.[idPropiedad]
+                            WHERE   [CCdP].[idConceptoCobro] = @ID_CC_ARREGLO
+                                AND [CCdP].[fechaFin] IS NULL   )
+            BEGIN
+                INSERT INTO [dbo].[ConceptoCobroDePropiedad]
+                (
+                    [idPropiedad],
+                    [idConceptoCobro],
+                    [fechaInicio]
+                )
+                SELECT  AP.[idPropiedad],
+                        @ID_CC_ARREGLO,
+                        GETDATE()
+                FROM    [dbo].[ArregloDePago] AP
+                WHERE   AP.[id] = @idArregloPago;
+            END;
 
         COMMIT TRANSACTION  tArregloDePago
 
