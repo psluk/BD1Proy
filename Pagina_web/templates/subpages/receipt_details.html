@@ -202,6 +202,8 @@
                                 nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('a'));
                                 nuevoEnlace.href = verPago + resultados[i].referenciaPago;
                                 nuevoEnlace.innerText = "Ver comprobante";
+                            } else if (resultados[i].pagada) {
+                                nuevaFila.lastElementChild.innerText = "Comprobante de pago no disponible";
                             } else {
                                 nuevaFila.lastElementChild.innerText = "Aún no se ha pagado";
                             }

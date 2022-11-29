@@ -855,7 +855,8 @@ def facturasDePropiedad(finca: str = '', consultante: str = ''):
                     "totalOriginal": str(fila[2]),
                     "totalAcumulado": str(fila[3]),
                     "estado": fila[4],
-                    "referenciaPago": fila[5]
+                    "referenciaPago": fila[5],
+                    "pagada": fila[6]
                 })
         # Avanza a la segunda tabla de salida (con el código de salida)
         if salida.nextset():
@@ -908,7 +909,8 @@ def detallesDeFactura(finca: str = '', fecha: str = '', consultante: str = ''):
                     "totalOriginal": str(fila[2]),
                     "totalAcumulado": str(fila[3]),
                     "estado": fila[4],
-                    "referenciaPago": fila[5]
+                    "referenciaPago": fila[5],
+                    "pagada": fila[6]
                 })
         # Avanza a la tercera tabla de salida (con el código de salida)
         if salida.nextset():

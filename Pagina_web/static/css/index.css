@@ -49,6 +49,7 @@ iframe {
     margin: auto;
     font-family: 'Roboto Slab';
     font-size: 115%;
+    flex-grow: 1;
 }
 
 #upperDiv > select {

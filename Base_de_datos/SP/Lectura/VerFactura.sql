@@ -13,6 +13,9 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
 	DECLARE @idPropiedad AS INT;
 
+    -- CONSTANTES
+    DECLARE @ID_FACTURA_ESTADO_PENDIENTE INT = 1;
+
     SET NOCOUNT ON;         -- Para evitar interferencias
 
     BEGIN TRY
@@ -43,7 +46,8 @@ BEGIN
                    NULL AS 'totalOriginal',
                    NULL AS 'totalAcumulado',
                    NULL AS 'estado',
-                   NULL AS 'referenciaPago'
+                   NULL AS 'referenciaPago',
+                   NULL AS 'pagada';
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -73,7 +77,8 @@ BEGIN
                    NULL AS 'totalOriginal',
                    NULL AS 'totalAcumulado',
                    NULL AS 'estado',
-                   NULL AS 'referenciaPago';
+                   NULL AS 'referenciaPago',
+                   NULL AS 'pagada';
             SELECT @outResultCode AS 'resultCode';
             SET NOCOUNT OFF;
             RETURN;
@@ -98,7 +103,12 @@ BEGIN
                 F.[totalOriginal] AS 'totalOriginal',
                 F.[totalActual] AS 'totalAcumulado',
                 EF.[descripcion] AS 'estado',
-                NULL AS 'referenciaPago'
+                NULL AS 'referenciaPago',
+                CASE
+                    WHEN    F.[idEstadoFactura] = @ID_FACTURA_ESTADO_PENDIENTE
+                        THEN    CAST(0 AS BIT)
+                    ELSE    CAST(1 AS BIT)
+                END AS 'pagado'
         FROM    [dbo].[Factura] F
         INNER JOIN [dbo].[EstadoFactura] EF
             ON  F.[idEstadoFactura] = EF.[id]
@@ -112,7 +122,8 @@ BEGIN
                 F.[totalOriginal] AS 'totalOriginal',
                 F.[totalActual] AS 'totalAcumulado',
                 EF.[descripcion] AS 'estado',
-                P.[numeroReferencia] AS 'referenciaPago'
+                P.[numeroReferencia] AS 'referenciaPago',
+                CAST(1 AS BIT) AS 'pagado'
         FROM    [dbo].[Factura] F
         INNER JOIN [dbo].[EstadoFactura] EF
             ON  F.[idEstadoFactura] = EF.[id]
@@ -135,7 +146,8 @@ BEGIN
                NULL AS 'totalOriginal',
                NULL AS 'totalAcumulado',
                NULL AS 'estado',
-               NULL AS 'referenciaPago';
+               NULL AS 'referenciaPago',
+               NULL AS 'pagada';
         SELECT @outResultCode AS 'resultCode';
 
     END CATCH;

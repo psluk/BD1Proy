@@ -159,7 +159,7 @@
                                 nuevoEnlace.href = verPago + resultados[i].referenciaPago;
                                 nuevoEnlace.innerText = "Ver";
                             }
-                            else {
+                            else if (!resultados[i].pagada) {
                                 nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('input'));
                                 nuevoEnlace.setAttribute('type', 'radio');
                                 nuevoEnlace.setAttribute('name', 'grupo1');
