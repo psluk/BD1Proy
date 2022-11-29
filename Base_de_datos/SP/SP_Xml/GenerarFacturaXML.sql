@@ -96,7 +96,7 @@ BEGIN
 						END
 				   WHEN ccdp.idConceptoCobro = 4 THEN @costoPatentes/tpcc.cantidadMeses--patente
 				   WHEN ccdp.idConceptoCobro = 7 THEN @costoParques/tpcc.cantidadMeses--parques
-				   WHEN ccdp.idConceptoCobro = 8 THEN @procesando--parques
+				   WHEN ccdp.idConceptoCobro = 8 THEN @procesando   --Arreglo de pago
 				   ELSE @error
 			   END
 		FROM Factura f
@@ -128,7 +128,7 @@ BEGIN
 									       amortizado, 
 									       intereses
 								          )
-			SELECT 2, adp.id, @inFechaOperacion, ma.montoCuota, (ma.montoCuota - (adp.Saldo* tia.tasaInteresAnual/12)) , (adp.Saldo* tia.tasaInteresAnual/12)
+			SELECT 1, adp.id, @inFechaOperacion, ma.montoCuota, (ma.montoCuota - (adp.Saldo* tia.tasaInteresAnual/12)) , (adp.Saldo* tia.tasaInteresAnual/12)
 			FROM ArregloDePago adp
 			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos el monto de la cuota
 			INNER JOIN TasaInteresArreglo tia ON tia.id = adp.idTasaInteres -- obtenemos la tasa anual
@@ -138,6 +138,24 @@ BEGIN
 			AND dcc.monto = @procesando --solo arreglos de pago siendo procesados
 			AND adp.idEstado = 1 --activo
 
+            IF DATEPART(DAY, @inFechaOperacion) = 29 AND DATEPART(MONTH, @inFechaOperacion) > 8
+            BEGIN
+              
+              select *
+              FROM MovimientoArreglo;
+
+
+            SELECT dcc.id, ma.id
+			FROM MovimientoArreglo ma
+			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
+			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
+			WHERE dcc.monto = -1--@procesando
+			AND adp.idEstado = 1 --activo
+            AND ma.id = (SELECT MAX(ma2.[id])
+                         FROM   [dbo].[MovimientoArreglo] ma2
+                         WHERE  ma.idArregloPago = ma2.idArregloPago);
+            END;
+
 			--insertamos la conexion con el id detalleconceptoCobro
 			INSERT INTO DetalleConceptoCobroArreglo(id,idMovimiento)
 			SELECT dcc.id, ma.id
@@ -146,6 +164,9 @@ BEGIN
 			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
 			WHERE dcc.monto = -1--@procesando
 			AND adp.idEstado = 1 --activo
+            AND ma.id = (SELECT MAX(ma2.[id])
+                         FROM   [dbo].[MovimientoArreglo] ma2
+                         WHERE  ma.idArregloPago = ma2.idArregloPago);
 			
 			--actualizamo el monto de DetalleConceptoCobro Arreglo Pago
 			UPDATE dcc
