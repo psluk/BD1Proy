@@ -23,17 +23,6 @@ BEGIN
 	    idFactura INT NOT NULL,
 		Monto INT NOT NULL
 	)
-	DECLARE @tempMovimientoArreglo TABLE --donde almacenaremos los movimientos recien hechos
-	(
-		id INT  PRIMARY KEY IDENTITY(1,1),
-	    idTipoMovimiento INT NOT NULL,
-		idArregloPago INT NOT NULL,
-		fecha DATE NOT NULL,
-		montoCuota MONEY NOT NULL,
-		amortizado MONEY NOT NULL,
-		intereses MONEY NOT NULL
-	)
-
 
 
 	BEGIN TRY
@@ -150,28 +139,35 @@ BEGIN
 			AND dcc.monto = @procesando --solo arreglos de pago siendo procesados
 			AND adp.idEstado = 1 --activo
 
-			SELECT dcc.monto, 
-				   MAX(ma.fecha)
+
+
+			--optenemos todos los idPropiedad diferentes de MovimientoArreglo
+			SELECT adp.idPropiedad
 			FROM MovimientoArreglo ma
-			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad 
-			INNER JOIN Factura f ON (f.idPropiedad = adp.idPropiedad AND f.totalOriginal = @procesando) --obtenemos el idfactura
-			INNER JOIN DetalleConceptoCobro dcc ON (dcc.idConceptoCobro = 8 AND dcc.idFactura = f.id) --optenemos el id de DetalleConceptoCobro
-			WHERE dcc.monto = @procesando
-			AND adp.idEstado = 1 --activo
+			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad
+			WHERE adp.idEstado = 1 --activo
 			GROUP BY adp.idPropiedad
 
 			--insertamos la conexion con el id detalleconceptoCobro
 			INSERT INTO DetalleConceptoCobroArreglo(id,idMovimiento)
-			SELECT dcc.id, ma.id
+			--seleccion del id correspondiente con la mayor fecha para cada propiedad
+			SELECT dcc.id, ma.id 
 			FROM MovimientoArreglo ma
-			INNER JOIN @tempMovimientoArreglo tma ON 
-			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
-			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
+			INNER JOIN ArregloDePago ADP ON adp.id = ma.idArregloPago
+			INNER JOIN (SELECT adp.idPropiedad, --seleccion de la mayor fecha para cada propiedad
+							   MAX(ma.fecha) AS 'maxFecha'
+						FROM MovimientoArreglo ma
+						INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad
+						WHERE adp.idEstado = 1 --activo
+						GROUP BY adp.idPropiedad
+						) qq ON qq.maxFecha = ma.fecha 
+							 AND qq.idPropiedad = ADP.idPropiedad
+			INNER JOIN Factura f ON (f.idPropiedad = ADP.idPropiedad 
+								 AND f.totalOriginal =  @procesando) --obtenemos el idfactura
+			INNER JOIN DetalleConceptoCobro dcc ON (dcc.idFactura = f.id 
+												AND dcc.idConceptoCobro = 8) --optenemos el id de DetalleConceptoCobro
 			WHERE dcc.monto = @procesando
-			AND adp.idEstado = 1 --activo
-            AND ma.id = (SELECT MAX(ma2.[id])
-                         FROM   [dbo].[MovimientoArreglo] ma2
-                         WHERE  ma.idArregloPago = ma2.idArregloPago);
+			AND ADP.idEstado = 1 --activo
 			
 			--actualizamo el monto de DetalleConceptoCobro Arreglo Pago
 			UPDATE dcc
