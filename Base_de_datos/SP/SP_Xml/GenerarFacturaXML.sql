@@ -115,6 +115,50 @@ BEGIN
 		LEFT JOIN ConceptoCobroAgua cca ON cca.id = cc.id 
 		WHERE f.totalOriginal = @procesando
 
+		--procedimiento nuevo para agregar el cobro de AP
+
+		--insertamos el movimiento del arreglo
+
+			--1credito  2debito
+			INSERT INTO MovimientoArreglo (idTipoMovimiento, 
+									       idArregloPago, 
+									       fecha, 
+									       montoCuota, 
+									       amortizado, 
+									       intereses
+								          )
+			SELECT 2, adp.id, @inFechaOperacion, ma.montoCuota, (ma.montoCuota - (adp.Saldo* tia.tasaInteresAnual/12)) , (adp.Saldo* tia.tasaInteresAnual/12)
+			FROM ArregloDePago adp
+			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos el monto de la cuota
+			INNER JOIN TasaInteresArreglo tia ON tia.id = adp.idTasaInteres -- obtenemos la tasa anual
+			INNER JOIN Factura f ON (f.idPropiedad = adp.idPropiedad AND f.totalOriginal = @procesando) --obtenemos el idfactura
+			INNER JOIN DetalleConceptoCobro dcc ON dcc.idFactura = f.id -- obtenemos los id de DetalleConceptoCobro
+			WHERE dcc.idConceptoCobro = 8 -- solo el arreglo de pago
+			AND dcc.monto = @procesando --solo arreglos de pago siendo procesados
+			AND adp.idEstado = 1 --activo
+
+			--insertamos la conexion con el id detalleconceptoCobro
+			INSERT INTO DetalleConceptoCobroArreglo(id,idMovimiento)
+			SELECT dcc.id, ma.id
+			FROM MovimientoArreglo ma
+			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
+			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
+			WHERE dcc.monto = @procesando
+			AND adp.idEstado = 1 --activo
+			
+			--actualizamo el monto de DetalleConceptoCobro Arreglo Pago
+			UPDATE dcc
+			SET dcc.monto = ma.montoCuota
+			FROM DetalleConceptoCobro dcc
+			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.id = dcc.id --obtenemos el idmovimiento
+			INNER JOIN MovimientoArreglo ma ON ma.id = dcca.idMovimiento -- obtenemos el monto
+			WHERE dcc.idConceptoCobro = 8
+
+			--por ultimo, actualizamos el saldo en arreglo de pago
+			--UPDATE adp
+			--SET adp.saldo
+			--
+
 		-- llegados a este punto DetalleConceptoCobro tiene el id de la factura, el id del cobro y el monto a cobrar
 
 		-- para poder realizar la sumatoria de los montos utilizamos la tabla temporal @sumatoriaConceptos

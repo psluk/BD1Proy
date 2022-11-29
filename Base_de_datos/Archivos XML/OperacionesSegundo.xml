@@ -187,7 +187,7 @@
     <Usuario />
     <PropiedadesyUsuarios />
     <Lecturas />
-    <Pago />
+    <Pago>
       <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
       <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
       <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
@@ -198,7 +198,7 @@
       <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
       <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
       <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
-    <Pago />
+    </Pago>
     <PropiedadCambio />
   </Operacion>
   <Operacion Fecha="2022-09-30">
@@ -348,7 +348,7 @@
     <Usuario />
     <PropiedadesyUsuarios />
     <Lecturas />
-    <Pago />
+    <Pago>
       <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
       <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
       <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
@@ -359,7 +359,7 @@
       <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
       <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
       <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
-    <Pago />
+    </Pago>
     <PropiedadCambio />
   </Operacion>
   <Operacion Fecha="2022-10-30">

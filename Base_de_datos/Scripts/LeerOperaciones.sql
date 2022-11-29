@@ -118,8 +118,16 @@ BEGIN
 		EXEC [dbo].[(Des)InsertarUsuariosXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[AsociacionUsuarioPropiedadXml] @hdoc, @FechaOperacion
 		EXEC [dbo].[InsertarLecturaMedidorXml] @hdoc, @FechaOperacion
-		EXEC [dbo].[GenerarPagosXML] @hdoc, @FechaOperacion -- nuevo
-		EXEC [dbo].[CambiarPropiedadXML] @hdoc, @FechaOperacion -- nuevo
+
+	END
+
+	EXEC [dbo].[GenerarFacturaXML] @fechaInicio -- operacion del dia
+
+	IF @fechaInicio = @FechaOperacion -- se realizan las operaciones del dia
+	BEGIN
+
+		EXEC [dbo].[GenerarPagosXML] @hdoc, @FechaOperacion
+		EXEC [dbo].[CambiarPropiedadXML] @hdoc, @FechaOperacion
 		
 		-- Se libera de la memoria
 		EXEC sp_xml_removedocument @hdoc;
@@ -128,9 +136,9 @@ BEGIN
 
 	END
 
-	--realizamos las operaciones de todos los dia
+	--realizamos las operaciones del final de todos los dia
 	
-	EXEC [dbo].[GenerarFacturaXML] @fechaInicio -- nuevo
+	
 	EXEC [dbo].[GenerarMorosidadXML] @fechaInicio -- nuevo
 	EXEC [dbo].[GenerarCortas] @fechaInicio -- nuevo
 	
