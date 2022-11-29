@@ -201,10 +201,9 @@ BEGIN
             -- Agrega el arreglo de pago como concepto de la propiedad, en caso de que no lo tenga
             IF NOT EXISTS(  SELECT  1
                             FROM    [dbo].[ConceptoCobroDePropiedad] CCdP
-                            INNER JOIN [dbo].[ArregloDePago] AP
-                                ON  [AP].[idPropiedad] = CCdP.[idPropiedad]
                             WHERE   [CCdP].[idConceptoCobro] = @ID_CC_ARREGLO
-                                AND [CCdP].[fechaFin] IS NULL   )
+                                AND [CCdP].[fechaFin] IS NULL
+                                AND [CCdP].[idPropiedad] = @idPropiedad)
             BEGIN
                 INSERT INTO [dbo].[ConceptoCobroDePropiedad]
                 (
