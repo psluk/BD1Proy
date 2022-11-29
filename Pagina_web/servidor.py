@@ -437,3 +437,20 @@ def hacer_pago():
         consultante=session['username'],
         consultante_ip=request.remote_addr
     )
+
+# Consultar eventos
+@app.route("/sub/get/all_events/<argumentos>")
+def ver_eventos(argumentos: str = ''):
+    argumentos_separados = argumentos.split('&')
+    fechaInicio = ''
+    fechaFinal = ''
+
+    if len(argumentos_separados) == 2:
+        fechaInicio = argumentos_separados[0]
+        fechaFinal = argumentos_separados[1]
+
+    return json.dumps(logica.verEventos(
+        fechaInicio=fechaInicio,
+        fechaFinal=fechaFinal,
+        consultante=session['username']
+    ))

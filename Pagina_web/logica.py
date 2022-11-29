@@ -1078,3 +1078,58 @@ def hacerPago(informacion: dict = {}, consultante: str = '', consultante_ip: str
     cursor.close()
 
     return resultado
+
+def verEventos(fechaInicio: str = '', fechaFinal: str = '', consultante: str = ''):
+    """
+    Función que retorna la lista completa de eventos
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[VerEventos] ?, ?, ?"
+
+    salida = cursor.execute(query, fechaInicio, fechaFinal, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": [],
+        "dateRange": {}
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "entidad": fila[0],
+                    "id": fila[1],
+                    "jsonAntes": fila[2],
+                    "jsonDespues": fila[3],
+                    "time": fila[4].isoformat(),
+                    "user": fila[5],
+                    "IP": fila[6]
+                })
+        # Avanza a la segunda tabla (con el rango de fechas)
+        if salida.nextset():
+            # Copia las fechas
+            for fila in salida.fetchall():
+                # Para cada fila de la salida
+                resultado["dateRange"] = {
+                    "start": fila[0],
+                    "end": fila[1]
+                }
+            
+        # Avanza a la tercera tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": [],
+            "dateRange": {}
+        }
+
+    cursor.close()
+    return resultado
