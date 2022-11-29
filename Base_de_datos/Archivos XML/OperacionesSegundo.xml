@@ -188,16 +188,16 @@
     <PropiedadesyUsuarios />
     <Lecturas />
     <Pago>
-      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
-      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
-      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
-      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="32324" />
-      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="93075" />
-      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="99035" />
-      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="60132" />
-      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
-      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
-      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
+      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="648431" />
+      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="315392" />
+      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="129153" />
+      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="323244" />
+      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="930755" />
+      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="990356" />
+      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="601327" />
+      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="225029" />
+      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="763749" />
+      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="984530" />
     </Pago>
     <PropiedadCambio />
   </Operacion>
@@ -349,16 +349,16 @@
     <PropiedadesyUsuarios />
     <Lecturas />
     <Pago>
-      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="64843" />
-      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="31539" />
-      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="12915" />
-      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="32324" />
-      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="93075" />
-      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="99035" />
-      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="60132" />
-      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="22502" />
-      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="76374" />
-      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="98453" />
+      <Pago NumFinca="1247" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="164843" />
+      <Pago NumFinca="9147" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="231539" />
+      <Pago NumFinca="8780" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="312915" />
+      <Pago NumFinca="1139" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="432324" />
+      <Pago NumFinca="3095" TipoPago="Efectivo" NumeroReferenciaComprobantePago="593075" />
+      <Pago NumFinca="1021" TipoPago="Efectivo" NumeroReferenciaComprobantePago="699035" />
+      <Pago NumFinca="9224" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="760132" />
+      <Pago NumFinca="2023" TipoPago="Transferencia bancaria" NumeroReferenciaComprobantePago="822502" />
+      <Pago NumFinca="6842" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="976374" />
+      <Pago NumFinca="8035" TipoPago="Tarjeta de débito o crédito" NumeroReferenciaComprobantePago="198453" />
     </Pago>
     <PropiedadCambio />
   </Operacion>

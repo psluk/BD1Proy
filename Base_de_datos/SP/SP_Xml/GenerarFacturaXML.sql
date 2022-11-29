@@ -96,6 +96,7 @@ BEGIN
 						END
 				   WHEN ccdp.idConceptoCobro = 4 THEN @costoPatentes/tpcc.cantidadMeses--patente
 				   WHEN ccdp.idConceptoCobro = 7 THEN @costoParques/tpcc.cantidadMeses--parques
+				   WHEN ccdp.idConceptoCobro = 8 THEN @procesando--parques
 				   ELSE @error
 			   END
 		FROM Factura f
@@ -143,7 +144,7 @@ BEGIN
 			FROM MovimientoArreglo ma
 			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago --obtenemos el idpropiedad
 			INNER JOIN DetalleConceptoCobro dcc ON dcc.idConceptoCobro = 8
-			WHERE dcc.monto = @procesando
+			WHERE dcc.monto = -1--@procesando
 			AND adp.idEstado = 1 --activo
 			
 			--actualizamo el monto de DetalleConceptoCobro Arreglo Pago
