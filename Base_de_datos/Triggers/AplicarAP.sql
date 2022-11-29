@@ -146,7 +146,7 @@ BEGIN
             -- Ocurrió un error
             IF  @@TRANCOUNT > 0
             BEGIN
-                ROLLBACK TRANSACTION tArregloDePago;
+                ROLLBACK TRANSACTION tActualizarFacturas;
             END;
 
             -- Registra el error
