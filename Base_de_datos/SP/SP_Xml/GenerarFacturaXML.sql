@@ -162,8 +162,8 @@ BEGIN
 			
 			--actualizamos el saldo en arreglo de pago
 			UPDATE adp
-			SET adp.saldo = adp.saldo - ma.amortizado,
-				adp.acumuladoAmortizado = adp.acumuladoAmortizado + ma.amortizado
+			SET adp.saldo = (adp.saldo - ma.amortizado),
+				adp.acumuladoAmortizado = (adp.acumuladoAmortizado + ma.amortizado)
 			FROM ArregloDePago adp
 			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos los posibles amortizados
 			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.idMovimiento = ma.id --obtenemos los id de DetalleConceptoCobro
