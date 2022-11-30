@@ -84,8 +84,29 @@ BEGIN
         BEGIN TRANSACTION tBorrarPropiedad
             -- Empieza la transacci�n
 
-
             -- Se eliminan las filas de otras tablas que dependen de esta
+
+            DELETE  FA
+            FROM    dbo.FacturaConArreglo FA
+            INNER JOIN [dbo].[ArregloDePago] AP
+                ON  FA.[idArregloPago] = AP.[id]
+            WHERE   AP.[idPropiedad] = @idPropiedad;
+
+            DELETE  DCCA
+            FROM    dbo.DetalleConceptoCobroArreglo DCCA
+            INNER JOIN [dbo].[DetalleConceptoCobro] DCC ON DCCA.[id] = DCC.[id]
+            INNER JOIN [dbo].[Factura] F ON DCC.[idFactura] = F.[id]
+            WHERE F.[idPropiedad] = @idPropiedad;
+
+            DELETE  MA
+            FROM    dbo.MovimientoArreglo MA
+            INNER JOIN [dbo].[ArregloDePago] AP
+                ON  MA.idArregloPago = AP.[id]
+            WHERE AP.[idPropiedad] = @idPropiedad;
+
+            DELETE  dbo.ArregloDePago
+            WHERE   [idPropiedad] = @idPropiedad;
+
             DELETE UdP
             FROM [dbo].[UsuarioDePropiedad] UdP
             WHERE UdP.[idPropiedad] = @idPropiedad;
@@ -102,11 +123,6 @@ BEGIN
             DELETE Corta
             FROM [dbo].[OrdenCorta] Corta
             WHERE [idPropiedad] = @idPropiedad;
-
-            DELETE P
-            FROM [dbo].[Pago] P
-            INNER JOIN [dbo].[Factura] F ON P.[id] = F.[id]
-            WHERE F.[idPropiedad] = @idPropiedad;
 
             DELETE DCCA
             FROM [dbo].[DetalleConceptoCobroAgua] DCCA
@@ -132,6 +148,9 @@ BEGIN
             DELETE CCdP
             FROM [dbo].[ConceptoCobroDePropiedad] CCdP
             WHERE CCdP.[idPropiedad] = @idPropiedad;
+
+            DELETE [dbo].[Factura]
+            WHERE [idPropiedad] = @idPropiedad;
 
             -- Se elimina la propiedad
             DELETE FROM [dbo].[Propiedad]
