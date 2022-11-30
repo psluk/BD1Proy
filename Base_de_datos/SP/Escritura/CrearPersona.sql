@@ -146,7 +146,7 @@ BEGIN
 				  @idUser,
 				  @inUserIp
 			FROM Persona p
-			WHERE p.valorDocumentoId = @inNuevoValorDocumentoId
+			WHERE p.valorDocumentoId = @inNuevoValorDocumentoId;
 
         COMMIT TRANSACTION tCrearPersona;
 

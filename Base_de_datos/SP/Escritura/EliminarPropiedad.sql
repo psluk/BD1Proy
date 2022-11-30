@@ -26,6 +26,7 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (�xito)
 	DECLARE @idUser INT;            -- Para guardar el ID del usuario
 	DECLARE @idPropiedad INT;       -- Donde se guardar� el ID de la propiedad
+    DECLARE @countInicial INT = @@TRANCOUNT;
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -83,33 +84,6 @@ BEGIN
         BEGIN TRANSACTION tBorrarPropiedad
             -- Empieza la transacci�n
 
-			INSERT INTO EventLog([idEntityType], 
-								 [entityId], 
-								 [jsonAntes], 
-								 [jsonDespues], 
-								 [insertedAt], 
-								 [insertedByUser], 
-								 [insertedInIp])
-			SELECT 1, 
-				   p.id, 
-				   (SELECT [idTipoUsoPropiedad], 
-						   [idTipoZona], 
-						   [numeroFinca], 
-						   [area], 
-						   [valorFiscal], 
-						   [fechaRegistro], 
-						   [consumoAcumulado], 
-						   [acumuladoUltimaFactura]
-						   FROM Propiedad pro
-						   WHERE pro.[numeroFinca] = @inNumeroFinca
-						   FOR JSON AUTO),
-				  NULL,
-				  GETDATE(),
-				  @idUser,
-				  @inUserIp
-			FROM Propiedad p
-			WHERE [numeroFinca] = @inNumeroFinca;
-
 
             -- Se eliminan las filas de otras tablas que dependen de esta
             DELETE UdP
@@ -163,6 +137,13 @@ BEGIN
             DELETE FROM [dbo].[Propiedad]
             WHERE [id] = @idPropiedad;
 
+            -- Les da los datos faltantes al evento
+            UPDATE  EL
+            SET     [insertedByUser] = @idUser,
+                    [insertedInIp] = @inUserIp
+            FROM    [dbo].[EventLog] EL
+            WHERE   [insertedByUser] IS NULL;
+
         COMMIT TRANSACTION tBorrarPropiedad;
 
     END TRY
@@ -171,7 +152,7 @@ BEGIN
 
         SET @outResultCode = 50000;     -- Error desconocido
 
-        IF @@TRANCOUNT > 0              -- �Fue dentro de una transacci�n?
+        IF @@TRANCOUNT > @countInicial  -- �Fue dentro de una transacci�n?
         BEGIN
             ROLLBACK TRANSACTION tBorrarPropiedad;
             SET @outResultCode = 50001; -- Error desconocido dentro de la transacci�n

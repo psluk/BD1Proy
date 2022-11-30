@@ -135,6 +135,31 @@ BEGIN
                 @fechaActual
             );
 
+            INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 4, 
+				   PdP.id, 
+				   NULL,
+				  (SELECT  @idPersona AS 'idPersona', 
+						   @idPropiedad AS 'idPropiedad', 
+						   PdP2.fechaInicio AS 'fechaInicio', 
+						   '' AS 'fechaFin'
+						   FROM [dbo].[PropietarioDePropiedad] PdP2
+						   WHERE PdP2.[id] = PdP.[id]
+						   FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM    [dbo].[PropietarioDePropiedad] PdP
+			WHERE   PdP.[idPersona] = @idPersona
+                AND PdP.[idPropiedad] = @idPropiedad
+                AND PdP.[fechaFin] IS NULL;
+
         COMMIT TRANSACTION tAsociarPropietarioPropiedad;
 
     END TRY

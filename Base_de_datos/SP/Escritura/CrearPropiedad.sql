@@ -192,6 +192,13 @@ BEGIN
                 GETDATE()
             );
 
+            -- Les da los datos faltantes al evento
+            UPDATE  EL
+            SET     [insertedByUser] = @idUser,
+                    [insertedInIp] = @inUserIp
+            FROM    [dbo].[EventLog] EL
+            WHERE   [insertedByUser] IS NULL;
+
             -- Se inserta el medidor
             INSERT INTO [dbo].[AguaDePropiedad] (
 				[id], 
@@ -205,34 +212,6 @@ BEGIN
             INNER JOIN [dbo].[Propiedad] P ON CCdP.idPropiedad = P.id
             WHERE CCdP.idConceptoCobro = 1          -- 1 = agua
             AND P.numeroFinca = @inNumeroFinca;
-        
-			--insertamos en la bitacora el cambio
-			INSERT INTO EventLog([idEntityType], 
-								 [entityId], 
-								 [jsonAntes], 
-								 [jsonDespues], 
-								 [insertedAt], 
-								 [insertedByUser], 
-								 [insertedInIp])
-			SELECT 1, 
-				   p.id, 
-				   NULL,
-				  (SELECT @idTipoUso AS 'idTipoUsoPropiedad', 
-						  @idTipoZona AS 'idTipoZona', 
-						  @inNumeroFinca AS 'NumeroFinca', 
-						  @inArea AS 'area', 
-						  @inValorFiscal AS 'valorFiscal', 
-						  [fechaRegistro], 
-						  [consumoAcumulado], 
-						  [acumuladoUltimaFactura]
-						  FROM Propiedad pro
-						  WHERE pro.[numeroFinca] = @inNumeroFinca
-						  FOR JSON AUTO),
-				  GETDATE(),
-				  @idUser,
-				  @inUserIp
-			FROM Propiedad p
-			WHERE [numeroFinca] = @inNumeroFinca;
 
         COMMIT TRANSACTION tCrearPropiedad;
 

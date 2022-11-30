@@ -40,6 +40,7 @@ BEGIN
 	DECLARE @Numero AS BIGINT = 0; -- por defecto, 0 (fallo)
 	DECLARE @strTexto AS VARCHAR(32) = ''; -- por defecto (vacio)
 	DECLARE @idTipoUsuario AS INT = -1; -- por defecto (negativo)
+    DECLARE @jsonAntes VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
     
@@ -168,6 +169,14 @@ BEGIN
 		
         -- Si llega ac�, ya pasaron las validaciones
 
+        SET @jsonAntes = (SELECT  U.[idPersona],
+						   U.[idTipoUsuario],
+						   U.[nombreDeUsuario],
+                           U.[clave]
+						   FROM Usuario U
+			               WHERE U.[nombreDeUsuario] = @inDbUsername
+						   FOR JSON AUTO);
+
         BEGIN TRANSACTION tupdateUsuario
             -- Empieza la transacci�n
 
@@ -178,6 +187,30 @@ BEGIN
 		        [nombreDeUsuario] = @inNuevoDbUsername, 
 		        [clave] = @inNuevoPassword
 			WHERE [dbo].[Usuario].nombreDeUsuario = @inDbUsername;
+
+            -- Inserta el evento
+            INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 3, 
+				   U.id,
+                   @jsonAntes,
+				  (SELECT  U2.[idPersona],
+						   U2.[idTipoUsuario],
+						   U2.[nombreDeUsuario],
+                           U2.[clave]
+						   FROM Usuario U2
+			                WHERE U.[id] = U2.[id]
+						   FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM    [dbo].[Usuario] U
+			WHERE   U.nombreDeUsuario = @inDbUsername;
 
         COMMIT TRANSACTION tupdateUsuario;
 

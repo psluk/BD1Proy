@@ -69,10 +69,7 @@ BEGIN
 		--de no existir @Numero = 0
 		SELECT @Numero = u.id
 		FROM [dbo].[Usuario] u
-		WHERE EXISTS( SELECT 1 
-					  FROM [dbo].[Usuario] u
-					  WHERE u.nombreDeUsuario = @inDbUsername
-					);
+		WHERE u.nombreDeUsuario = @inDbUsername;
 
 		IF @Numero = 0
         BEGIN
@@ -109,10 +106,9 @@ BEGIN
 		-- 4. ¿Existe la asociacion?
         IF EXISTS( SELECT 1 
 				   FROM [dbo].[UsuarioDePropiedad] udp
-				   INNER JOIN Usuario u ON u.id = udp.idUsuario
 				   INNER JOIN Propiedad p ON p.id = udp.idPropiedad
-				   WHERE CAST(u.nombreDeUsuario AS BINARY) = CAST(@inDbUsername AS BINARY)
-				   AND p.numeroFinca = @inDbUsername
+				   WHERE udp.idUsuario = @Numero
+				   AND p.numeroFinca = @inNumeroFinca
 				   AND udp.fechaFin = NULL
 				 )
         BEGIN
@@ -141,6 +137,31 @@ BEGIN
                 @idPropiedad,
                 @fechaActual
             );
+
+            INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 5, 
+				   UdP.id, 
+				   NULL,
+				  (SELECT  @Numero AS 'idUsuario', 
+						   @idPropiedad AS 'idPropiedad', 
+						   UdP2.fechaInicio AS 'fechaInicio', 
+						   '' AS 'fechaFin'
+						   FROM [dbo].[UsuarioDePropiedad] UdP2
+						   WHERE UdP2.[id] = UdP.[id]
+						   FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM    [dbo].[UsuarioDePropiedad] UdP
+			WHERE   UdP.[idUsuario] = @Numero
+                AND UdP.[idPropiedad] = @idPropiedad
+                AND UdP.[fechaFin] IS NULL;
 
         COMMIT TRANSACTION tAsociarUsuarioPropiedad;
 

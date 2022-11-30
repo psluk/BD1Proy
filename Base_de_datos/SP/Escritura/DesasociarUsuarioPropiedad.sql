@@ -27,6 +27,7 @@ BEGIN
     DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
 	DECLARE @idUsuarioPropiedad INT = 0;    -- Para guardar el ID de la asociación
 	DECLARE @fechaActual DATETIME;
+    DECLARE @jsonAntes VARCHAR(512);
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -81,6 +82,14 @@ BEGIN
         
         SET @fechaActual = GETDATE();
 
+        SET @jsonAntes = (SELECT   UdP.[idUsuario] AS 'idUsuario', 
+						           UdP.[idPropiedad] AS 'idPropiedad', 
+						           UdP.[fechaInicio] AS 'fechaInicio', 
+						           '' AS 'fechaFin'
+						           FROM [dbo].[UsuarioDePropiedad] UdP
+						           WHERE UdP.[id] = @idUsuarioPropiedad
+						           FOR JSON AUTO);
+
         BEGIN TRANSACTION tAsociarPropietarioPropiedad
             -- Empieza la transacción
 
@@ -88,6 +97,29 @@ BEGIN
             UPDATE [dbo].[UsuarioDePropiedad]
             SET [fechaFin] = @fechaActual
             WHERE [id] = @idUsuarioPropiedad;
+
+            INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 5, 
+				   UdP.id, 
+				   @jsonAntes,
+				  (SELECT   UdP2.[idUsuario] AS 'idUsuario', 
+						    UdP2.[idPropiedad] AS 'idPropiedad', 
+						    UdP2.[fechaInicio] AS 'fechaInicio', 
+						    UdP2.[fechaFin] AS 'fechaFin'
+						    FROM [dbo].[UsuarioDePropiedad] UdP2
+						    WHERE UdP2.[id] = UdP.[id]
+						    FOR JSON AUTO),
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM    [dbo].[UsuarioDePropiedad] UdP
+			WHERE   UdP.[id] = @idUsuarioPropiedad;
 
         COMMIT TRANSACTION tAsociarPropietarioPropiedad;
 

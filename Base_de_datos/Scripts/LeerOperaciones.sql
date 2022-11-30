@@ -1,5 +1,7 @@
-USE [proyecto]
+USE [proyecto];
 
+-- Desactiva el trigger de cambios en propiedad
+DISABLE TRIGGER [dbo].[EventoDePropiedad] ON [dbo].[Propiedad];
 
 --Declaracion de variables
 
@@ -144,6 +146,7 @@ BEGIN
 	
 	SELECT @fechaInicio = DATEADD(DAY,1,@fechaInicio) -- aumentamos el dia en 1
 
-
-
 END;
+
+-- Reactiva el trigger de cambios en propiedad
+ENABLE TRIGGER [dbo].[EventoDePropiedad] ON [dbo].[Propiedad];

@@ -107,6 +107,30 @@ BEGIN
         BEGIN TRANSACTION tEliminarUsuario
             -- Empieza la transacci�n
 
+            -- Inserta el evento
+            INSERT INTO EventLog([idEntityType], 
+								 [entityId], 
+								 [jsonAntes], 
+								 [jsonDespues], 
+								 [insertedAt], 
+								 [insertedByUser], 
+								 [insertedInIp])
+			SELECT 3, 
+				   U.id,
+				  (SELECT  U2.[idPersona],
+						   U2.[idTipoUsuario],
+						   U2.[nombreDeUsuario],
+                           U2.[clave]
+						   FROM Usuario U2
+			                WHERE U.[id] = U2.[id]
+						   FOR JSON AUTO),
+                    NULL,
+				  GETDATE(),
+				  @idUser,
+				  @inUserIp
+			FROM    [dbo].[Usuario] U
+			WHERE   U.nombreDeUsuario = @inDbUsername;
+
 			-- Se elimina la relación UsuarioDePropiedad
 			DELETE udp 
 			FROM UsuarioDePropiedad udp

@@ -1,4 +1,7 @@
-USE [proyecto]
+USE [proyecto];
+
+-- Desactiva el trigger de cambios en propiedad
+DISABLE TRIGGER [dbo].[EventoDePropiedad] ON [dbo].[Propiedad];
 
 --borrado de la informacion de todas las tablas
 DELETE dbo.Errors;
@@ -75,4 +78,7 @@ FROM OPENROWSET
 	( BULK 'D:\Personal\TEC\Universidad\2022-6-2\base\servidores sql\proyecto\BD1Proy\Base_de_datos\Scripts\LeerCatalogo.sql'
 	, SINGLE_BLOB ) AS MYTABLE
 
-EXEC(@SQL)
+EXEC(@SQL);
+
+-- Reactiva el trigger de cambios en propiedad
+ENABLE TRIGGER [dbo].[EventoDePropiedad] ON [dbo].[Propiedad];
