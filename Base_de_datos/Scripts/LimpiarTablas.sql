@@ -49,7 +49,6 @@ DELETE dbo.ErroresDefinidos;
 
 
 -- Reiniciamos el PK de las tablas
-DBCC CHECKIDENT (FacturaConArreglo, RESEED, 0);
 DBCC CHECKIDENT (MovimientoArreglo, RESEED, 0);
 DBCC CHECKIDENT (ArregloDePago, RESEED, 0);
 DBCC CHECKIDENT (Pago, RESEED, 0);
