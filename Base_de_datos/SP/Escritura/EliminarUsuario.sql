@@ -131,6 +131,13 @@ BEGIN
 			FROM    [dbo].[Usuario] U
 			WHERE   U.nombreDeUsuario = @inDbUsername;
 
+            -- Se eliminan las entradas de la lista de eventos
+            DELETE  EL
+            FROM    [dbo].[EventLog] EL
+            INNER JOIN [dbo].[Usuario] U
+                ON  EL.[insertedByUser] = U.[id]
+            WHERE U.[nombreDeUsuario] = @inDbUsername;
+
 			-- Se elimina la relación UsuarioDePropiedad
 			DELETE udp 
 			FROM UsuarioDePropiedad udp
