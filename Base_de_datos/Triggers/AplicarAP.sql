@@ -158,12 +158,6 @@ BEGIN
                 FROM    @facturasPorActualizar F
                 WHERE   F.[pagable] = 0;
 
-                SELECT  *
-                FROM    @facturasPorActualizar;
-
-                SELECT  *
-                FROM    @arregloPago;
-
                 -- Se actualizan las facturas que sí se pudieron pagar
                 UPDATE  F
                 SET     F.[idEstadoFactura] = @ID_PAGADA_NORMAL
