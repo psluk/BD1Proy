@@ -169,6 +169,18 @@ BEGIN
 			WHERE dcc.monto = @procesando
 			AND ADP.idEstado = 1 --activo
 			
+			--actualizamos el saldo en arreglo de pago
+			UPDATE adp
+			SET adp.saldo = adp.saldo - ma.amortizado,
+				adp.acumuladoAmortizado = adp.acumuladoAmortizado + ma.amortizado
+			FROM ArregloDePago adp
+			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos los posibles amortizados
+			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.idMovimiento = ma.id --obtenemos los id de DetalleConceptoCobro
+			INNER JOIN DetalleConceptoCobro dcc ON dcc.id = dcca.id -- obtenemos los montos de DetalleConceptoCobro 
+			WHERE adp.idEstado = 1 --activo
+			AND dcc.monto = @procesando --donde solo el recien agregado tiene monto = @procesando
+			--
+
 			--actualizamo el monto de DetalleConceptoCobro Arreglo Pago
 			UPDATE dcc
 			SET dcc.monto = ma.montoCuota
@@ -176,11 +188,9 @@ BEGIN
 			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.id = dcc.id --obtenemos el idmovimiento
 			INNER JOIN MovimientoArreglo ma ON ma.id = dcca.idMovimiento -- obtenemos el monto
 			WHERE dcc.idConceptoCobro = 8
+			AND dcc.monto = @procesando
 
-			--por ultimo, actualizamos el saldo en arreglo de pago
-			--UPDATE adp
-			--SET adp.saldo
-			--
+			
 
 		-- llegados a este punto DetalleConceptoCobro tiene el id de la factura, el id del cobro y el monto a cobrar
 
