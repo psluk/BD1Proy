@@ -183,7 +183,7 @@
                     newCell.innerText = keyList[i];
 
                     newCell = newRow.appendChild(document.createElement('td'));
-                    if (parsed[keyList[i]]) {
+                    if (parsed[keyList[i]] != null && parsed[keyList[i]] != undefined) {
                         newCell.innerText = parsed[keyList[i]];
                     } else {
                         newCell = newCell.appendChild(document.createElement('span'));
