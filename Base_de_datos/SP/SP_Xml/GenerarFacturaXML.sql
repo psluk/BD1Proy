@@ -139,15 +139,6 @@ BEGIN
 			AND dcc.monto = @procesando --solo arreglos de pago siendo procesados
 			AND adp.idEstado = 1 --activo
 
-
-
-			--optenemos todos los idPropiedad diferentes de MovimientoArreglo
-			SELECT adp.idPropiedad
-			FROM MovimientoArreglo ma
-			INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad
-			WHERE adp.idEstado = 1 --activo
-			GROUP BY adp.idPropiedad
-
 			--insertamos la conexion con el id detalleconceptoCobro
 			INSERT INTO DetalleConceptoCobroArreglo(id,idMovimiento)
 			--seleccion del id correspondiente con la mayor fecha para cada propiedad
