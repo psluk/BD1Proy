@@ -140,7 +140,6 @@
                 }
 
                 if (datos.dateRange && datos.dateRange.start && datos.dateRange.end) {
-                    console.log('Fechas');
                     document.getElementById(fechas[0]).value = datos.dateRange.start;
                     document.getElementById(fechas[1]).value = datos.dateRange.end;
                 }
@@ -150,6 +149,14 @@
         function crearTabla(jsonOrigen) {
             let parsed;
             let toReturn;
+
+            if (!jsonOrigen) {
+                // JSON vacío/nulo
+                toReturn = document.createElement('span');
+                toReturn.setAttribute('class', 'nullJson');
+                toReturn.innerText = 'Sin información';
+                return toReturn;
+            }
             
             try {
                 parsed = JSON.parse(jsonOrigen)[0];
@@ -176,7 +183,13 @@
                     newCell.innerText = keyList[i];
 
                     newCell = newRow.appendChild(document.createElement('td'));
-                    newCell.innerText = parsed[keyList[i]];
+                    if (parsed[keyList[i]]) {
+                        newCell.innerText = parsed[keyList[i]];
+                    } else {
+                        newCell = newCell.appendChild(document.createElement('span'));
+                        newCell.setAttribute('class', 'nullJson');
+                        newCell.innerText = 'Sin información';
+                    }
                 }
 
             } catch {
@@ -226,6 +239,10 @@
             color: white;
             font-weight: bold;
             width: 1%;
+        }
+        .nullJson {
+            font-style: italic;
+            color: gray;
         }
     </style>
 </head>
