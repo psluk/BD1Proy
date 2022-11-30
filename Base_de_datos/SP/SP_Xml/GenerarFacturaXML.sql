@@ -131,7 +131,7 @@ BEGIN
 								          )
 			SELECT 1, adp.id, @inFechaOperacion, ma.montoCuota, (ma.montoCuota - (adp.Saldo* tia.tasaInteresAnual/12)) , (adp.Saldo* tia.tasaInteresAnual/12)
 			FROM ArregloDePago adp
-			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos el monto de la cuota
+			INNER JOIN MovimientoArreglo ma ON (ma.idArregloPago = adp.id AND ma.idTipoMovimiento = 2) -- obtenemos el monto de la cuota
 			INNER JOIN TasaInteresArreglo tia ON tia.id = adp.idTasaInteres -- obtenemos la tasa anual
 			INNER JOIN Factura f ON (f.idPropiedad = adp.idPropiedad AND f.totalOriginal = @procesando) --obtenemos el idfactura
 			INNER JOIN DetalleConceptoCobro dcc ON dcc.idFactura = f.id -- obtenemos los id de DetalleConceptoCobro
@@ -144,28 +144,30 @@ BEGIN
 			--seleccion del id correspondiente con la mayor fecha para cada propiedad
 			SELECT dcc.id, ma.id 
 			FROM MovimientoArreglo ma
-			INNER JOIN ArregloDePago ADP ON adp.id = ma.idArregloPago
+			INNER JOIN ArregloDePago ADP ON ADP.id = ma.idArregloPago -- obtenemos el estado del movimiento, propiedad del movimeinto en 1=1
 			INNER JOIN (SELECT adp.idPropiedad, --seleccion de la mayor fecha para cada propiedad
 							   MAX(ma.fecha) AS 'maxFecha'
 						FROM MovimientoArreglo ma
-						INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad
-						WHERE adp.idEstado = 1 --activo
+						INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad 1=1
+						WHERE adp.idEstado = 1 --solo AP activos
+						AND ma.idTipoMovimiento = 1 --solo movimientos creados en Facturacion
 						GROUP BY adp.idPropiedad
-						) qq ON qq.maxFecha = ma.fecha 
+						) qq ON qq.maxFecha = ma.fecha --
 							 AND qq.idPropiedad = ADP.idPropiedad
 			INNER JOIN Factura f ON (f.idPropiedad = ADP.idPropiedad 
-								 AND f.totalOriginal =  @procesando) --obtenemos el idfactura
+								 AND f.totalOriginal =  -1)--@procesando) --obtenemos el idfactura
 			INNER JOIN DetalleConceptoCobro dcc ON (dcc.idFactura = f.id 
 												AND dcc.idConceptoCobro = 8) --optenemos el id de DetalleConceptoCobro
-			WHERE dcc.monto = @procesando
+			WHERE dcc.monto = -1--@procesando
 			AND ADP.idEstado = 1 --activo
+			AND ma.idTipoMovimiento = 1
 			
 			--actualizamos el saldo en arreglo de pago
 			UPDATE adp
 			SET adp.saldo = (adp.saldo - ma.amortizado),
-				adp.acumuladoAmortizado = (adp.acumuladoAmortizado + ma.amortizado)
+				adp.acumuladoPagado = (adp.acumuladoAmortizado + ma.amortizado)
 			FROM ArregloDePago adp
-			INNER JOIN MovimientoArreglo ma ON ma.idArregloPago = adp.id -- obtenemos los posibles amortizados
+			INNER JOIN MovimientoArreglo ma ON (ma.idArregloPago = adp.id AND ma.idTipoMovimiento = 1) -- obtenemos los posibles amortizados
 			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.idMovimiento = ma.id --obtenemos los id de DetalleConceptoCobro
 			INNER JOIN DetalleConceptoCobro dcc ON dcc.id = dcca.id -- obtenemos los montos de DetalleConceptoCobro 
 			WHERE adp.idEstado = 1 --activo
