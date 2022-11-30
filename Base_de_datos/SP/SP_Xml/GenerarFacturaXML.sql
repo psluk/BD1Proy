@@ -155,17 +155,17 @@ BEGIN
 						) qq ON qq.maxFecha = ma.fecha --
 							 AND qq.idPropiedad = ADP.idPropiedad
 			INNER JOIN Factura f ON (f.idPropiedad = ADP.idPropiedad 
-								 AND f.totalOriginal =  -1)--@procesando) --obtenemos el idfactura
+								 AND f.totalOriginal =  @procesando) --obtenemos el idfactura
 			INNER JOIN DetalleConceptoCobro dcc ON (dcc.idFactura = f.id 
 												AND dcc.idConceptoCobro = 8) --optenemos el id de DetalleConceptoCobro
-			WHERE dcc.monto = -1--@procesando
+			WHERE dcc.monto = @procesando
 			AND ADP.idEstado = 1 --activo
 			AND ma.idTipoMovimiento = 1
 			
 			--actualizamos el saldo en arreglo de pago
 			UPDATE adp
-			SET adp.saldo = (adp.saldo - ma.amortizado),
-				adp.acumuladoPagado = (adp.acumuladoAmortizado + ma.amortizado)
+			SET adp.saldo = (SELECT (adp.saldo - ma.amortizado)),
+				adp.acumuladoPagado = (SELECT (adp.acumuladoAmortizado + ma.amortizado))
 			FROM ArregloDePago adp
 			INNER JOIN MovimientoArreglo ma ON (ma.idArregloPago = adp.id AND ma.idTipoMovimiento = 1) -- obtenemos los posibles amortizados
 			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.idMovimiento = ma.id --obtenemos los id de DetalleConceptoCobro
