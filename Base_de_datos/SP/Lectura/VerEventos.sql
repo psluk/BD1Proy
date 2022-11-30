@@ -2,13 +2,13 @@
     Procedimiento que permite consultar las entradas de la tabla de eventos
 */
 
-/* Resumen de los cÛdigos de salida de este procedimiento
--- …xito --
+/* Resumen de los c√≥digos de salida de este procedimiento
+-- √âxito --
         0: Correcto
 
 -- Error --
-    50000: OcurriÛ un error desconocido
-    50001: Credenciales inv·lidas
+    50000: Ocurri√≥ un error desconocido
+    50001: Credenciales inv√°lidas
 */
 
 ALTER PROCEDURE [dbo].[VerEventos]
@@ -16,12 +16,12 @@ ALTER PROCEDURE [dbo].[VerEventos]
     @inFechaInicio DATE = NULL,
     @inFechaFinal DATE = NULL,
 
-    -- Para determinar quiÈn est· haciendo la consulta
+    -- Para determinar qui√©n est√° haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el cÛdigo de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Èxito)
+    -- Se define la variable donde se guarda el c√≥digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (√©xito)
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -35,9 +35,9 @@ BEGIN
 					    AND T.nombre = 'Administrador'
 					    )
         BEGIN
-            -- Si llega ac·, el usuario no es administrador
+            -- Si llega ac√°, el usuario no es administrador
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inv·lidas
+            SET @outResultCode = 50001;     -- Credenciales inv√°lidas
 
             SELECT  NULL AS 'Entidad',
                     NULL AS 'ID',
@@ -55,8 +55,8 @@ BEGIN
             RETURN;
         END;
 
-        -- Si no se brindÛ una fecha, se establecen las variables de entrada
-        -- en los valores lÌmite (mÌnimo y m·ximo) de la tabla de eventos
+        -- Si no se brind√≥ una fecha, se establecen las variables de entrada
+        -- en los valores l√≠mite (m√≠nimo y m√°ximo) de la tabla de eventos
         IF  @inFechaInicio IS NULL
             OR @inFechaInicio < (SELECT  MIN(EL.[insertedAt])
                                 FROM    [dbo].[EventLog] EL )
@@ -77,7 +77,7 @@ BEGIN
                                     FROM    [dbo].[EventLog] EL );
         END;
 
-        -- Retornamos la informaciÛn
+        -- Retornamos la informaci√≥n
         SELECT  ET.nombre AS 'Entidad',
                 EL.entityId AS 'ID',
                 EL.jsonAntes AS 'jsonAntes',
@@ -91,7 +91,8 @@ BEGIN
         INNER JOIN [dbo].[Usuario] U
             ON  U.[id] = EL.[insertedByUser]
         WHERE   EL.[insertedAt] >= @inFechaInicio
-            AND EL.[insertedAt] < DATEADD(DAY, 1, @inFechaFinal);
+            AND EL.[insertedAt] < DATEADD(DAY, 1, @inFechaFinal)
+        ORDER BY EL.[insertedAt] DESC;
 
         IF (    SELECT  COUNT(EL.[id])
                 FROM    [dbo].[EventLog] EL) > 0

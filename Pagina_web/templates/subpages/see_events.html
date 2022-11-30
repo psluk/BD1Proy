@@ -71,7 +71,7 @@
                                 break;
 
                             case 50001:
-                                textoError = "No tiene permiso para ver la lista de pagos";
+                                textoError = "No tiene permiso para ver la lista de eventos";
                                 break;
 
                             default:
@@ -138,6 +138,12 @@
                     }
                     document.getElementById(buttonId).disabled = false;
                 }
+
+                if (datos.dateRange && datos.dateRange.start && datos.dateRange.end) {
+                    console.log('Fechas');
+                    document.getElementById(fechas[0]).value = datos.dateRange.start;
+                    document.getElementById(fechas[1]).value = datos.dateRange.end;
+                }
             }
         }
 
@@ -146,7 +152,7 @@
             let toReturn;
             
             try {
-                parsed = JSON.parse(jsonOrigen);
+                parsed = JSON.parse(jsonOrigen)[0];
             } catch {
                 toReturn = document.createElement('span');
                 toReturn.setAttribute('class', 'mono json');
@@ -154,9 +160,30 @@
                 return toReturn;
             }
 
-            toReturn = document.createElement('pre');
-            toReturn.setAttribute('class', 'mono json');
-            toReturn.innerText = JSON.stringify(parsed, null, 4);
+            try {
+                toReturn = document.createElement('table');
+                toReturn.setAttribute('class', 'jsonTable');
+                
+                toReturn.appendChild(document.createElement('tbody'));
+
+                let keyList = Object.keys(parsed);
+                let newRow, newCell;
+
+                for (let i = 0; i < keyList.length; i++) {
+                    newRow = toReturn.lastChild.appendChild(document.createElement('tr'));
+
+                    newCell = newRow.appendChild(document.createElement('td'));
+                    newCell.innerText = keyList[i];
+
+                    newCell = newRow.appendChild(document.createElement('td'));
+                    newCell.innerText = parsed[keyList[i]];
+                }
+
+            } catch {
+                toReturn = document.createElement('pre');
+                toReturn.setAttribute('class', 'mono json');
+                toReturn.innerText = JSON.stringify(parsed, null, 4);
+            }
             return toReturn;
         }
 
@@ -187,6 +214,18 @@
         }
         .json {
             line-break: anywhere;
+        }
+        pre.json {
+            text-align: left;
+        }
+        .jsonTable {
+            font-size: small;
+        }
+        .jsonTable > tbody > tr > td:first-child {
+            background-color: deepskyblue;
+            color: white;
+            font-weight: bold;
+            width: 1%;
         }
     </style>
 </head>

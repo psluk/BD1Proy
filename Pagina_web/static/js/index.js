@@ -171,6 +171,12 @@ const categories = [
                         url: './sub/see_payments.html',
                         parametersNeeded: false,
                         adminOnly: true
+                    },
+                    {
+                        name: 'Lista de eventos',
+                        url: './sub/see_events.html',
+                        parametersNeeded: false,
+                        adminOnly: true
                     }
                 ]
             }

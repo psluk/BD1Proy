@@ -14,7 +14,7 @@ label {
     font-family: 'Roboto', 'Arial Nova', 'Arial', sans-serif;
 }
 
-h1, th {
+h1, th, .jsonTable > tbody > tr > td:first-child {
     font-family: 'Roboto Slab', 'Source Serif Pro', 'Noto Serif', 'Cambria', 'Liberation Serif', serif;
 }
 
