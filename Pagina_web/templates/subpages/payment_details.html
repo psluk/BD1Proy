@@ -194,6 +194,19 @@
                             nuevaFila.lastElementChild.innerText = (
                                 parseFloat(resultados[i].total).toLocaleString(fechaIdioma));
                             nuevaFila.lastElementChild.setAttribute('style', 'font-weight: bold;');
+
+                            nuevaFila = cuerpoTabla.appendChild(document.createElement('tr'));  // Agrega fila
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            nuevaFila.lastElementChild.innerText = 'Imprimir';
+                            nuevaFila.lastElementChild.setAttribute('style', 'font-weight: bold;');
+
+                            nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
+                            let newButton = nuevaFila.lastElementChild.appendChild(document.createElement('button'));
+                            newButton.setAttribute('type', 'button');
+                            newButton.onclick = function () {window.print();};
+                            newButton.innerText = 'Imprimir';
+                            nuevaFila.lastElementChild.setAttribute('style', 'font-weight: bold;');
                         }
 
                         cuerpoTabla.parentElement.style.display = '';
