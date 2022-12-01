@@ -439,6 +439,8 @@ def hacer_pago():
     )
 
 # Consultar eventos
+
+
 @app.route("/sub/get/all_events/<argumentos>")
 def ver_eventos(argumentos: str = ''):
     argumentos_separados = argumentos.split('&')
@@ -454,3 +456,56 @@ def ver_eventos(argumentos: str = ''):
         fechaFinal=fechaFinal,
         consultante=session['username']
     ))
+
+# Obtener tipos de documento de identidad
+
+
+@app.route("/sub/get/categories/id")
+def tipos_de_documentos():
+    return json.dumps(logica.tiposDeDocumentos(
+        consultante=session['username']
+    ))
+
+# Crear persona
+
+
+@app.route("/sub/post/person", methods=['POST'])
+def crear_persona():
+    try:
+        request_data = request.get_json()
+    except:
+        # Si falla el "parse" del JSON
+        return json.dumps({"statusInfo": "Bad request"}), 400
+    resultado = logica.crearPersona(
+        informacion=request_data,
+        consultante=session['username'],
+        consultante_ip=request.remote_addr
+    )
+    
+    info = ""
+    codigo_estado = 200
+    if resultado["status"] == 0:
+        info = "OK"
+    elif resultado["status"] == 500:
+        info = "Error interno del servidor"
+        codigo_estado = 500
+    elif resultado["status"] == 50000:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50001:
+        info = "Error desconocido"
+        codigo_estado = 500
+    elif resultado["status"] == 50002:
+        info = "Credenciales incorrectas"
+        codigo_estado = 401
+    elif resultado["status"] == 50010:
+        info = "El documento de identidad ya existe"
+        codigo_estado = 400
+    elif resultado["status"] == 50012:
+        info = "Tipo de documento inválido"
+    else:
+        info = "Error desconocido"
+        codigo_estado = 500
+    
+    resultado["statusInfo"] = info
+    return json.dumps(resultado), codigo_estado

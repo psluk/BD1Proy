@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Crear persona</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+    <script src="{{ url_for('static', filename='js/subpages/create_person.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adminText.js') }}"></script>
+</head>
+
+<body>
+    <div id="mainBox">
+        <div id="titleDiv">
+            <h1>Crear persona</h1>
+            <p>Por favor, ingrese los datos solicitados.</p>
+        </div>
+        <div id="expandDiv">
+            <div id="formOuterDiv">
+                <div id="formDiv">
+                    <form id="form" action="javascript:return false;">
+                        <div class="formInput">
+                            <label>Tipo de documento</label>
+                            <select name="tipoDocumento" id="tipoDocumento" disabled>
+                                <option value="1">Cargando...</option>
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <label>Valor del documento de identidad</label>
+                            <input type="text" minlength="1" maxlength="32" id="idBox" placeholder="Valor">
+                        </div>
+                        <div class="formInput">
+                            <label>Nombre</label>
+                            <input type="text" minlength="1" maxlength="64" id="nameBox" placeholder="Nombre de la persona">
+                        </div>
+                        <div class="formInput">
+                            <label>Teléfono 1</label>
+                            <input type="number" min="1000" step="1" id="phoneNo1" placeholder="Número de teléfono">
+                        </div>
+                        <div class="formInput">
+                            <label>Teléfono 2</label>
+                            <input type="number" min="1000" step="1" id="phoneNo2" placeholder="Número de teléfono">
+                        </div>
+                        <div class="formInput">
+                            <label>Correo electrónico</label>
+                            <input type="text" minlength="0" maxlength="128" id="emailBox" placeholder="Dirección de correo">
+                        </div>
+                        <div class="formInput">
+                            <input type="Submit" id="createButton" value="Crear persona">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

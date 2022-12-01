@@ -1133,3 +1133,86 @@ def verEventos(fechaInicio: str = '', fechaFinal: str = '', consultante: str = '
 
     cursor.close()
     return resultado
+
+def tiposDeDocumentos(consultante: str = ''):
+    """
+    Función que retorna los diferentes tipos de documentos de identidad
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+    query = "EXEC [dbo].[ObtenerTiposId] ?"
+
+    salida = cursor.execute(query, consultante)
+
+    resultado = {
+        "status": 0,
+        "results": []
+    }
+
+    try:
+        for fila in salida.fetchall():
+            # Para cada fila de la salida
+            if fila[0] != None:
+                resultado["results"].append({
+                    "nombre": fila[0]
+                })
+        # Avanza a la segunda tabla de salida (con el código de salida)
+        if salida.nextset():
+            # Copia el código de salida del procedimiento
+            # a lo que se retorna
+            resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+            "results": []
+        }
+
+    cursor.close()
+    return resultado
+
+def crearPersona(informacion: dict = {}, consultante: str = '', consultante_ip: str = ''):
+    """
+    Función que intenta crear una propiedad
+    consultante = usuario que está haciendo la consulta
+    """
+
+    cursor = odbc.connect(CONNECTION_STRING)
+
+    query = "EXEC [dbo].[crearPersona] ?, ?, ?, ?, ?, ?, ?, ?"
+
+    datos = []
+    for i in ['tipoId', 'nombre', 'id', 'telefono1', 'telefono2', 'email']:
+        datos.append(str(informacion[i]))
+
+    salida = cursor.execute(
+        query,
+        datos[0],
+        datos[1],
+        datos[2],
+        datos[3],
+        datos[4],
+        datos[5],
+        consultante,
+        consultante_ip
+        )
+    
+    resultado = {
+        "status": 0
+    }
+
+    try:
+        # Copia el código de salida del procedimiento
+        # a lo que se retorna
+        resultado["status"] = salida.fetchone()[0]
+    except:
+        # Ocurrió un error
+        resultado = {
+            "status": 500,      # 500 = error interno del servidor
+        }
+
+    cursor.commit()
+    cursor.close()
+
+    return resultado

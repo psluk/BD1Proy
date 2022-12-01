@@ -118,7 +118,14 @@ const categories = [
             {
                 name: 'Administrar',
                 adminOnly: true,
-                items: []
+                items: [
+                    {
+                        name: 'Crear persona',
+                        url: './sub/create_person.html',
+                        parametersNeeded: false,
+                        adminOnly: true
+                    }
+                ]
             }
         ]
     },

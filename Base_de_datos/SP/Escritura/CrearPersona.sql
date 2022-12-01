@@ -86,10 +86,7 @@ BEGIN
 
 		SELECT @idTipoDocumentoId = td.id
 		FROM TipoDocumentoId td
-		WHERE EXISTS( SELECT 1 
-					  FROM TipoDocumentoId
-					  WHERE TipoDocumentoId.nombre = @inNuevoTipoDocumentoId
-					) --AND td.nombre = 'Cedula CR';
+		WHERE td.nombre = @inNuevoTipoDocumentoId --AND td.nombre = 'Cedula CR';
 
 		IF @idTipoDocumentoId = -1
         BEGIN
