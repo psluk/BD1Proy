@@ -1,9 +1,9 @@
 -- Este script es utilizado para crear las tablas
--- También crea las relaciones necesarias (llaves primarias y externas)
+-- TambiÃ©n crea las relaciones necesarias (llaves primarias y externas)
 
 USE [proyecto]
 
--- CATEGORÍA: PERSONAS
+-- CATEGORÃA: PERSONAS
 
 CREATE TABLE dbo.TipoDocumentoId
 (
@@ -12,8 +12,8 @@ CREATE TABLE dbo.TipoDocumentoId
 
     -- Columnas
     nombre VARCHAR(32) NOT NULL,
-	mascara VARCHAR(32) NOT NULL,
-    
+    mascara VARCHAR(32) NOT NULL,
+
     -- Se establece la llave primaria
     CONSTRAINT PK_id PRIMARY KEY CLUSTERED (id)
 );
@@ -21,7 +21,7 @@ CREATE TABLE dbo.TipoDocumentoId
 CREATE TABLE dbo.Persona
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idTipoDocumentoId INT NOT NULL,
 
     -- Otras columnas
@@ -39,12 +39,12 @@ CREATE TABLE dbo.Persona
     REFERENCES dbo.TipoDocumentoId (id)
 );
 
--- CATEGORÍA: USUARIOS
+-- CATEGORÃA: USUARIOS
 
 CREATE TABLE dbo.TipoUsuario
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
 
     -- Otras columnas
     nombre VARCHAR(32) NOT NULL,
@@ -56,8 +56,8 @@ CREATE TABLE dbo.TipoUsuario
 CREATE TABLE dbo.Usuario
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
-	idPersona INT NOT NULL,
+    id INT NOT NULL IDENTITY (1, 1),
+    idPersona INT NOT NULL,
     idTipoUsuario INT NOT NULL,
 
     -- Otras columnas
@@ -74,7 +74,7 @@ CREATE TABLE dbo.Usuario
     REFERENCES dbo.TipoUsuario (id)
 );
 
--- CATEGORÍA: PROPIEDADES
+-- CATEGORÃA: PROPIEDADES
 
 CREATE TABLE dbo.TipoUsoPropiedad
 (
@@ -103,7 +103,7 @@ CREATE TABLE dbo.TipoZona
 CREATE TABLE dbo.Propiedad
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idTipoUsoPropiedad INT NOT NULL,
     idTipoZona INT NOT NULL,
 
@@ -125,12 +125,12 @@ CREATE TABLE dbo.Propiedad
     REFERENCES dbo.TipoZona (id)
 );
 
--- CATEGORÍA: Propiedad + (Persona o Usuario)
+-- CATEGORÃA: Propiedad + (Persona o Usuario)
 
 CREATE TABLE dbo.PropietarioDePropiedad
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idPersona INT NOT NULL,
     idPropiedad INT NOT NULL,
 
@@ -151,7 +151,7 @@ CREATE TABLE dbo.PropietarioDePropiedad
 CREATE TABLE dbo.UsuarioDePropiedad
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idUsuario INT NOT NULL,
     idPropiedad INT NOT NULL,
 
@@ -169,7 +169,7 @@ CREATE TABLE dbo.UsuarioDePropiedad
     REFERENCES dbo.Propiedad (id)
 );
 
--- CATEGORÍA: Facturas
+-- CATEGORÃA: Facturas
 
 CREATE TABLE dbo.EstadoFactura
 (
@@ -186,7 +186,7 @@ CREATE TABLE dbo.EstadoFactura
 CREATE TABLE dbo.Factura
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idPropiedad INT NOT NULL,
     idEstadoFactura INT NOT NULL,
     idPago INT NULL,
@@ -205,28 +205,28 @@ CREATE TABLE dbo.Factura
     REFERENCES dbo.Propiedad (id),
     CONSTRAINT FK_Factura_EstadoFactura FOREIGN KEY (idEstadoFactura)
     REFERENCES dbo.EstadoFactura (id)
-    -- La referencia al pago se añade luego
+-- La referencia al pago se aÃ±ade luego
 );
 
--- CATEGORÍA: Pagos
+-- CATEGORÃA: Pagos
 
 CREATE TABLE dbo.TipoMedioPago
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	descripcion VARCHAR(64) NOT NULL,
+    -- Otras columnas
+    descripcion VARCHAR(64) NOT NULL,
 
-	-- Se establece la llave primaria
-	CONSTRAINT PK_TipoMedioPago PRIMARY KEY CLUSTERED (id)
+    -- Se establece la llave primaria
+    CONSTRAINT PK_TipoMedioPago PRIMARY KEY CLUSTERED (id)
 );
 
 CREATE TABLE dbo.Pago
 (
-	-- Llaves
-    id INT NOT NULL IDENTITY(1,1),
-	idTipoMedioPago INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL IDENTITY (1, 1),
+    idTipoMedioPago INT NOT NULL,
 
     -- Otras columnas
     numeroReferencia BIGINT NOT NULL,
@@ -235,48 +235,48 @@ CREATE TABLE dbo.Pago
     -- Se establece la llave primaria
     CONSTRAINT PK_Pago PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
-	CONSTRAINT FK_Pago_TipoMedioPago FOREIGN KEY (idTipoMedioPago) 
-	REFERENCES dbo.TipoMedioPago (id)
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_Pago_TipoMedioPago FOREIGN KEY (idTipoMedioPago)
+    REFERENCES dbo.TipoMedioPago (id)
 );
 
 ALTER TABLE dbo.Factura
-    ADD CONSTRAINT FK_Factura_Pago FOREIGN KEY (idPago) 
-	REFERENCES dbo.Pago (id);
+ADD CONSTRAINT FK_Factura_Pago FOREIGN KEY (idPago)
+REFERENCES dbo.Pago (id);
 
--- CATEGORÍA: Conceptos de cobro
+-- CATEGORÃA: Conceptos de cobro
 
 CREATE TABLE dbo.TipoPeriodoConceptoCobro
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	descripcion VARCHAR(32) NOT NULL,
-	cantidadMeses INT NOT NULL,
+    -- Otras columnas
+    descripcion VARCHAR(32) NOT NULL,
+    cantidadMeses INT NOT NULL,
 
-	-- Se establece la llave primaria
-	CONSTRAINT PK_TipoPeriodoConceptoCobro PRIMARY KEY CLUSTERED (id)
+    -- Se establece la llave primaria
+    CONSTRAINT PK_TipoPeriodoConceptoCobro PRIMARY KEY CLUSTERED (id)
 );
 
 CREATE TABLE dbo.TipoMontoConceptoCobro
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	descripcion VARCHAR(32) NOT NULL,
+    -- Otras columnas
+    descripcion VARCHAR(32) NOT NULL,
 
-	-- Se establece la llave primaria
-	CONSTRAINT PK_TipoMontoConceptoCobro PRIMARY KEY CLUSTERED (id)
+    -- Se establece la llave primaria
+    CONSTRAINT PK_TipoMontoConceptoCobro PRIMARY KEY CLUSTERED (id)
 );
 
 CREATE TABLE dbo.ConceptoCobro
 (
     -- Llaves
     id INT NOT NULL,
-	idTipoPeriodoConceptoCobro INT NOT NULL,
-	idTipoMontoConceptoCobro INT NOT NULL,
+    idTipoPeriodoConceptoCobro INT NOT NULL,
+    idTipoMontoConceptoCobro INT NOT NULL,
 
     -- Otras columnas
     nombre VARCHAR(32) NOT NULL,
@@ -284,17 +284,17 @@ CREATE TABLE dbo.ConceptoCobro
     -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobro PRIMARY KEY CLUSTERED (id),
 
-	 -- Se asocian las llaves externas
-	 CONSTRAINT FK_ConceptoCobro_TipoPeriodoConceptoCobro FOREIGN KEY (idTipoPeriodoConceptoCobro) 
-	 REFERENCES dbo.TipoPeriodoConceptoCobro (id),
-	 CONSTRAINT FK_ConceptoCobro_TipoMontoConceptoCobro FOREIGN KEY (idTipoMontoConceptoCobro) 
-     REFERENCES dbo.TipoMontoConceptoCobro (id)
+    -- Se asocian las llaves externas
+    CONSTRAINT FK_ConceptoCobro_TipoPeriodoConceptoCobro FOREIGN KEY (idTipoPeriodoConceptoCobro)
+    REFERENCES dbo.TipoPeriodoConceptoCobro (id),
+    CONSTRAINT FK_ConceptoCobro_TipoMontoConceptoCobro FOREIGN KEY (idTipoMontoConceptoCobro)
+    REFERENCES dbo.TipoMontoConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroDePropiedad
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idPropiedad INT NOT NULL,
     idConceptoCobro INT NOT NULL,
 
@@ -315,7 +315,7 @@ CREATE TABLE dbo.ConceptoCobroDePropiedad
 CREATE TABLE dbo.DetalleConceptoCobro
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idFactura INT NOT NULL,
     idConceptoCobro INT NOT NULL,
 
@@ -332,129 +332,129 @@ CREATE TABLE dbo.DetalleConceptoCobro
     REFERENCES dbo.ConceptoCobro (id)
 );
 
--- CATEGORÍA: Clases de concepto de cobro
+-- CATEGORÃA: Clases de concepto de cobro
 
 CREATE TABLE dbo.ConceptoCobroAgua
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	montoMinimo MONEY NOT NULL,
-	consumoMinimo INT NOT NULL,
-	volumenTracto INT NOT NULL,
-	montoTracto MONEY NOT NULL,
+    -- Otras columnas
+    montoMinimo MONEY NOT NULL,
+    consumoMinimo INT NOT NULL,
+    volumenTracto INT NOT NULL,
+    montoTracto MONEY NOT NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroAgua PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroAgua_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroPatente
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	valorPatente MONEY NOT NULL,
+    -- Otras columnas
+    valorPatente MONEY NOT NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroPatente PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroPatente_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroImpuestoPropiedad
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	valorPorcentual MONEY NOT NULL,
-		-- MONEY fuerza la precisión a un decimal en base 10
+    -- Otras columnas
+    valorPorcentual MONEY NOT NULL,
+    -- MONEY fuerza la precisiÃ³n a un decimal en base 10
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroImpuestoPropiedad PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroImpuestoPropiedad_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroBasura
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	montoMinimo MONEY NOT NULL,
-	areaMinima INT NOT NULL,
-	areaTracto INT NOT NULL,
-	montoTracto MONEY NOT NULL,
+    -- Otras columnas
+    montoMinimo MONEY NOT NULL,
+    areaMinima INT NOT NULL,
+    areaTracto INT NOT NULL,
+    montoTracto MONEY NOT NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroBasura PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroBasura_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroParques
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	valorFijo MONEY NOT NULL,
+    -- Otras columnas
+    valorFijo MONEY NOT NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroParques PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroParques_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroInteresesMoratorios
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	valorPorcentual MONEY NOT NULL,
-		-- MONEY fuerza la precisión a un decimal en base 10
+    -- Otras columnas
+    valorPorcentual MONEY NOT NULL,
+    -- MONEY fuerza la precisiÃ³n a un decimal en base 10
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroInteresesMoratorios PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroInteresesMoratorios_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
 CREATE TABLE dbo.ConceptoCobroReconexionAgua
 (
-	-- Llaves
-	id INT NOT NULL,
+    -- Llaves
+    id INT NOT NULL,
 
-	-- Otras columnas
-	monto MONEY NOT NULL,
+    -- Otras columnas
+    monto MONEY NOT NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_ConceptoCobroReconexionAgua PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ConceptoCobroReconexionAgua_ConceptoCobro FOREIGN KEY (id)
     REFERENCES dbo.ConceptoCobro (id)
 );
 
--- CATEGORÍA: Agua
+-- CATEGORÃA: Agua
 
 CREATE TABLE dbo.AguaDePropiedad
 (
@@ -488,7 +488,7 @@ CREATE TABLE dbo.TipoMovimientoConsumo
 CREATE TABLE dbo.MovimientoConsumo
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idTipoMovimiento INT NOT NULL,
     idAguaDePropiedad INT NOT NULL,
 
@@ -515,7 +515,7 @@ CREATE TABLE dbo.DetalleConceptoCobroAgua
 
     -- Se establece la llave primaria
     CONSTRAINT PK_DetalleConceptoCobroAgua PRIMARY KEY CLUSTERED
-        (idDetalleConceptoCobro),
+    (idDetalleConceptoCobro),
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_DetalleConceptoCobroAgua_DetalleConceptoCobro FOREIGN KEY (idDetalleConceptoCobro)
@@ -534,18 +534,18 @@ CREATE TABLE dbo.EstadoOrdenCorta
 
     -- Se establece la llave primaria
     CONSTRAINT PK_EstadoOrdenCorta PRIMARY KEY CLUSTERED
-        (id)
+    (id)
 );
 
 CREATE TABLE dbo.OrdenCorta
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idFactura INT NOT NULL UNIQUE,
     idPropiedad INT NOT NULL,
     idEstadoPago INT NOT NULL,
     idPago INT NULL,
-    
+
     -- Otras columnas
     numeroMedidor INT NOT NULL,
     fechaOperacion DATE NOT NULL,
@@ -565,10 +565,10 @@ CREATE TABLE dbo.OrdenCorta
 CREATE TABLE dbo.OrdenReconexion
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idFactura INT NOT NULL,
     idOrdenCorta INT NOT NULL UNIQUE,
-    
+
     -- Otras columnas
     numeroMedidor INT NOT NULL,
     fechaReconexion DATE NOT NULL,
@@ -583,13 +583,13 @@ CREATE TABLE dbo.OrdenReconexion
     REFERENCES dbo.OrdenCorta (id)
 );
 
--- CATEGORÍA: Arreglos de pago
+-- CATEGORÃA: Arreglos de pago
 
 CREATE TABLE dbo.TasaInteresArreglo
 (
     -- Llaves
     id INT NOT NULL,
-    
+
     -- Otras columnas
     plazoMeses INT NOT NULL,
     tasaInteresAnual MONEY NOT NULL,
@@ -613,11 +613,11 @@ CREATE TABLE dbo.EstadoDeArreglo
 CREATE TABLE dbo.ArregloDePago
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
     idTasaInteres INT NOT NULL,
     idPropiedad INT NOT NULL,
     idEstado INT NOT NULL,
-    
+
     -- Otras columnas
     montoOriginal MONEY NOT NULL,
     saldo MONEY NOT NULL,
@@ -639,7 +639,7 @@ CREATE TABLE dbo.ArregloDePago
 CREATE TABLE dbo.TipoMovimientoArreglo
 (
     -- Llaves
-    id INT NOT NULL, 
+    id INT NOT NULL,
 
     -- Otras columnas
     descripcion VARCHAR(32) NOT NULL,
@@ -651,7 +651,7 @@ CREATE TABLE dbo.TipoMovimientoArreglo
 CREATE TABLE dbo.MovimientoArreglo
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1), 
+    id INT NOT NULL IDENTITY (1, 1),
     idTipoMovimiento INT NOT NULL,
     idArregloPago INT NOT NULL,
 
@@ -679,7 +679,7 @@ CREATE TABLE dbo.DetalleConceptoCobroArreglo
 
     -- Se establece la llave primaria
     CONSTRAINT PK_DetalleConceptoCobroArreglo PRIMARY KEY CLUSTERED
-        (id),
+    (id),
 
     -- Se asocian las llaves externas
     CONSTRAINT FK_DetalleConceptoCobroArreglo_DetalleConceptoCobro FOREIGN KEY (id)
@@ -704,13 +704,13 @@ CREATE TABLE dbo.FacturaConArreglo
     REFERENCES dbo.ArregloDePago (id)
 );
 
--- CATEGORÍA: Parámetros del sistema
+-- CATEGORÃA: ParÃ¡metros del sistema
 
 CREATE TABLE dbo.TipoParametroSistema
 (
-	-- Llaves
+    -- Llaves
     id INT NOT NULL,
-    
+
     -- Otras columnas
     descripcion VARCHAR(16),
 
@@ -720,28 +720,28 @@ CREATE TABLE dbo.TipoParametroSistema
 
 CREATE TABLE dbo.ParametroSistema
 (
-	-- Llaves
+    -- Llaves
     id INT NOT NULL,
-	idTipoParametroSistema INT NOT NULL,
-    
+    idTipoParametroSistema INT NOT NULL,
+
     -- Otras columnas
-	descripcion VARCHAR(128) NOT NULL,
+    descripcion VARCHAR(128) NOT NULL,
     valor INT NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_ParametroSistema PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT FK_ParametroSistema_TipoParametroSistema FOREIGN KEY (idTipoParametroSistema)
     REFERENCES dbo.TipoParametroSistema (id)
 );
 
--- CATEGORÍA: Registro de actividades y errores
+-- CATEGORÃA: Registro de actividades y errores
 
 CREATE TABLE [dbo].[EntityType]
 (
     -- Llaves
-    id INT NOT NULL IDENTITY(1,1),
+    id INT NOT NULL IDENTITY (1, 1),
 
     -- Otras columnas
     nombre VARCHAR(32) NOT NULL,
@@ -752,55 +752,55 @@ CREATE TABLE [dbo].[EntityType]
 
 CREATE TABLE [dbo].[EventLog]
 (
-	-- Llaves
-	id INT NOT NULL IDENTITY(1,1),
+    -- Llaves
+    id INT NOT NULL IDENTITY (1, 1),
     idEntityType INT NOT NULL,
-    
-	-- Otras columnas
+
+    -- Otras columnas
     entityId INT NOT NULL,
-	jsonAntes VARCHAR(512) NULL,
+    jsonAntes VARCHAR(512) NULL,
     jsonDespues VARCHAR(512) NULL,
     insertedAt DATETIME NOT NULL,
-    insertedByUser INT NULL,        -- Nulo porque se asigna justo después de insertar
-    insertedInIp VARCHAR(64) NULL,  -- Nulo porque se asigna justo después de insertar
+    insertedByUser INT NULL,        -- Nulo porque se asigna justo despuÃ©s de insertar
+    insertedInIp VARCHAR(64) NULL,  -- Nulo porque se asigna justo despuÃ©s de insertar
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_EventLog PRIMARY KEY CLUSTERED (id),
 
-	-- Se asocian las llaves externas
+    -- Se asocian las llaves externas
     CONSTRAINT [FK_EventLog_EntityType] FOREIGN KEY (idEntityType)
     REFERENCES dbo.EntityType (id),
-	CONSTRAINT [FK_EventLog_Usuario] FOREIGN KEY (insertedByUser)
-	REFERENCES dbo.Usuario (id)
+    CONSTRAINT [FK_EventLog_Usuario] FOREIGN KEY (insertedByUser)
+    REFERENCES dbo.Usuario (id)
 );
 
 CREATE TABLE [dbo].[Errors]
 (
-	-- Llaves
-	[ErrorID] INT NOT NULL IDENTITY(1,1),
+    -- Llaves
+    [ErrorID] INT NOT NULL IDENTITY (1, 1),
 
-	-- Otras columnas
-	[UserName] VARCHAR(100) NULL,
-	[ErrorNumber] INT NULL,
-	[ErrorState] INT NULL,
-	[ErrorSeverity] INT NULL,
-	[ErrorLine] INT NULL,
-	[ErrorProcedure] VARCHAR(max) NULL,
-	[ErrorMessage] VARCHAR(max) NULL,
-	[ErrorDateTime] DATETIME NULL,
+    -- Otras columnas
+    [UserName] VARCHAR(100) NULL,
+    [ErrorNumber] INT NULL,
+    [ErrorState] INT NULL,
+    [ErrorSeverity] INT NULL,
+    [ErrorLine] INT NULL,
+    [ErrorProcedure] VARCHAR(MAX) NULL,
+    [ErrorMessage] VARCHAR(MAX) NULL,
+    [ErrorDateTime] DATETIME NULL,
 
-	-- Se establece la llave primaria
+    -- Se establece la llave primaria
     CONSTRAINT PK_DBErrors PRIMARY KEY CLUSTERED ([ErrorID])
 );
 
 CREATE TABLE [dbo].[ErroresDefinidos]
 (
-	-- Llaves
-	id INT NOT NULL IDENTITY(1,1),
+    -- Llaves
+    id INT NOT NULL IDENTITY (1, 1),
 
-	-- Otras columnas
-	[numeroError] VARCHAR(100) NOT NULL,
-	[tipoError] VARCHAR(128) NOT NULL,
+    -- Otras columnas
+    [numeroError] VARCHAR(100) NOT NULL,
+    [tipoError] VARCHAR(128) NOT NULL,
 
     -- Se establece la llave primaria
     CONSTRAINT PK_ErroresDefinidos PRIMARY KEY CLUSTERED ([id])

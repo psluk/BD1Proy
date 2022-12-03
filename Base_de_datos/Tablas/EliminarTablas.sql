@@ -1,3 +1,10 @@
+/*
+    Procedimiento para borrar todas las tablas de la base de datos
+
+    (El orden de las tablas toma en cuenta las relaciones, para que no
+    dé un error de referencias)
+*/
+
 DROP TABLE dbo.Errors;
 DROP TABLE dbo.FacturaConArreglo;
 DROP TABLE dbo.DetalleConceptoCobroArreglo;

@@ -2,22 +2,22 @@
     Procedimiento que retorna todos los usuarios
 */
 
-/* Resumen de los cÛdigos de salida de este procedimiento
--- …xito --
+/* Resumen de los c√≥digos de salida de este procedimiento
+-- √âxito --
         0: Correcto
 
 -- Error --
-    50000: OcurriÛ un error desconocido
-    50001: Credenciales inv·lidas
+    50000: Ocurri√≥ un error desconocido
+    50001: Credenciales inv√°lidas
 */
 
 ALTER PROCEDURE [dbo].[VerUsuarios]
-    -- Para determinar quiÈn est· haciendo la consulta
+    -- Para determinar qui√©n est√° haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el cÛdigo de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Èxito)
+    -- Se define la variable donde se guarda el c√≥digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (√©xito)
 
     SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -31,9 +31,9 @@ BEGIN
 					   AND T.nombre = 'Administrador'
 					 )
         BEGIN
-            -- Si llega ac·, el usuario no es administrador
+            -- Si llega ac√°, el usuario no es administrador
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inv·lidas
+            SET @outResultCode = 50001;     -- Credenciales inv√°lidas
             SELECT NULL AS 'Usuario', 
 				   NULL AS 'Tipo', 
 				   NULL AS 'Nombre', 
@@ -43,7 +43,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega ac·, se retorna la informaciÛn
+        -- Si llega ac√°, se retorna la informaci√≥n
         SELECT U.nombreDeUsuario AS 'Usuario', 
 			   TU.[nombre] AS 'Tipo', 
 			   P.nombre AS 'Nombre', 
@@ -56,7 +56,7 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- OcurriÛ un error desconocido
+        -- Ocurri√≥ un error desconocido
         SET @outResultCode = 50000;     -- Error
         SELECT NULL AS 'Usuario', 
 			   NULL AS 'Tipo', 

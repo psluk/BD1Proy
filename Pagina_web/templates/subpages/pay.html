@@ -27,7 +27,7 @@
         solicitudPagar.open("POST", pagarApi, false);
         solicitudPagar.setRequestHeader("Content-Type", "application/json;charset=utf-8");
         solicitudPagar.send(JSON.stringify(datosPropiedad));
-        
+
         try {
             window.location = verPago + JSON.parse(solicitudPagar.response).receipt;
         } catch {

@@ -135,7 +135,7 @@
                             fecha.innerText = resultados[i].fechaEmitida;
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
-                            
+
                             fechaRelacion = new Date(resultados[i].fechaVencida);
                             fechaRelacion.setHours(correccion);
                             nuevaFila.lastElementChild.innerText = fechaRelacion.toLocaleDateString(
@@ -165,15 +165,15 @@
                                 nuevoEnlace.setAttribute('name', 'grupo1');
                                 nuevoEnlace.setAttribute('value', i);
                                 nuevoEnlace.checked = true;
-                                nuevoEnlace.onclick = function() {factura1 = i; seleccionCambiada()};
+                                nuevoEnlace.onclick = function () { factura1 = i; seleccionCambiada() };
                                 factura1 = i;
-                                
+
                                 nuevoEnlace = nuevaFila.lastElementChild.appendChild(document.createElement('input'));
                                 nuevoEnlace.setAttribute('type', 'radio');
                                 nuevoEnlace.setAttribute('name', 'grupo2');
                                 nuevoEnlace.setAttribute('value', i);
                                 nuevoEnlace.checked = true;
-                                nuevoEnlace.onclick = function() {factura2 = i; seleccionCambiada()};
+                                nuevoEnlace.onclick = function () { factura2 = i; seleccionCambiada() };
                                 factura2 = i;
                                 nuevaFila.lastElementChild.setAttribute('class', celdasDePago);
                             }
@@ -271,7 +271,7 @@
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerFacturas();
             document.getElementById("moduleTitle").innerText += " " + propiedadBuscada;
-            document.getElementById(idBoton).onclick = function() {pagar();};
+            document.getElementById(idBoton).onclick = function () { pagar(); };
         })
     </script>
     <style>

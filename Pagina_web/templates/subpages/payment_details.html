@@ -204,7 +204,7 @@
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             let newButton = nuevaFila.lastElementChild.appendChild(document.createElement('button'));
                             newButton.setAttribute('type', 'button');
-                            newButton.onclick = function () {window.print();};
+                            newButton.onclick = function () { window.print(); };
                             newButton.innerText = 'Imprimir';
                             nuevaFila.lastElementChild.setAttribute('style', 'font-weight: bold;');
                         }

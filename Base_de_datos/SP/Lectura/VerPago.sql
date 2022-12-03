@@ -4,12 +4,12 @@ ALTER PROCEDURE [dbo].[VerPago]
     -- Se definen las variables de entrada
     @inNumeroReferencia BIGINT,
 
-    -- Para determinar quién está haciendo la consulta
+    -- Para determinar quiÃ©n estÃ¡ haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el código de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+    -- Se define la variable donde se guarda el cÃ³digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Ã©xito)
 	DECLARE @idPago AS INT;
 
     SET NOCOUNT ON;                 -- Para evitar interferencias
@@ -17,26 +17,26 @@ BEGIN
     BEGIN TRY
 
         -- Verificamos que el usuario sea administrador
-        -- o esté tratando de procesar el pago de una propiedad suya
-        IF NOT EXISTS(  -- ¿Es administrador?
+        -- o estÃ© tratando de procesar el pago de una propiedad suya
+        IF NOT EXISTS(  -- Â¿Es administrador?
 					  SELECT 1 FROM [dbo].[Usuario] U
 					  INNER JOIN [dbo].[TipoUsuario] T ON U.idTipoUsuario = T.id
 					  WHERE U.nombreDeUsuario = @inUsername
 					  AND T.nombre = 'Administrador'
-		   ) AND NOT EXISTS( -- ¿Es un no administrador que consulta algo propio?
+		   ) AND NOT EXISTS( -- Â¿Es un no administrador que consulta algo propio?
 					  SELECT 1 FROM [dbo].[Usuario] U
 					  INNER JOIN [dbo].[UsuarioDePropiedad] UdP ON U.id = UdP.idUsuario
 					  INNER JOIN [dbo].[Propiedad] P ON UdP.idPropiedad = P.id
                       INNER JOIN [dbo].[Factura] F ON F.[idPropiedad] = P.[id]
                       INNER JOIN [dbo].[Pago] Pa ON F.[idPago] = Pa.[id]
 					  WHERE U.nombreDeUsuario = @inUsername
-					  AND UdP.fechaFin IS NULL    -- NULL = relación activa
+					  AND UdP.fechaFin IS NULL    -- NULL = relaciÃ³n activa
 					  AND Pa.[numeroReferencia] = @inNumeroReferencia
             )
         BEGIN
-            -- Si llega acá, el usuario no puede ver ese pago
+            -- Si llega acÃ¡, el usuario no puede ver ese pago
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inválidas
+            SET @outResultCode = 50001;     -- Credenciales invÃ¡lidas
             SELECT  NULL AS 'fecha',
                     NULL AS 'medio',
                     NULL AS 'numeroReferencia',
@@ -56,7 +56,7 @@ BEGIN
 				    WHERE P.numeroReferencia = @inNumeroReferencia
 				  )
         BEGIN
-            -- Sí existe
+            -- SÃ­ existe
             SET @idPago = ( SELECT [id]
 					              FROM [dbo].[Pago] P
 				                  WHERE P.numeroReferencia = @inNumeroReferencia
@@ -80,7 +80,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega acá, sí existe el pago
+        -- Si llega acÃ¡, sÃ­ existe el pago
         SELECT  P.[fechaPago] AS 'fecha',
                 TMP.[descripcion] AS 'medio',
                 [numeroReferencia] AS 'numeroReferencia',
@@ -113,7 +113,7 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- Ocurrió un error desconocido
+        -- OcurriÃ³ un error desconocido
         SET @outResultCode = 50000;     -- Error desconocido
         SELECT  NULL AS 'fecha',
                 NULL AS 'medio',

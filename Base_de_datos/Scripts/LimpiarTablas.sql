@@ -1,3 +1,7 @@
+/*
+	Script para vaciar las propiedades y resetear el ID
+*/
+
 USE [proyecto];
 
 -- Desactiva el trigger de cambios en propiedad

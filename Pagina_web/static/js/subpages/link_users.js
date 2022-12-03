@@ -41,11 +41,11 @@ function esperarRespuesta(solicitudOperacion) {
                 case 50002:
                     alert("Acceso denegado.");
                     break;
-            
+
                 case 50004:
                     alert("No existe la propiedad.\n\nInténtelo nuevamente.");
                     break;
-                
+
                 case 50009:
                     alert("No existe el usuario.\n\nInténtelo nuevamente.");
                     break;
@@ -53,11 +53,11 @@ function esperarRespuesta(solicitudOperacion) {
                 case 50011:
                     alert("No existe la relación.\n\nInténtelo nuevamente.");
                     break;
-                
+
                 case 50012:
                     alert("Ya existe la relación.")
                     break;
-            
+
                 default:
                     alert("Ocurrió un error.\n\nInténtelo nuevamente.");
                     break;

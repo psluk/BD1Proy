@@ -123,7 +123,7 @@
                             let fechaPorConvertir = new Date(resultados[i].time);
                             nuevaFila.lastElementChild.innerText = fechaPorConvertir.toLocaleDateString(
                                 fechaIdioma, fechaFormato) + '\n' + fechaPorConvertir.toLocaleTimeString(
-                                fechaIdioma, );
+                                    fechaIdioma,);
 
                             nuevaFila.appendChild(document.createElement('td'));                // Agrega celda
                             nuevaFila.lastElementChild.innerText = resultados[i].user;
@@ -157,7 +157,7 @@
                 toReturn.innerText = 'Sin información';
                 return toReturn;
             }
-            
+
             try {
                 parsed = JSON.parse(jsonOrigen)[0];
             } catch {
@@ -170,7 +170,7 @@
             try {
                 toReturn = document.createElement('table');
                 toReturn.setAttribute('class', 'jsonTable');
-                
+
                 toReturn.appendChild(document.createElement('tbody'));
 
                 let keyList = Object.keys(parsed);
@@ -214,7 +214,7 @@
             // Esto se ejecuta hasta después de que se cargue la página
             obtenerEventos();
 
-            document.getElementById(buttonId).onclick = function(){
+            document.getElementById(buttonId).onclick = function () {
                 filaUnicaTexto('Cargando...');
                 obtenerEventos();
             };
@@ -225,21 +225,26 @@
             text-align: center;
             margin-bottom: 10px;
         }
+
         .json {
             line-break: anywhere;
         }
+
         pre.json {
             text-align: left;
         }
+
         .jsonTable {
             font-size: small;
         }
-        .jsonTable > tbody > tr > td:first-child {
+
+        .jsonTable>tbody>tr>td:first-child {
             background-color: deepskyblue;
             color: white;
             font-weight: bold;
             width: 1%;
         }
+
         .nullJson {
             font-style: italic;
             color: gray;

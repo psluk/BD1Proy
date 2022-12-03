@@ -2,13 +2,13 @@
     Procedimiento que retorna los conceptos de cobro de una propiedad
 */
 
-/* Resumen de los cÛdigos de salida de este procedimiento
--- …xito --
+/* Resumen de los c√≥digos de salida de este procedimiento
+-- √âxito --
         0: Correcto
 
 -- Error --
-    50000: OcurriÛ un error desconocido
-    50001: Credenciales inv·lidas
+    50000: Ocurri√≥ un error desconocido
+    50001: Credenciales inv√°lidas
     50002: La propiedad no existe
 */
 
@@ -16,12 +16,12 @@ ALTER PROCEDURE [dbo].[VerConceptoCobroDePropiedad]
     -- Se definen las variables de entrada
     @inNumeroFinca VARCHAR(32),
 
-    -- Para determinar quiÈn est· haciendo la consulta
+    -- Para determinar qui√©n est√° haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el cÛdigo de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Èxito)
+    -- Se define la variable donde se guarda el c√≥digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (√©xito)
 	DECLARE @idPropiedad AS INT;
 
     SET NOCOUNT ON;         -- Para evitar interferencias
@@ -36,9 +36,9 @@ BEGIN
 					   AND T.nombre = 'Administrador'
 					 )
         BEGIN
-            -- Si llega ac·, el usuario no es administrador
+            -- Si llega ac√°, el usuario no es administrador
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inv·lidas
+            SET @outResultCode = 50001;     -- Credenciales inv√°lidas
             SELECT NULL AS 'Nombre', 
 				   NULL AS 'ID', 
 				   NULL AS 'Inicio';
@@ -55,7 +55,7 @@ BEGIN
 					WHERE P.numeroFinca = @inNumeroFinca
 				  )
         BEGIN
-            -- SÌ existe
+            -- S√≠ existe
             SET @idPropiedad = (
                 SELECT P.id FROM [dbo].[Propiedad] P
                 WHERE P.numeroFinca = @inNumeroFinca
@@ -74,20 +74,20 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega ac·, se buscan los conceptos de cobro
+        -- Si llega ac√°, se buscan los conceptos de cobro
         SELECT CC.[nombre] AS 'Nombre', 
 			   CCdP.[fechaInicio] AS 'Inicio'
         FROM [dbo].[ConceptoCobroDePropiedad] CCdP
         INNER JOIN [dbo].[Propiedad] P ON CCdP.idPropiedad = P.id
         INNER JOIN [dbo].[ConceptoCobro] CC ON CCdP.[idConceptoCobro] = CC.[id]
         WHERE CCdP.idPropiedad = @idPropiedad
-        AND CCdP.fechaFin IS NULL; -- NULL = sigue activa la relaciÛn
+        AND CCdP.fechaFin IS NULL; -- NULL = sigue activa la relaci√≥n
 
         SELECT @outResultCode AS 'resultCode';
 
     END TRY
     BEGIN CATCH
-        -- OcurriÛ un error desconocido
+        -- Ocurri√≥ un error desconocido
         SET @outResultCode = 50000;     -- Error
         SELECT NULL AS 'Nombre', 
 			   NULL AS 'ID', 

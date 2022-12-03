@@ -24,7 +24,7 @@ BEGIN
         SELECT  I.id,
                 NULL,
                (SELECT  I2.[idTipoUsoPropiedad] AS 'idTipoUsoPropiedad', 
-				        I2.[idTipoZona] AS 'idTipoZona', 
+    			        I2.[idTipoZona] AS 'idTipoZona', 
 				        I2.[numeroFinca] AS 'numeroFinca', 
 				        I2.[area] AS 'area', 
 				        I2.[valorFiscal] AS 'valorFiscal', 
@@ -86,7 +86,7 @@ BEGIN
         INNER JOIN deleted D
             ON  I.[id] = D.[id];
                 
-		-- Se inserta el cambio en la bitácora
+		-- Se inserta el cambio en la bitï¿½cora
 		INSERT INTO EventLog(
             [idEntityType], 
 			[entityId], 

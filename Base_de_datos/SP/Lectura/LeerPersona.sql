@@ -3,7 +3,7 @@
 
 
 -- Error --
-	50000: OcurriÛ un error desconocido
+	50000: Ocurri√≥ un error desconocido
     50009: No existe el la persona asociada a ese numero de identidad
 */
 
@@ -12,8 +12,8 @@ ALTER PROCEDURE [dbo].[LeerPersona]
     @inValorDocumentoIdentidad VARCHAR(32)
 AS
 BEGIN
-	-- Se define la variable donde se guarda el cÛdigo de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Èxito)
+	-- Se define la variable donde se guarda el c√≥digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (√©xito)
 	
 	SET NOCOUNT ON;         -- Para evitar interferencias
 
@@ -53,7 +53,7 @@ BEGIN
 	END TRY
 
 	BEGIN CATCH
-        -- Si llega ac·, es porque ocurriÛ un error
+        -- Si llega ac√°, es porque ocurri√≥ un error
 
         SELECT [idTipoDocumentoId] = NULL, 
 				   [nombre]= NULL, 

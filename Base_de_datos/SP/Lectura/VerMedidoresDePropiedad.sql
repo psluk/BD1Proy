@@ -1,15 +1,15 @@
 /*
     Procedimiento que retorna los medidores para una propiedad
-    (dado su número de finca)
+    (dado su nÃºmero de finca)
 */
 
-/* Resumen de los códigos de salida de este procedimiento
--- Éxito --
+/* Resumen de los cÃ³digos de salida de este procedimiento
+-- Ã‰xito --
         0: Correcto
 
 -- Error --
-    50000: Ocurrió un error desconocido
-    50001: Credenciales inválidas
+    50000: OcurriÃ³ un error desconocido
+    50001: Credenciales invÃ¡lidas
     50002: La propiedad no existe
 */
 
@@ -17,12 +17,12 @@ ALTER PROCEDURE [dbo].[VerMedidoresDePropiedad]
     -- Se definen las variables de entrada
     @inNumeroFinca INT,
 
-    -- Para determinar quién está haciendo la consulta
+    -- Para determinar quiÃ©n estÃ¡ haciendo la consulta
     @inUsername VARCHAR(32)
 AS
 BEGIN
-    -- Se define la variable donde se guarda el código de salida
-    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (éxito)
+    -- Se define la variable donde se guarda el cÃ³digo de salida
+    DECLARE @outResultCode AS INT = 0;  -- Por defecto, 0 (Ã©xito)
 	DECLARE @idPropiedad AS INT;
 
     SET NOCOUNT ON;         -- Para evitar interferencias
@@ -30,27 +30,27 @@ BEGIN
     BEGIN TRY
 
         -- Verificamos que el usuario sea administrador
-        -- o esté tratando de procesar las lecturas de una propiedad suya
-        IF NOT EXISTS(  -- ¿Es administrador?
+        -- o estÃ© tratando de procesar las lecturas de una propiedad suya
+        IF NOT EXISTS(  -- Â¿Es administrador?
 					  SELECT 1 FROM [dbo].[Usuario] U
 					  INNER JOIN [dbo].[TipoUsuario] T
 					  ON U.idTipoUsuario = T.id
 					  WHERE U.nombreDeUsuario = @inUsername
 					  AND T.nombre = 'Administrador'
 
-		   ) AND NOT EXISTS( -- ¿Es un no administrador que consulta algo propio?
+		   ) AND NOT EXISTS( -- Â¿Es un no administrador que consulta algo propio?
 					  SELECT 1 
 					  FROM [dbo].[Usuario] U
 					  INNER JOIN [dbo].[UsuarioDePropiedad] UdP ON U.id = UdP.idUsuario
 					  INNER JOIN [dbo].[Propiedad] P ON UdP.idPropiedad = P.id
 					  WHERE U.nombreDeUsuario = @inUsername
-					  AND UdP.fechaFin IS NULL    -- NULL = relación activa
+					  AND UdP.fechaFin IS NULL    -- NULL = relaciÃ³n activa
 					  AND P.numeroFinca = @inNumeroFinca
 				     )
         BEGIN
-            -- Si llega acá, el usuario no puede ver esas lecturas
+            -- Si llega acÃ¡, el usuario no puede ver esas lecturas
             -- Entonces no retornamos nada
-            SET @outResultCode = 50001;     -- Credenciales inválidas
+            SET @outResultCode = 50001;     -- Credenciales invÃ¡lidas
             SELECT NULL AS 'Medidor',
                    NULL AS 'Acumulado'
             SELECT @outResultCode AS 'resultCode';
@@ -66,7 +66,7 @@ BEGIN
             WHERE P.numeroFinca = @inNumeroFinca
             )
         BEGIN
-            -- Sí existe
+            -- SÃ­ existe
             SET @idPropiedad = ( SELECT id 
 								 FROM [dbo].[Propiedad] P
 								 WHERE P.numeroFinca = @inNumeroFinca
@@ -84,7 +84,7 @@ BEGIN
             RETURN;
         END;
 
-        -- Si llega acá, se buscan las lecturas
+        -- Si llega acÃ¡, se buscan las lecturas
         SELECT AdP.numeroMedidor AS 'Medidor',
                AdP.consumoAcumulado AS 'Acumulado'
         FROM [dbo].[AguaDePropiedad] AdP
@@ -95,7 +95,7 @@ BEGIN
 
     END TRY
     BEGIN CATCH
-        -- Ocurrió un error desconocido
+        -- OcurriÃ³ un error desconocido
         SET @outResultCode = 50000;     -- Error desconocido
         SELECT NULL AS 'Medidor',
                NULL AS 'Acumulado'

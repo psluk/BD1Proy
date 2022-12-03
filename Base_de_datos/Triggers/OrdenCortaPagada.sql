@@ -1,5 +1,10 @@
 /* Trigger para que el estado de pago de una orden de corta
-   se actualice al pagar una factura */
+   se actualice al pagar una factura
+
+   Solo lo hace cuando se pagan todas las facturas de la propiedad
+
+   (TambiÃ©n crea la orden de reconexiÃ³n)
+*/
 
 ALTER TRIGGER [dbo].[OrdenCortaPagada]
 ON  [dbo].[Factura]
@@ -28,7 +33,7 @@ BEGIN
         BEGIN TRY
 
             -- Se insertan en la tabla temporal las propiedades
-            -- con órden de corta que pagaron todas sus facturas
+            -- con Ã³rden de corta que pagaron todas sus facturas
             INSERT INTO @propiedadesAfectadas
             (
                 [idPropiedad],
@@ -48,9 +53,9 @@ BEGIN
                 ON  OC.[idPropiedad] = I.[idPropiedad]
             WHERE   D.idEstadoFactura = @ID_FACTURA_PENDIENTE
                 AND I.idEstadoFactura != @ID_FACTURA_PENDIENTE
-                --  Estas dos condiciones incluyen solo facturas recién pagadas
+                --  Estas dos condiciones incluyen solo facturas reciÃ©n pagadas
                 AND OC.[idEstadoPago] = @ID_PAGO_CORTA_PENDIENTE
-                --  Esta condición hace que solo se incluyan propiedades con cortas pendientes
+                --  Esta condiciÃ³n hace que solo se incluyan propiedades con cortas pendientes
             GROUP BY I.[idPropiedad];
 
             -- Se borran todas las propiedades con al menos una factura pendiente
@@ -60,14 +65,14 @@ BEGIN
         
             BEGIN TRANSACTION tAplicarReconexiones
             
-                --  Se actualiza el estado de las órdenes de corta
+                --  Se actualiza el estado de las Ã³rdenes de corta
                 UPDATE  OC
                 SET     OC.idEstadoPago = @ID_PAGO_CORTA_HECHO
                 FROM    [dbo].[OrdenCorta] OC
                 INNER JOIN @propiedadesAfectadas P
                     ON  P.[idOrdenCorta] = OC.[id];
 
-                --  Se crean las órdenes de reconexión
+                --  Se crean las Ã³rdenes de reconexiÃ³n
                 INSERT INTO [dbo].[OrdenReconexion]
                 (
                     [idFactura],
@@ -87,10 +92,10 @@ BEGIN
         
         END TRY
         BEGIN CATCH
-            -- Ocurrió un error
+            -- OcurriÃ³ un error
             IF @@TRANCOUNT > 0
             BEGIN
-                -- Entra aquí si el error fue en la transacción
+                -- Entra aquÃ­ si el error fue en la transacciÃ³n
                 ROLLBACK TRANSACTION tAplicarReconexiones;
             END;
 

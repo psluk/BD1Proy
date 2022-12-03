@@ -1,18 +1,23 @@
+/*
+    Trigger que actualiza los conceptos de cobro al actualizar el tipo de uso
+    o tipo de zona de una propiedad
+*/
+
 ALTER TRIGGER [dbo].[CambiarConceptosCobro]
 ON [dbo].[Propiedad]
 AFTER UPDATE
 AS
 BEGIN
     -- Cambios posibles:
-    -- 1. Pasa de zona de uso no agrícola a agrícola (se quita CC #3, de basura)
-    -- 2. Al revés (se agrega CC #3, de basura)
+    -- 1. Pasa de zona de uso no agrï¿½cola a agrï¿½cola (se quita CC #3, de basura)
+    -- 2. Al revï¿½s (se agrega CC #3, de basura)
     -- 3. Pasa de zona comercial o residencial (5 o 1) a otra
     --  (se quita CC #7, de mantenimiento de parques)
-    -- 4. Al revés (se agrega CC #7)
+    -- 4. Al revï¿½s (se agrega CC #7)
 
     IF (UPDATE (idTipoZona) OR UPDATE (idTipoUsoPropiedad))
     BEGIN
-        -- Pasó de uso agrícola (5) a uso no agrícola
+        -- Pasï¿½ de uso agrï¿½cola (5) a uso no agrï¿½cola
         -- Se borra 3
         UPDATE CCdP
         SET fechaFin = GETDATE()
@@ -23,7 +28,7 @@ BEGIN
         AND I.idTipoUsoPropiedad = 5
         AND CCdP.[idConceptoCobro] = 3;
 
-        -- Pasó de uso no agrícola a agrícola (5)
+        -- Pasï¿½ de uso no agrï¿½cola a agrï¿½cola (5)
         INSERT INTO [ConceptoCobroDePropiedad] (
             [idConceptoCobro], 
 			[idPropiedad], 

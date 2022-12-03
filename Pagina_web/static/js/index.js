@@ -207,7 +207,7 @@ window.addEventListener('load', function () {
         nuevoElemento = nuevaLista.appendChild(document.createElement('option'));
         nuevoElemento.innerText = categories[i].name;
         nuevoElemento.value = '0';
-        
+
         if (categories[i].adminOnly) {
             nuevaLista.setAttribute('class', soloAdmin);
             nuevoElemento.setAttribute('class', soloAdmin);
@@ -252,8 +252,7 @@ function cargarOpcion(evento) {
     let action = categories[actionId[0]].groups[actionId[1]].items[actionId[2]];
     let enlace = action.url;
 
-    if (action.parametersNeeded)
-    {
+    if (action.parametersNeeded) {
         let respuesta = prompt("Por favor, digite el valor de " + enlace.split('?', 2).at(-1).split('=', 1)[0] + " por consultar");
         if (respuesta != null) {
             if (!respuesta) {
