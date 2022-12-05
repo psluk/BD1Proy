@@ -49,7 +49,8 @@ BEGIN
 		Telefono2 BIGINT,
 		Email VARCHAR(128)
 	);
-
+	
+    -- realizamos la insercion de personas
 	INSERT INTO [dbo].[Persona] (
 				[idTipoDocumentoId], 
 				[nombre], 

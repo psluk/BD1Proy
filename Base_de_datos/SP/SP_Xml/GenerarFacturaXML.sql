@@ -82,7 +82,7 @@ BEGIN
 							ELSE cca.montoMinimo/tpcc.cantidadMeses
 						END
 				   WHEN ccdp.idConceptoCobro = 2 
-				   THEN CAST(p.valorFiscal AS MONEY)*ccip.valorPorcentual/tpcc.cantidadMeses--formula propiedad
+				   THEN CAST(p.valorFiscal AS MONEY)*ccip.valorPorcentual/tpcc.cantidadMeses --formula propiedad
 				   
 				   WHEN ccdp.idConceptoCobro = 3 
 				   THEN CASE --formula de la basura
@@ -114,7 +114,8 @@ BEGIN
 		-- precio impuesto propiedad
 		LEFT JOIN ConceptoCobroImpuestoPropiedad ccip ON ccip.id = cc.id 
 		-- precio agua
-		LEFT JOIN ConceptoCobroAgua cca ON cca.id = cc.id 
+		LEFT JOIN ConceptoCobroAgua cca ON cca.id = cc.id
+		--Esto solo para las facturas recien creadas
 		WHERE f.totalOriginal = @procesando
 
 		--procedimiento nuevo para agregar el cobro de AP
@@ -144,11 +145,11 @@ BEGIN
 			--seleccion del id correspondiente con la mayor fecha para cada propiedad
 			SELECT dcc.id, ma.id 
 			FROM MovimientoArreglo ma
-			INNER JOIN ArregloDePago ADP ON ADP.id = ma.idArregloPago -- obtenemos el estado del movimiento, propiedad del movimeinto en 1=1
+			INNER JOIN ArregloDePago ADP ON ADP.id = ma.idArregloPago -- obtenemos el estado del movimiento, propiedad del movimeinto en relacion 1=1
 			INNER JOIN (SELECT adp.idPropiedad, --seleccion de la mayor fecha para cada propiedad
 							   MAX(ma.fecha) AS 'maxFecha'
 						FROM MovimientoArreglo ma
-						INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad 1=1
+						INNER JOIN ArregloDePago adp ON adp.id = ma.idArregloPago -- Permitimos la creacion de grupos de movimientos segun idPropiedad en relacion 1=1
 						WHERE adp.idEstado = 1 --solo AP activos
 						AND ma.idTipoMovimiento = 1 --solo movimientos creados en Facturacion
 						GROUP BY adp.idPropiedad
@@ -180,7 +181,7 @@ BEGIN
 			FROM DetalleConceptoCobro dcc
 			INNER JOIN DetalleConceptoCobroArreglo dcca ON dcca.id = dcc.id --obtenemos el idmovimiento
 			INNER JOIN MovimientoArreglo ma ON ma.id = dcca.idMovimiento -- obtenemos el monto
-			WHERE dcc.idConceptoCobro = 8
+			WHERE dcc.idConceptoCobro = 8 --solo
 			AND dcc.monto = @procesando
 
 			

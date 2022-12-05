@@ -92,10 +92,8 @@ BEGIN
 		   TP.NumeroMedidor, 
 		   0
     FROM [dbo].[Propiedad] P
-    INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP
-    ON CCdP.idPropiedad = P.id
-    INNER JOIN @temp_Propiedad TP
-    ON P.numeroFinca = TP.NumeroFinca
+    INNER JOIN [dbo].[ConceptoCobroDePropiedad] CCdP ON CCdP.idPropiedad = P.id
+    INNER JOIN @temp_Propiedad TP ON P.numeroFinca = TP.NumeroFinca
     WHERE CCdP.idConceptoCobro = 1;         -- 1 = agua
 
 	SET NOCOUNT OFF;

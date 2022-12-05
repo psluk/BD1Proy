@@ -1,5 +1,5 @@
 ﻿/*
-    Procedimiento que crea una propiedad con unos par�metros dados
+    SP que actualiza a una Persona
 */
 
 /* Resumen de los c�digos de salida de este procedimiento
@@ -144,7 +144,7 @@ BEGIN
 			FROM Persona p
 			WHERE p.id = @Numero
 
-            -- Se inserta la propiedad
+            -- Se actualiza la Persona
             UPDATE [dbo].[Persona]
 		    SET [idTipoDocumentoId] = @TipoDocumentoId, 
 			    [nombre] = @inNuevoNombre, 

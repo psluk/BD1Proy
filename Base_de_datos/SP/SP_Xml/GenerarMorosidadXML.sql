@@ -56,7 +56,7 @@ BEGIN
 		AND DAY(DATEADD(MONTH,
 					   (MONTH(@inFechaOperacion)- MONTH(f.fechaVencimiento)),
 					   f.fechaVencimiento)
-			   ) = DAY(@inFechaOperacion) 
+			   ) = DAY(@inFechaOperacion) --operacion que transforma las fechas y permite comparar las fechas apesar de si existe un cambio de mes
 
 
 	--ya tenemos una lista de a cuales facturas aplicarle morosidad

@@ -1,8 +1,7 @@
 
 USE proyecto
 GO
--- SP que inserta crea la factura de la propiedad
--- no incluye en el cobro  
+-- SP que genera el pago de una factura
 
 ALTER PROCEDURE [dbo].[GenerarPagosXML]
                         @hdoc INT,
@@ -69,6 +68,7 @@ BEGIN
 
         BEGIN TRANSACTION PagoFactura
 
+            --insertamos el pago
             INSERT INTO Pago
             (   [idTipoMedioPago], 
                 [numeroReferencia], 

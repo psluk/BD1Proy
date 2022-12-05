@@ -59,18 +59,6 @@ BEGIN
 
 	COMMIT TRANSACTION
 
-	--CREATE TABLE socorro(
-	--
-	--id INT PRIMARY KEY IDENTITY(1,1),
-	--idUsuario INT NOT NULL,
-	--idPersona INT NOT NULL,
-	--ValorDocumentoIdentidad BIGINT NOT NULL,
-	--idPropiedad INT NOT NULL,
-	--NumeroFinca INT NOT NULL,
-	--TipoAsociacion varchar(32) NOT NULL,
-	--FechaOperacion DATE
-	--)
-
 	--insercion en tabla de control para poder verificar el orden de insercion de las asociaciones y verificar si existen desasociaciones correctas
 	INSERT INTO [dbo].[socorro] ([idUsuario], [idPersona], [ValorDocumentoIdentidad], [idPropiedad], [NumeroFinca], [TipoAsociacion], [FechaOperacion])
 	SELECT u.id, per.id, per.valorDocumentoId, pro.id, pro.numeroFinca, tup.TipoAsociacion, @inFechaOperacion

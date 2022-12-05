@@ -1,5 +1,5 @@
 ﻿/*
-    Procedimiento que crea un usuario con los parametros dados
+    SP que crea un usuario con los parametros dados
 */
 
 /* Resumen de los codigos de salida de este procedimiento
@@ -142,7 +142,9 @@ BEGIN
         BEGIN TRANSACTION tCrearUsuario
             -- Empieza la transacci�n
 
-            -- Se inserta la propiedad
+           --aqui deberia haberse incluido una insercion en la tabla de eventos
+
+            -- Se crea al Usuario
             INSERT INTO [dbo].[Usuario] (
 						[idPersona], 
 						[idTipoUsuario], 

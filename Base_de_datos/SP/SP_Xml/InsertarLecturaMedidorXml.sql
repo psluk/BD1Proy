@@ -74,7 +74,7 @@ BEGIN
 	AND (tl.TipoMovimiento = 'Ajuste Debito')
 
 
-	-- insertamos los valores en la tabla Movimiento Consumo, se puede optimizar
+	-- insertamos los valores en la tabla Movimiento Consumo, se puede optimizar utilizando un CASE
 	INSERT INTO [dbo].[MovimientoConsumo] (
 				[idTipoMovimiento], 
 				[idAguaDePropiedad], 
@@ -106,7 +106,7 @@ BEGIN
 	INNER JOIN ConceptoCobroDePropiedad ccdp ON ccdp.idPropiedad = p.id --otenemos los conceptos de cobro de la propiedad
 	INNER JOIN AguaDePropiedad adp ON adp.id = ccdp.id -- obtenemos el numero medidor de la propiedad
 	INNER JOIN @temp_Lecturas tl ON adp.numeroMedidor = tl.NumeroMedidor -- solo los medidores modificados
-	WHERE tl.ConsumoAcumulado IS NOT NULL -- no afecta, por seguridad esta
+	WHERE tl.ConsumoAcumulado IS NOT NULL -- no afecta, por seguridad es que esta
 
 	SET NOCOUNT OFF;
 END

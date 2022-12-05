@@ -1,5 +1,5 @@
 ﻿/*
-    Procedimiento que crea una propiedad con unos par�metros dados
+    SP que actualiza los datos del Usuario
 */
 
 /* Resumen de los c�digos de salida de este procedimiento
@@ -169,6 +169,7 @@ BEGIN
 		
         -- Si llega ac�, ya pasaron las validaciones
 
+        -- generamos el json de la informacion antes de la actualizacion
         SET @jsonAntes = (SELECT  U.[idPersona],
 						   U.[idTipoUsuario],
 						   U.[nombreDeUsuario],
@@ -180,7 +181,7 @@ BEGIN
         BEGIN TRANSACTION tupdateUsuario
             -- Empieza la transacci�n
 
-            -- Se inserta la propiedad
+            -- Se actualiza al Usuario
             UPDATE [dbo].[Usuario]
 		    SET [idPersona] = @Numero, 
 				[idTipoUsuario] = @idTipoUsuario, 
